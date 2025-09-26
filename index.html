@@ -149,52 +149,59 @@ body.dark .output button, body.dark .top-buttons button { border: 1px solid whit
     <form id="macroForm">
       <label for="brand">Brand</label>
       <select id="brand" onchange="updateNotes()">
-        <option value="Brand A">Brand A</option>
-        <option value="Brand B">Brand B</option>
-        <option value="Brand C">Brand C</option>
+        <option value="Brand A">AirDoctor</option>
+        <option value="Brand B">AquaTru</option>
+        <option value="Brand C">Prosvent</option>
+         <option value="Brand D">IdealProstate</option>
+         <option value="Brand E">BetterBlader</option>
+         <option value="Brand F">WalkFit</option>
+        <option value="Brand G">Superthotics</option>
+        <option value="Brand H">Miracle Blade</option>
+        
       </select>
 
-      <label for="contactType">Contact Type</label>
+      <label for="contactType">CONTACT TYPE</label>
       <select id="contactType" onchange="updateContactLabel(); updateNotes()">
-        <option value="Phone">Phone</option>
-        <option value="Ticket">Ticket</option>
+        <option value="Phone">PHONE:</option>
+        <option value="Ticket">TICKET:</option>
       </select>
 
-      <label id="contactFormLabel" for="contactForm">Phone</label>
+      <label id="contactFormLabel" for="contactForm">PHONE:</label>
       <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
 
-      <label for="name">Name</label>
+      <label for="name">NAME:</label>
       <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
 
-      <label for="orderNumber">Order Number</label>
+      <label for="orderNumber">ORDER NUMBER:</label>
       <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
 
-      <label for="inquiry">Inquiry</label>
+      <label for="inquiry">INQUIRY:</label>
       <select id="inquiry" onchange="updateNotes()">
-        <option value="New Order">New Order</option>
+        <option value="New Order">CCI to create new order</option>
         <option value="Missing Item">Missing Item</option>
         <option value="Product Issues">Product Issues</option>
-        <option value="Shipping Status">Shipping Status</option>
+        <option value="Shipping Status">Order Status</option>
         <option value="Escalations">Escalations</option>
-        <option value="Returns">Returns</option>
+        <option value="Returns">Returns & Refunds</option>
         <option value="Cancelations">Cancelations</option>
         <option value="Other">Other</option>
       </select>
       <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
 
-      <label for="actionTaken">Action Taken</label>
+      <label for="actionTaken">ACTION TAKEN:</label>
       <select id="actionTaken" onchange="updateNotes()">
-        <option value="Explained cancellation policy">Explained cancellation policy</option>
+        <option value="Order Created">Order Created</option>
         <option value="Sent replacement order">Sent replacement order</option>
         <option value="Provided tracking number">Provided tracking number</option>
         <option value="Escalated to supervisor">Escalated to supervisor</option>
         <option value="Processed return">Processed return</option>
         <option value="Issued refund">Issued refund</option>
+        <option value="Issued refund">Issued refund</option>
         <option value="General assistance">General assistance</option>
       </select>
       <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
 
-      <label>CEX</label>
+      <label>CUSTOMER SATISFACTION(CEX):</label>
       <div class="cex-buttons">
         <button type="button" style="background:#34c759;" onclick="selectCEX('Good')">Good</button>
         <button type="button" style="background:#ff9500;" onclick="selectCEX('Neutral')">Neutral</button>
@@ -202,13 +209,13 @@ body.dark .output button, body.dark .top-buttons button { border: 1px solid whit
       </div>
       <select id="cexReason" onchange="updateNotes()"></select>
 
-      <label for="why">Why</label>
+      <label for="why">WHY:</label>
       <textarea id="why" placeholder="Explanation" oninput="updateNotes()"></textarea>
     </form>
   </div>
 
   <div class="card output">
-    <label for="notes">Generated Notes</label>
+    <label for="notes">NOTES</label>
     <textarea id="notes" readonly></textarea>
     <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy</button>
   </div>
@@ -245,7 +252,7 @@ function updateNotes() {
   const actionExtra = document.getElementById("actionExtra").value;
   const cex = document.getElementById("cexReason").value;
   const why = document.getElementById("why").value;
-  const notes = `BRAND: ${brand} //// CONTACT VIA: ${contactType} ${contactForm} //// NAME: ${name} //// ORDER: ${orderNumber} //// INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} //// ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} //// CEX: ${cex} //// WHY: ${why}`;
+  const notes = `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | ORDER: ${orderNumber} | INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} //// ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} //// CEX: ${cex} //// WHY: ${why}`;
   document.getElementById("notes").value = notes;
 }
 
