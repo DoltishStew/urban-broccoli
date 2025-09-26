@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MacrOS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #000;
+    }
+    header {
+      text-align: center;
+      padding: 30px 10px 60px 10px;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    main {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 20px;
+    }
+    form {
+      flex: 1;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+    }
+    select, input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .output {
+      flex: 1;
+    }
+    .output textarea {
+      width: 100%;
+      height: 500px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <header>MacrOS</header>
+  <main>
+    <!-- Formulario de macros -->
+    <form id="macroForm">
+      <label for="contactType">CONTACT TYPE</label>
+      <select id="contactType">
+        <option value="Phone">Phone</option>
+        <option value="Ticket">Ticket</option>
+      </select>
+
+      <label for="contactForm">CONTACT FORM</label>
+      <input type="text" id="contactForm" placeholder="Phone # o Ticket #" />
+
+      <label for="name">NAME</label>
+      <input type="text" id="name" placeholder="Nombre del cliente" />
+
+      <label for="orderNumber">ORDER NUMBER</label>
+      <input type="text" id="orderNumber" placeholder="Número de orden" />
+
+      <label for="inquiry">INQUIRY</label>
+      <select id="inquiry">
+        <option value="New Order">New Order</option>
+        <option value="Missing Item">Missing Item</option>
+        <option value="Product Issues">Product Issues</option>
+        <option value="Shipping Status">Shipping Status</option>
+        <option value="Escalations">Escalations</option>
+        <option value="Returns">Returns</option>
+        <option value="Cancelations">Cancelations</option>
+        <option value="Other">Other</option>
+      </select>
+      <textarea id="inquiryExtra" placeholder="Detalles extra para INQUIRY"></textarea>
+
+      <label for="actionTaken">ACTION TAKEN</label>
+      <select id="actionTaken">
+        <option value="Explained cancellation policy">Explained cancellation policy</option>
+        <option value="Sent replacement order">Sent replacement order</option>
+        <option value="Provided tracking number">Provided tracking number</option>
+        <option value="Escalated to supervisor">Escalated to supervisor</option>
+        <option value="Processed return">Processed return</option>
+        <option value="Issued refund">Issued refund</option>
+        <option value="General assistance">General assistance</option>
+      </select>
+      <textarea id="actionExtra" placeholder="Detalles extra para ACTION TAKEN"></textarea>
+
+      <label for="cex">CEX</label>
+      <select id="cex">
+        <option value="Good">Good</option>
+        <option value="Neutral">Neutral</option>
+        <option value="Bad">Bad</option>
+      </select>
+
+      <label for="why">WHY</label>
+      <textarea id="why" placeholder="Explicación breve"></textarea>
+
+      <button type="button" onclick="generateNotes()">Generate Notes</button>
+    </form>
+
+    <!-- Resultado en vivo -->
+    <div class="output">
+      <label for="notes">Generated Notes</label>
+      <textarea id="notes" readonly></textarea>
+    </div>
+  </main>
+
+  <script>
+    function generateNotes() {
+      const contactType = document.getElementById("contactType").value;
+      const contactForm = document.getElementById("contactForm").value;
+      const name = document.getElementById("name").value;
+      const orderNumber = document.getElementById("orderNumber").value;
+      const inquiry = document.getElementById("inquiry").value;
+      const inquiryExtra = document.getElementById("inquiryExtra").value;
+      const actionTaken = document.getElementById("actionTaken").value;
+      const actionExtra = document.getElementById("actionExtra").value;
+      const cex = document.getElementById("cex").value;
+      const why = document.getElementById("why").value;
+
+      const notes = 
+        `CONTACT VIA: ${contactType} ${contactForm} //// ` +
+        `NAME: ${name} //// ` +
+        `ORDER: ${orderNumber} //// ` +
+        `INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} //// ` +
+        `ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} //// ` +
+        `CEX: ${cex} //// ` +
+        `WHY: ${why}`;
+
+      document.getElementById("notes").value = notes;
+    }
+  </script>
+</body>
+</html>
