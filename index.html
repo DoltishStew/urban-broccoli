@@ -6,43 +6,47 @@
   <title>MacrOS</title>
   <style>
     body {
-      margin: 0;
+      margin: 40px;
       font-family: Arial, sans-serif;
-      background: #ffffff;
+      background: #f8f9fa;
       color: #000;
     }
     header {
       text-align: center;
-      padding: 30px 10px 60px 10px;
+      padding: 20px;
       font-size: 2rem;
       font-weight: bold;
     }
     main {
       display: flex;
-      justify-content: space-between;
-      padding: 20px;
       gap: 20px;
     }
-    form {
+    .card {
       flex: 1;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     label {
       font-weight: bold;
       display: block;
-      margin: 10px 0 5px;
+      margin: 15px 0 5px;
     }
     select, input, textarea {
       width: 100%;
       padding: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
+      resize: both; /* Se pueden extender manualmente */
     }
     button {
       background: #007bff;
       color: #fff;
       border: none;
-      padding: 12px 20px;
+      padding: 10px 18px;
+      margin: 5px 5px 10px 0;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
@@ -50,15 +54,9 @@
     button:hover {
       background: #0056b3;
     }
-    .output {
-      flex: 1;
-    }
     .output textarea {
       width: 100%;
-      height: 500px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      height: 450px;
       font-family: monospace;
     }
   </style>
@@ -66,70 +64,84 @@
 <body>
   <header>MacrOS</header>
   <main>
-    <!-- Formulario de macros -->
-    <form id="macroForm">
-      <label for="contactType">CONTACT TYPE</label>
-      <select id="contactType">
-        <option value="Phone">Phone</option>
-        <option value="Ticket">Ticket</option>
-      </select>
+    <!-- Formulario -->
+    <div class="card">
+      <form id="macroForm">
+        <label for="contactType">CONTACT TYPE</label>
+        <select id="contactType" onchange="updateContactLabel(); updateNotes()">
+          <option value="Phone">Phone</option>
+          <option value="Ticket">Ticket</option>
+        </select>
 
-      <label for="contactForm">CONTACT FORM</label>
-      <input type="text" id="contactForm" placeholder="Phone # o Ticket #" />
+        <label id="contactFormLabel" for="contactForm">Phone</label>
+        <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
 
-      <label for="name">NAME</label>
-      <input type="text" id="name" placeholder="Nombre del cliente" />
+        <label for="name">NAME</label>
+        <input type="text" id="name" placeholder="Nombre del cliente" oninput="updateNotes()" />
 
-      <label for="orderNumber">ORDER NUMBER</label>
-      <input type="text" id="orderNumber" placeholder="Número de orden" />
+        <label for="orderNumber">ORDER NUMBER</label>
+        <input type="text" id="orderNumber" placeholder="Número de orden" oninput="updateNotes()" />
 
-      <label for="inquiry">INQUIRY</label>
-      <select id="inquiry">
-        <option value="New Order">New Order</option>
-        <option value="Missing Item">Missing Item</option>
-        <option value="Product Issues">Product Issues</option>
-        <option value="Shipping Status">Shipping Status</option>
-        <option value="Escalations">Escalations</option>
-        <option value="Returns">Returns</option>
-        <option value="Cancelations">Cancelations</option>
-        <option value="Other">Other</option>
-      </select>
-      <textarea id="inquiryExtra" placeholder="Detalles extra para INQUIRY"></textarea>
+        <label for="inquiry">INQUIRY</label>
+        <select id="inquiry" onchange="updateNotes()">
+          <option value="New Order">New Order</option>
+          <option value="Missing Item">Missing Item</option>
+          <option value="Product Issues">Product Issues</option>
+          <option value="Shipping Status">Shipping Status</option>
+          <option value="Escalations">Escalations</option>
+          <option value="Returns">Returns</option>
+          <option value="Cancelations">Cancelations</option>
+          <option value="Other">Other</option>
+        </select>
+        <textarea id="inquiryExtra" placeholder="Detalles extra" oninput="updateNotes()"></textarea>
 
-      <label for="actionTaken">ACTION TAKEN</label>
-      <select id="actionTaken">
-        <option value="Explained cancellation policy">Explained cancellation policy</option>
-        <option value="Sent replacement order">Sent replacement order</option>
-        <option value="Provided tracking number">Provided tracking number</option>
-        <option value="Escalated to supervisor">Escalated to supervisor</option>
-        <option value="Processed return">Processed return</option>
-        <option value="Issued refund">Issued refund</option>
-        <option value="General assistance">General assistance</option>
-      </select>
-      <textarea id="actionExtra" placeholder="Detalles extra para ACTION TAKEN"></textarea>
+        <label for="actionTaken">ACTION TAKEN</label>
+        <select id="actionTaken" onchange="updateNotes()">
+          <option value="Explained cancellation policy">Explained cancellation policy</option>
+          <option value="Sent replacement order">Sent replacement order</option>
+          <option value="Provided tracking number">Provided tracking number</option>
+          <option value="Escalated to supervisor">Escalated to supervisor</option>
+          <option value="Processed return">Processed return</option>
+          <option value="Issued refund">Issued refund</option>
+          <option value="General assistance">General assistance</option>
+        </select>
+        <textarea id="actionExtra" placeholder="Detalles extra" oninput="updateNotes()"></textarea>
 
-      <label for="cex">CEX</label>
-      <select id="cex">
-        <option value="Good">Good</option>
-        <option value="Neutral">Neutral</option>
-        <option value="Bad">Bad</option>
-      </select>
+        <label for="cex">CEX</label>
+        <select id="cex" onchange="updateNotes()">
+          <option value="Good">Good</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Bad">Bad</option>
+        </select>
 
-      <label for="why">WHY</label>
-      <textarea id="why" placeholder="Explicación breve"></textarea>
+        <label for="why">WHY</label>
+        <textarea id="why" placeholder="Explicación breve" oninput="updateNotes()"></textarea>
 
-      <button type="button" onclick="generateNotes()">Generate Notes</button>
-    </form>
+        <div>
+          <button type="button" onclick="newCall()">New Call</button>
+          <button type="button" onclick="prevCall()">Prev Call</button>
+          <button type="button" onclick="copyNotes()">Copy Notes</button>
+        </div>
+      </form>
+    </div>
 
-    <!-- Resultado en vivo -->
-    <div class="output">
+    <!-- Notas generadas -->
+    <div class="card output">
       <label for="notes">Generated Notes</label>
       <textarea id="notes" readonly></textarea>
     </div>
   </main>
 
   <script>
-    function generateNotes() {
+    let previousNotes = "";
+
+    function updateContactLabel() {
+      const type = document.getElementById("contactType").value;
+      document.getElementById("contactFormLabel").innerText = type;
+      document.getElementById("contactForm").placeholder = type + " #";
+    }
+
+    function updateNotes() {
       const contactType = document.getElementById("contactType").value;
       const contactForm = document.getElementById("contactForm").value;
       const name = document.getElementById("name").value;
@@ -152,6 +164,32 @@
 
       document.getElementById("notes").value = notes;
     }
+
+    function newCall() {
+      previousNotes = document.getElementById("notes").value;
+      document.getElementById("macroForm").reset();
+      updateContactLabel(); // reset label
+      document.getElementById("notes").value = "";
+    }
+
+    function prevCall() {
+      if (previousNotes) {
+        document.getElementById("notes").value = previousNotes;
+      } else {
+        alert("No previous call saved.");
+      }
+    }
+
+    function copyNotes() {
+      const notesBox = document.getElementById("notes");
+      notesBox.select();
+      document.execCommand("copy");
+      alert("Notes copied to clipboard!");
+    }
+
+    // Inicializa label dinámico y notas en vivo
+    updateContactLabel();
+    updateNotes();
   </script>
 </body>
 </html>
