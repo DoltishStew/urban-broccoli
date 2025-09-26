@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MacrOS</title>
+<title>MacrOs</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 body {
@@ -89,15 +89,17 @@ textarea { resize: vertical; }
   min-height: 200px;
   border-radius: 12px;
   padding: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   background: #f2f2f7;
   font-family: monospace;
   font-size: 0.95rem;
 }
-.output button {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
+.copy-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 5px;
+}
+.copy-container button {
   background: #f39c12;
   color: black;
   border: none;
@@ -107,6 +109,9 @@ textarea { resize: vertical; }
   display: flex;
   align-items: center;
   gap: 5px;
+}
+.copy-container button:hover {
+  background: #e08b00;
 }
 #historyPanel {
   margin-top: 20px;
@@ -132,7 +137,7 @@ body.dark {
 body.dark header { color: white; }
 body.dark .card { background: #1e1e1e; border: 1px solid #444; box-shadow: none; }
 body.dark input, body.dark select, body.dark textarea { background: #2a2a2a; color: white; border: 1px solid #555; }
-body.dark .output button, body.dark .top-buttons button { border: 1px solid white; background: none; color: white; }
+body.dark .copy-container button, body.dark .top-buttons button { border: 1px solid white; background: none; color: white; }
 </style>
 </head>
 <body>
@@ -149,59 +154,52 @@ body.dark .output button, body.dark .top-buttons button { border: 1px solid whit
     <form id="macroForm">
       <label for="brand">Brand</label>
       <select id="brand" onchange="updateNotes()">
-        <option value="Brand A">AirDoctor</option>
-        <option value="Brand B">AquaTru</option>
-        <option value="Brand C">Prosvent</option>
-         <option value="Brand D">IdealProstate</option>
-         <option value="Brand E">BetterBlader</option>
-         <option value="Brand F">WalkFit</option>
-        <option value="Brand G">Superthotics</option>
-        <option value="Brand H">Miracle Blade</option>
-        
+        <option value="Brand A">Brand A</option>
+        <option value="Brand B">Brand B</option>
+        <option value="Brand C">Brand C</option>
       </select>
 
-      <label for="contactType">CONTACT TYPE</label>
+      <label for="contactType">Contact Type</label>
       <select id="contactType" onchange="updateContactLabel(); updateNotes()">
-        <option value="Phone">PHONE:</option>
-        <option value="Ticket">TICKET:</option>
+        <option value="Phone">Phone</option>
+        <option value="Ticket">Ticket</option>
       </select>
 
-      <label id="contactFormLabel" for="contactForm">PHONE:</label>
+      <label id="contactFormLabel" for="contactForm">Phone</label>
       <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
 
-      <label for="name">NAME:</label>
+      <label for="name">Name</label>
       <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
 
-      <label for="orderNumber">ORDER NUMBER:</label>
+      <label for="orderNumber">Order Number</label>
       <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
 
-      <label for="inquiry">INQUIRY:</label>
+      <label for="inquiry">Inquiry</label>
       <select id="inquiry" onchange="updateNotes()">
-        <option value="New Order">CCI to create new order</option>
+        <option value="New Order">New Order</option>
         <option value="Missing Item">Missing Item</option>
         <option value="Product Issues">Product Issues</option>
-        <option value="Shipping Status">Order Status</option>
+        <option value="Shipping Status">Shipping Status</option>
         <option value="Escalations">Escalations</option>
-        <option value="Returns">Returns & Refunds</option>
+        <option value="Returns">Returns</option>
         <option value="Cancelations">Cancelations</option>
         <option value="Other">Other</option>
       </select>
       <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
 
-      <label for="actionTaken">ACTION TAKEN:</label>
+      <label for="actionTaken">Action Taken</label>
       <select id="actionTaken" onchange="updateNotes()">
-        <option value="Order Created">Order Created</option>
+        <option value="Explained cancellation policy">Explained cancellation policy</option>
         <option value="Sent replacement order">Sent replacement order</option>
         <option value="Provided tracking number">Provided tracking number</option>
         <option value="Escalated to supervisor">Escalated to supervisor</option>
         <option value="Processed return">Processed return</option>
         <option value="Issued refund">Issued refund</option>
-        <option value="Issued refund">Issued refund</option>
         <option value="General assistance">General assistance</option>
       </select>
       <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
 
-      <label>CUSTOMER SATISFACTION(CEX):</label>
+      <label>CEX</label>
       <div class="cex-buttons">
         <button type="button" style="background:#34c759;" onclick="selectCEX('Good')">Good</button>
         <button type="button" style="background:#ff9500;" onclick="selectCEX('Neutral')">Neutral</button>
@@ -209,15 +207,17 @@ body.dark .output button, body.dark .top-buttons button { border: 1px solid whit
       </div>
       <select id="cexReason" onchange="updateNotes()"></select>
 
-      <label for="why">WHY:</label>
+      <label for="why">Why</label>
       <textarea id="why" placeholder="Explanation" oninput="updateNotes()"></textarea>
     </form>
   </div>
 
   <div class="card output">
-    <label for="notes">NOTES</label>
+    <label for="notes">Generated Notes</label>
     <textarea id="notes" readonly></textarea>
-    <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy</button>
+    <div class="copy-container">
+      <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy</button>
+    </div>
   </div>
 </main>
 
@@ -252,98 +252,116 @@ function updateNotes() {
   const actionExtra = document.getElementById("actionExtra").value;
   const cex = document.getElementById("cexReason").value;
   const why = document.getElementById("why").value;
-  const notes = `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | ORDER: ${orderNumber} | INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} //// ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} //// CEX: ${cex} //// WHY: ${why}`;
-  document.getElementById("notes").value = notes;
-}
 
-function selectCEX(value) {
-  document.getElementById("cexReason").innerHTML = "";
-  cexReasons[value].forEach(r => {
-    let opt = document.createElement("option");
-    opt.value = r;
-    opt.textContent = r;
-    document.getElementById("cexReason").appendChild(opt);
-  });
-  updateNotes();
+  const notes =
+    `BRAND: ${brand} //// CONTACT VIA: ${contactType} ${contactForm} //// ` +
+    `NAME: ${name} //// ORDER: ${orderNumber} //// INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} //// ` +
+    `ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} //// CEX: ${cex} //// WHY: ${why}`;
+
+  document.getElementById("notes").value = notes;
 }
 
 function newCall() {
   saveCurrentCall();
   document.getElementById("macroForm").reset();
+  document.getElementById("cexReason").innerHTML = "";
   updateContactLabel();
-  selectCEX('Good');
   updateNotes();
 }
 
 function saveCurrentCall() {
-  const name = document.getElementById("name").value;
-  const orderNumber = document.getElementById("orderNumber").value;
-  if(name || orderNumber){
-    const call = {
-      brand: document.getElementById("brand").value,
-      contactType: document.getElementById("contactType").value,
-      contactForm: document.getElementById("contactForm").value,
-      name,
-      orderNumber,
-      inquiry: document.getElementById("inquiry").value,
-      inquiryExtra: document.getElementById("inquiryExtra").value,
-      actionTaken: document.getElementById("actionTaken").value,
-      actionExtra: document.getElementById("actionExtra").value,
-      cex: document.getElementById("cexReason").value,
-      why: document.getElementById("why").value
-    };
-    callHistory.unshift(call);
-    if(callHistory.length>5) callHistory.pop();
-    renderHistory();
-  }
+  const noteText = document.getElementById("notes").value;
+  if(noteText.trim() === "") return;
+  if(callHistory.length >=5) callHistory.shift(); // guardar max 5
+  callHistory.push({
+    brand: document.getElementById("brand").value,
+    contactType: document.getElementById("contactType").value,
+    contactForm: document.getElementById("contactForm").value,
+    name: document.getElementById("name").value,
+    orderNumber: document.getElementById("orderNumber").value,
+    inquiry: document.getElementById("inquiry").value,
+    inquiryExtra: document.getElementById("inquiryExtra").value,
+    actionTaken: document.getElementById("actionTaken").value,
+    actionExtra: document.getElementById("actionExtra").value,
+    cex: document.getElementById("cexReason").value,
+    why: document.getElementById("why").value
+  });
+  renderHistory();
 }
 
-function renderHistory() {
+function renderHistory(){
   const list = document.getElementById("historyList");
   list.innerHTML = "";
-  callHistory.forEach((call, idx) => {
+  callHistory.slice().reverse().forEach((item,i)=>{
     const li = document.createElement("li");
-    li.textContent = `${call.orderNumber} - ${call.name}`;
-    li.onclick = ()=> loadHistoryCall(idx);
+    li.innerText = `${item.orderNumber} - ${item.name}`;
+    li.onclick = ()=>{
+      loadCall(item);
+      toggleHistoryPanel();
+    };
     list.appendChild(li);
   });
 }
 
-function loadHistoryCall(idx){
-  const call = callHistory[idx];
-  document.getElementById("brand").value = call.brand;
-  document.getElementById("contactType").value = call.contactType;
+function loadCall(item){
+  document.getElementById("brand").value = item.brand;
+  document.getElementById("contactType").value = item.contactType;
   updateContactLabel();
-  document.getElementById("contactForm").value = call.contactForm;
-  document.getElementById("name").value = call.name;
-  document.getElementById("orderNumber").value = call.orderNumber;
-  document.getElementById("inquiry").value = call.inquiry;
-  document.getElementById("inquiryExtra").value = call.inquiryExtra;
-  document.getElementById("actionTaken").value = call.actionTaken;
-  document.getElementById("actionExtra").value = call.actionExtra;
-  selectCEX(call.cex);
-  document.getElementById("why").value = call.why;
+  document.getElementById("contactForm").value = item.contactForm;
+  document.getElementById("name").value = item.name;
+  document.getElementById("orderNumber").value = item.orderNumber;
+  document.getElementById("inquiry").value = item.inquiry;
+  document.getElementById("inquiryExtra").value = item.inquiryExtra;
+  document.getElementById("actionTaken").value = item.actionTaken;
+  document.getElementById("actionExtra").value = item.actionExtra;
+  document.getElementById("why").value = item.why;
+  populateCEX(item.cex);
   updateNotes();
 }
 
- | 
+function selectCEX(value){
+  document.getElementById("cexReason").innerHTML = "";
+  cexReasons[value].forEach(opt=>{
+    const option = document.createElement("option");
+    option.value = opt;
+    option.innerText = opt;
+    document.getElementById("cexReason").appendChild(option);
+  });
+  updateNotes();
+}
+
+function populateCEX(selected){
+  if(!selected) return;
+  for(let key in cexReasons){
+    if(cexReasons[key].includes(selected)){
+      selectCEX(key);
+      document.getElementById("cexReason").value = selected;
+      break;
+    }
+  }
+}
+
 function copyNotes(){
   const notesBox = document.getElementById("notes");
   notesBox.select();
   document.execCommand("copy");
-  notesBox.style.background = "#d1ffd1";
-  setTimeout(()=>{notesBox.style.background="#f2f2f7"},300);
+  const btn = document.getElementById("copy-btn");
+  btn.innerText = "Copied!";
+  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy', 1000);
 }
 
 function toggleDarkMode(){
   document.body.classList.toggle("dark");
 }
 
-window.onload = ()=>{
-  updateContactLabel();
-  selectCEX('Good');
-  updateNotes();
-};
+function toggleHistoryPanel(){
+  saveCurrentCall();
+  const panel = document.getElementById("historyPanel");
+  panel.style.display = panel.style.display==="none"?"block":"none";
+}
+
+updateContactLabel();
+updateNotes();
 </script>
 </body>
 </html>
