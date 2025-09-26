@@ -6,7 +6,373 @@
 <title>MacrOS</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-  body {
+  body {<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MacrOS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #e5e5e5;
+  color: #000;
+  margin: 40px;
+  transition: background 0.3s, color 0.3s;
+}
+
+header {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.top-buttons {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.top-buttons button {
+  background: #f39c12;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.top-buttons button:hover {
+  background: #e67e22;
+}
+
+main {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin: 12px 0 5px;
+  color: black;
+  text-transform: uppercase;
+}
+
+select, input, textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  background: #f2f2f7;
+  color: #000;
+}
+
+select { height: 35px; padding: 0 10px; }
+textarea { resize: vertical; }
+
+.output {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.output textarea {
+  flex: 1;
+  min-height: 200px;
+  font-family: monospace;
+  border-radius: 12px;
+  padding: 12px;
+  background: #f2f2f7;
+  color: #000;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  transition: background 0.3s;
+}
+
+.output button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: #f39c12;
+  color: #000;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.output button:hover { background: #e67e22; }
+
+/* Dark mode */
+body.dark {
+  background: #121212;
+  color: white;
+}
+
+body.dark header { color: white; }
+
+body.dark .card {
+  background: #1e1e1e;
+  border: 1px solid #444;
+  box-shadow: none;
+}
+
+body.dark select, body.dark input, body.dark textarea {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  color: white;
+}
+
+body.dark select option {
+  background: #2a2a2a;
+  color: white;
+}
+
+body.dark .output button, body.dark .top-buttons button {
+  border: 1px solid white;
+  background: none;
+  color: white;
+}
+
+.history-dropdown {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  padding: 6px 10px;
+}
+</style>
+</head>
+<body>
+<header>MacrOS</header>
+
+<div class="top-buttons">
+  <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
+  <button onclick="toggleHistory()"><i class="fas fa-arrow-left"></i> Prev Call</button>
+  <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
+</div>
+
+<main>
+  <div class="card">
+    <form id="macroForm">
+      <label for="contactType">CONTACT TYPE</label>
+      <select id="contactType" onchange="updateContactLabel(); updateNotes()">
+        <option value="Phone">Phone</option>
+        <option value="Ticket">Ticket</option>
+      </select>
+
+      <label id="contactFormLabel" for="contactForm">Phone</label>
+      <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
+
+      <label for="name">NAME</label>
+      <input type="text" id="name" placeholder="Nombre del cliente" oninput="updateNotes()" />
+
+      <label for="orderNumber">ORDER NUMBER</label>
+      <input type="text" id="orderNumber" placeholder="Número de orden" oninput="updateNotes()" />
+
+      <label for="inquiry">INQUIRY</label>
+      <select id="inquiry" onchange="updateNotes()">
+        <option value="New Order">New Order</option>
+        <option value="Missing Item">Missing Item</option>
+        <option value="Product Issues">Product Issues</option>
+        <option value="Shipping Status">Shipping Status</option>
+        <option value="Escalations">Escalations</option>
+        <option value="Returns">Returns</option>
+        <option value="Cancelations">Cancelations</option>
+        <option value="Other">Other</option>
+      </select>
+      <textarea id="inquiryExtra" placeholder="Detalles extra" oninput="updateNotes()"></textarea>
+
+      <label for="actionTaken">ACTION TAKEN</label>
+      <select id="actionTaken" onchange="updateNotes()">
+        <option value="Explained cancellation policy">Explained cancellation policy</option>
+        <option value="Sent replacement order">Sent replacement order</option>
+        <option value="Provided tracking number">Provided tracking number</option>
+        <option value="Escalated to supervisor">Escalated to supervisor</option>
+        <option value="Processed return">Processed return</option>
+        <option value="Issued refund">Issued refund</option>
+        <option value="General assistance">General assistance</option>
+      </select>
+      <textarea id="actionExtra" placeholder="Detalles extra" oninput="updateNotes()"></textarea>
+
+      <label for="cex">CEX</label>
+      <select id="cex" onchange="updateNotes()">
+        <option value="Good">Good</option>
+        <option value="Neutral">Neutral</option>
+        <option value="Bad">Bad</option>
+      </select>
+
+      <label for="why">WHY</label>
+      <textarea id="why" placeholder="Explicación breve" oninput="updateNotes()"></textarea>
+    </form>
+  </div>
+
+  <div class="card output">
+    <label for="notes">Generated Notes</label>
+    <textarea id="notes" readonly></textarea>
+    <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy</button>
+  </div>
+</main>
+
+<script>
+let callHistory = []; // historial máximo 5
+let historyVisible = false;
+
+function updateContactLabel() {
+  const type = document.getElementById("contactType").value;
+  document.getElementById("contactFormLabel").innerText = type;
+  document.getElementById("contactForm").placeholder = type + " #";
+}
+
+function updateNotes() {
+  const contactType = document.getElementById("contactType").value;
+  const contactForm = document.getElementById("contactForm").value;
+  const name = document.getElementById("name").value;
+  const orderNumber = document.getElementById("orderNumber").value;
+  const inquiry = document.getElementById("inquiry").value;
+  const inquiryExtra = document.getElementById("inquiryExtra").value;
+  const actionTaken = document.getElementById("actionTaken").value;
+  const actionExtra = document.getElementById("actionExtra").value;
+  const cex = document.getElementById("cex").value;
+  const why = document.getElementById("why").value;
+
+  const notes = 
+    `CONTACT VIA: ${contactType} ${contactForm} //// ` +
+    `NAME: ${name} //// ` +
+    `ORDER: ${orderNumber} //// ` +
+    `INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} //// ` +
+    `ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} //// ` +
+    `CEX: ${cex} //// ` +
+    `WHY: ${why}`;
+
+  document.getElementById("notes").value = notes;
+}
+
+function newCall() {
+  saveCurrentCall();
+  document.getElementById("macroForm").reset();
+  updateContactLabel();
+  updateNotes();
+}
+
+function saveCurrentCall() {
+  const contactType = document.getElementById("contactType").value;
+  const contactForm = document.getElementById("contactForm").value;
+  const name = document.getElementById("name").value;
+  const orderNumber = document.getElementById("orderNumber").value;
+  const inquiry = document.getElementById("inquiry").value;
+  const inquiryExtra = document.getElementById("inquiryExtra").value;
+  const actionTaken = document.getElementById("actionTaken").value;
+  const actionExtra = document.getElementById("actionExtra").value;
+  const cex = document.getElementById("cex").value;
+  const why = document.getElementById("why").value;
+
+  if(name || orderNumber) { // si hay info
+    const call = { contactType, contactForm, name, orderNumber, inquiry, inquiryExtra, actionTaken, actionExtra, cex, why };
+    callHistory.unshift(call); // añadir al inicio
+    if(callHistory.length > 5) callHistory.pop(); // máximo 5
+  }
+}
+
+function prevCall() {
+  toggleHistory();
+}
+
+function toggleHistory() {
+  if(historyVisible) {
+    removeHistoryDropdown();
+  } else {
+    showHistoryDropdown();
+  }
+}
+
+function showHistoryDropdown() {
+  removeHistoryDropdown();
+  const card = document.querySelector(".card");
+  const dropdown = document.createElement("select");
+  dropdown.id = "historyDropdown";
+  dropdown.className = "history-dropdown";
+  const placeholder = document.createElement("option");
+  placeholder.text = "Select previous call...";
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  dropdown.add(placeholder);
+  callHistory.forEach((call, index) => {
+    const opt = document.createElement("option");
+    opt.value = index;
+    opt.text = `${call.orderNumber || ""} - ${call.name || ""}`;
+    dropdown.add(opt);
+  });
+  dropdown.onchange = () => loadCall(callHistory[dropdown.value]);
+  card.prepend(dropdown);
+  historyVisible = true;
+}
+
+function removeHistoryDropdown() {
+  const dropdown = document.getElementById("historyDropdown");
+  if(dropdown) dropdown.remove();
+  historyVisible = false;
+}
+
+function loadCall(call) {
+  document.getElementById("contactType").value = call.contactType;
+  updateContactLabel();
+  document.getElementById("contactForm").value = call.contactForm;
+  document.getElementById("name").value = call.name;
+  document.getElementById("orderNumber").value = call.orderNumber;
+  document.getElementById("inquiry").value = call.inquiry;
+  document.getElementById("inquiryExtra").value = call.inquiryExtra;
+  document.getElementById("actionTaken").value = call.actionTaken;
+  document.getElementById("actionExtra").value = call.actionExtra;
+  document.getElementById("cex").value = call.cex;
+  document.getElementById("why").value = call.why;
+  updateNotes();
+  removeHistoryDropdown();
+}
+
+function copyNotes() {
+  const notesBox = document.getElementById("notes");
+  notesBox.select();
+  document.execCommand("copy");
+  notesBox.style.background = "#cce5ff";
+  setTimeout(() => {
+    notesBox.style.background = document.body.classList.contains("dark") ? "#2a2a2a" : "#f2f2f7";
+  }, 300);
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+}
+
+updateContactLabel();
+updateNotes();
+</script>
+</body>
+</html>
+
     margin: 40px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: #f5f5f7;
