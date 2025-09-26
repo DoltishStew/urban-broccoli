@@ -24,7 +24,7 @@ header {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 .top-buttons button {
   background: #f39c12;
@@ -37,7 +37,9 @@ header {
   display: flex;
   align-items: center;
   gap: 5px;
+  transition: background 0.2s;
 }
+.top-buttons button:hover { background: #e08b00; }
 main {
   display: flex;
   gap: 20px;
@@ -52,12 +54,9 @@ main {
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
 }
-label {
-  font-weight: 600;
-  margin: 10px 0 5px;
-  text-transform: uppercase;
-}
+label { font-weight: 600; margin: 10px 0 5px; text-transform: uppercase; }
 input, select, textarea {
   width: 100%;
   box-sizing: border-box;
@@ -94,11 +93,7 @@ textarea { resize: vertical; }
   font-family: monospace;
   font-size: 0.95rem;
 }
-.copy-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 5px;
-}
+.copy-container { display: flex; justify-content: flex-end; margin-top: 5px; }
 .copy-container button {
   background: #f39c12;
   color: black;
@@ -110,34 +105,47 @@ textarea { resize: vertical; }
   align-items: center;
   gap: 5px;
 }
-.copy-container button:hover {
-  background: #e08b00;
-}
+.copy-container button:hover { background: #e08b00; }
+
+/* History panel overlay */
 #historyPanel {
-  margin-top: 20px;
   display: none;
-}
-#historyPanel ul {
-  list-style: none;
-  padding: 0;
-  max-height: 300px;
+  position: fixed;
+  right: 20px;
+  top: 80px;
+  width: 320px;
+  max-height: 80%;
   overflow-y: auto;
+  z-index: 1000;
+  background: yellow;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  padding: 15px;
+  transition: background 0.3s;
 }
+#historyPanel.active { background: #007bff; color: #fff; }
+#historyPanel h3 { margin-top: 0; text-align: center; }
+#historyPanel ul { list-style: none; padding: 0; margin: 0; }
 #historyPanel li {
-  padding: 6px 10px;
-  margin-bottom: 4px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
   background: #f2f2f7;
   border-radius: 12px;
   cursor: pointer;
+  transition: background 0.2s;
 }
+#historyPanel li:hover { background: #d4d4ff; }
+
+/* Dark mode */
 body.dark {
   background: #121212;
   color: white;
 }
-body.dark header { color: white; }
+body.dark header { color: #fff; }
 body.dark .card { background: #1e1e1e; border: 1px solid #444; box-shadow: none; }
 body.dark input, body.dark select, body.dark textarea { background: #2a2a2a; color: white; border: 1px solid #555; }
-body.dark .copy-container button, body.dark .top-buttons button { border: 1px solid white; background: none; color: white; }
+body.dark .copy-container button, body.dark .top-buttons button { border: 1px solid #fff; background: none; color: white; }
+body.dark .cex-buttons button { color: #fff; }
 </style>
 </head>
 <body>
@@ -272,7 +280,7 @@ function newCall() {
 function saveCurrentCall() {
   const noteText = document.getElementById("notes").value;
   if(noteText.trim() === "") return;
-  if(callHistory.length >=5) callHistory.shift(); // guardar max 5
+  if(callHistory.length >=5) callHistory.shift();
   callHistory.push({
     brand: document.getElementById("brand").value,
     contactType: document.getElementById("contactType").value,
@@ -292,13 +300,10 @@ function saveCurrentCall() {
 function renderHistory(){
   const list = document.getElementById("historyList");
   list.innerHTML = "";
-  callHistory.slice().reverse().forEach((item,i)=>{
+  callHistory.slice().reverse().forEach(item=>{
     const li = document.createElement("li");
     li.innerText = `${item.orderNumber} - ${item.name}`;
-    li.onclick = ()=>{
-      loadCall(item);
-      toggleHistoryPanel();
-    };
+    li.onclick = ()=>{ loadCall(item); toggleHistoryPanel(); };
     list.appendChild(li);
   });
 }
@@ -357,7 +362,8 @@ function toggleDarkMode(){
 function toggleHistoryPanel(){
   saveCurrentCall();
   const panel = document.getElementById("historyPanel");
-  panel.style.display = panel.style.display==="none"?"block":"none";
+  panel.classList.toggle("active");
+  panel.style.display = panel.style.display==="block" ? "none" : "block";
 }
 
 updateContactLabel();
