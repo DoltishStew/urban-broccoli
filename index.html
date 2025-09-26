@@ -31,7 +31,6 @@ header {
   color: black;
   border: none;
   padding: 8px 14px;
-  border-radius: 12px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
@@ -50,7 +49,7 @@ main {
   min-width: 320px;
   background: #fff;
   padding: 20px;
-  border-radius: 18px;
+  border-radius: 8px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
@@ -62,7 +61,7 @@ input, select, textarea {
   box-sizing: border-box;
   padding: 8px 12px;
   margin-bottom: 12px;
-  border-radius: 12px;
+  border-radius: 6px;
   border: 1px solid #ccc;
   background: #f2f2f7;
   font-size: 0.95rem;
@@ -78,7 +77,7 @@ textarea { resize: vertical; }
   color: #fff;
   border: none;
   padding: 6px;
-  border-radius: 12px;
+  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -86,7 +85,7 @@ textarea { resize: vertical; }
 .output textarea {
   width: 100%;
   min-height: 200px;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 12px;
   margin-bottom: 5px;
   background: #f2f2f7;
@@ -99,7 +98,6 @@ textarea { resize: vertical; }
   color: black;
   border: none;
   padding: 6px 12px;
-  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -107,21 +105,21 @@ textarea { resize: vertical; }
 }
 .copy-container button:hover { background: #e08b00; }
 
-/* History panel overlay */
+/* History panel centered */
 #historyPanel {
   display: none;
   position: fixed;
-  right: 20px;
-  top: 80px;
-  width: 320px;
-  max-height: 80%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  max-height: 70%;
   overflow-y: auto;
   z-index: 1000;
-  background: yellow;
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-  padding: 15px;
-  transition: background 0.3s;
+  background: #ddd;
+  border-radius: 8px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+  padding: 20px;
 }
 #historyPanel.active { background: #007bff; color: #fff; }
 #historyPanel h3 { margin-top: 0; text-align: center; }
@@ -129,12 +127,13 @@ textarea { resize: vertical; }
 #historyPanel li {
   padding: 8px 10px;
   margin-bottom: 6px;
-  background: #f2f2f7;
-  border-radius: 12px;
+  background: #f5f5f5;
+  border-radius: 4px;
   cursor: pointer;
   transition: background 0.2s;
 }
-#historyPanel li:hover { background: #d4d4ff; }
+#historyPanel.active li { background: #0056d6; }
+#historyPanel li:hover { background: #ccc; }
 
 /* Dark mode */
 body.dark {
@@ -162,9 +161,15 @@ body.dark .cex-buttons button { color: #fff; }
     <form id="macroForm">
       <label for="brand">Brand</label>
       <select id="brand" onchange="updateNotes()">
-        <option value="Brand A">Brand A</option>
-        <option value="Brand B">Brand B</option>
-        <option value="Brand C">Brand C</option>
+        <option value="Air Doctor">Air Doctor</option>
+        <option value="AquaTru">AquaTru</option>
+        <option value="Better Bladder">Better Bladder</option>
+        <option value="Prosvent">Prosvent</option>
+        <option value="IdealProstate">IdealProstate</option>
+        <option value="Walkfit">Walkfit</option>
+        <option value="Superthotics">Superthotics</option>
+        <option value="Rotorazer">Rotorazer</option>
+        <option value="Miracle Blade">Miracle Blade</option>
       </select>
 
       <label for="contactType">Contact Type</label>
@@ -229,7 +234,7 @@ body.dark .cex-buttons button { color: #fff; }
   </div>
 </main>
 
-<div id="historyPanel" class="card">
+<div id="historyPanel">
   <h3>Call History</h3>
   <ul id="historyList"></ul>
 </div>
@@ -241,6 +246,10 @@ let cexReasons = {
   Neutral: ["Partial help", "Info unclear", "Waited long"],
   Bad: ["Not helpful", "Wrong info", "Issue unresolved"]
 };
+
+let isTyping = false;
+
+document.getElementById("macroForm").addEventListener("input", ()=>{ isTyping=true; });
 
 function updateContactLabel() {
   const type = document.getElementById("contactType").value;
@@ -270,11 +279,12 @@ function updateNotes() {
 }
 
 function newCall() {
-  saveCurrentCall();
+  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall();
   document.getElementById("macroForm").reset();
   document.getElementById("cexReason").innerHTML = "";
   updateContactLabel();
   updateNotes();
+  isTyping=false;
 }
 
 function saveCurrentCall() {
@@ -282,19 +292,11 @@ function saveCurrentCall() {
   if(noteText.trim() === "") return;
   if(callHistory.length >=5) callHistory.shift();
   callHistory.push({
-    brand: document.getElementById("brand").value,
-    contactType: document.getElementById("contactType").value,
-    contactForm: document.getElementById("contactForm").value,
-    name: document.getElementById("name").value,
     orderNumber: document.getElementById("orderNumber").value,
-    inquiry: document.getElementById("inquiry").value,
-    inquiryExtra: document.getElementById("inquiryExtra").value,
-    actionTaken: document.getElementById("actionTaken").value,
-    actionExtra: document.getElementById("actionExtra").value,
-    cex: document.getElementById("cexReason").value,
-    why: document.getElementById("why").value
+    name: document.getElementById("name").value
   });
   renderHistory();
+  isTyping=false;
 }
 
 function renderHistory(){
@@ -303,25 +305,8 @@ function renderHistory(){
   callHistory.slice().reverse().forEach(item=>{
     const li = document.createElement("li");
     li.innerText = `${item.orderNumber} - ${item.name}`;
-    li.onclick = ()=>{ loadCall(item); toggleHistoryPanel(); };
     list.appendChild(li);
   });
-}
-
-function loadCall(item){
-  document.getElementById("brand").value = item.brand;
-  document.getElementById("contactType").value = item.contactType;
-  updateContactLabel();
-  document.getElementById("contactForm").value = item.contactForm;
-  document.getElementById("name").value = item.name;
-  document.getElementById("orderNumber").value = item.orderNumber;
-  document.getElementById("inquiry").value = item.inquiry;
-  document.getElementById("inquiryExtra").value = item.inquiryExtra;
-  document.getElementById("actionTaken").value = item.actionTaken;
-  document.getElementById("actionExtra").value = item.actionExtra;
-  document.getElementById("why").value = item.why;
-  populateCEX(item.cex);
-  updateNotes();
 }
 
 function selectCEX(value){
@@ -333,17 +318,6 @@ function selectCEX(value){
     document.getElementById("cexReason").appendChild(option);
   });
   updateNotes();
-}
-
-function populateCEX(selected){
-  if(!selected) return;
-  for(let key in cexReasons){
-    if(cexReasons[key].includes(selected)){
-      selectCEX(key);
-      document.getElementById("cexReason").value = selected;
-      break;
-    }
-  }
 }
 
 function copyNotes(){
@@ -360,7 +334,6 @@ function toggleDarkMode(){
 }
 
 function toggleHistoryPanel(){
-  saveCurrentCall();
   const panel = document.getElementById("historyPanel");
   panel.classList.toggle("active");
   panel.style.display = panel.style.display==="block" ? "none" : "block";
