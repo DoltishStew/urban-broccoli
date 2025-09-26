@@ -8,41 +8,44 @@
 <style>
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #e5e5e5;
+  background: #f5f5f7;
   color: #000;
-  margin: 40px;
+  margin: 20px;
   transition: background 0.3s, color 0.3s;
 }
 header {
   text-align: center;
   font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #000;
 }
 .top-buttons {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   margin-bottom: 20px;
 }
 .top-buttons button {
+  background: #f39c12;
   color: black;
   border: none;
-  padding: 10px 20px;
-  margin: 0 5px;
+  padding: 8px 14px;
   border-radius: 12px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 1rem;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 main {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap;
 }
 .card {
   flex: 1;
+  min-width: 320px;
   background: #fff;
   padding: 20px;
   border-radius: 18px;
@@ -52,62 +55,69 @@ main {
 }
 label {
   font-weight: 600;
-  display: block;
-  margin: 12px 0 5px;
-  color: black;
+  margin: 10px 0 5px;
   text-transform: uppercase;
 }
-select, input, textarea {
+input, select, textarea {
   width: 100%;
   box-sizing: border-box;
   padding: 8px 12px;
   margin-bottom: 12px;
-  border: 1px solid #ccc;
   border-radius: 12px;
-  font-size: 0.95rem;
+  border: 1px solid #ccc;
   background: #f2f2f7;
-  color: #000;
+  font-size: 0.95rem;
 }
 textarea { resize: vertical; }
-.output { display: flex; flex-direction: column; position: relative; }
+.cex-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.cex-buttons button {
+  flex: 1;
+  color: #fff;
+  border: none;
+  padding: 6px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.output { position: relative; display: flex; flex-direction: column; }
 .output textarea {
   width: 100%;
   min-height: 200px;
-  font-family: monospace;
   border-radius: 12px;
   padding: 12px;
-  background: #f2f2f7;
-  color: #000;
-  font-size: 0.95rem;
   margin-bottom: 10px;
-  transition: background 0.3s;
+  background: #f2f2f7;
+  font-family: monospace;
+  font-size: 0.95rem;
 }
 .output button {
   position: absolute;
   bottom: 10px;
   right: 10px;
   background: #f39c12;
-  color: #000;
+  color: black;
   border: none;
   padding: 6px 12px;
   border-radius: 12px;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
-.output button:hover { background: #e67e22; }
-.cex-buttons button {
-  padding: 6px 12px;
-  margin-right: 8px;
-  border-radius: 12px;
-  border: none;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
+#historyPanel {
+  margin-top: 20px;
+  display: none;
 }
-#historyPanel { margin-top: 20px; display:none; }
-#historyPanel ul { list-style: none; padding: 0; max-height: 300px; overflow-y:auto; }
+#historyPanel ul {
+  list-style: none;
+  padding: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
 #historyPanel li {
   padding: 6px 10px;
   margin-bottom: 4px;
@@ -121,39 +131,45 @@ body.dark {
 }
 body.dark header { color: white; }
 body.dark .card { background: #1e1e1e; border: 1px solid #444; box-shadow: none; }
-body.dark select, body.dark input, body.dark textarea { background: #2a2a2a; border: 1px solid #555; color: white; }
-body.dark select option { color: white; }
+body.dark input, body.dark select, body.dark textarea { background: #2a2a2a; color: white; border: 1px solid #555; }
 body.dark .output button, body.dark .top-buttons button { border: 1px solid white; background: none; color: white; }
 </style>
 </head>
 <body>
 <header>MacrOs</header>
+
 <div class="top-buttons">
   <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
   <button onclick="toggleHistoryPanel()"><i class="fas fa-history"></i> History</button>
   <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
 </div>
+
 <main>
   <div class="card">
     <form id="macroForm">
-      <label for="brand">BRAND</label>
+      <label for="brand">Brand</label>
       <select id="brand" onchange="updateNotes()">
         <option value="Brand A">Brand A</option>
         <option value="Brand B">Brand B</option>
         <option value="Brand C">Brand C</option>
       </select>
-      <label for="contactType">CONTACT TYPE</label>
+
+      <label for="contactType">Contact Type</label>
       <select id="contactType" onchange="updateContactLabel(); updateNotes()">
         <option value="Phone">Phone</option>
         <option value="Ticket">Ticket</option>
       </select>
+
       <label id="contactFormLabel" for="contactForm">Phone</label>
       <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
-      <label for="name">NAME</label>
-      <input type="text" id="name" placeholder="Nombre del cliente" oninput="updateNotes()" />
-      <label for="orderNumber">ORDER NUMBER</label>
-      <input type="text" id="orderNumber" placeholder="Número de orden" oninput="updateNotes()" />
-      <label for="inquiry">INQUIRY</label>
+
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
+
+      <label for="orderNumber">Order Number</label>
+      <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
+
+      <label for="inquiry">Inquiry</label>
       <select id="inquiry" onchange="updateNotes()">
         <option value="New Order">New Order</option>
         <option value="Missing Item">Missing Item</option>
@@ -164,8 +180,9 @@ body.dark .output button, body.dark .top-buttons button { border: 1px solid whit
         <option value="Cancelations">Cancelations</option>
         <option value="Other">Other</option>
       </select>
-      <textarea id="inquiryExtra" placeholder="Detalles extra" oninput="updateNotes()"></textarea>
-      <label for="actionTaken">ACTION TAKEN</label>
+      <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+
+      <label for="actionTaken">Action Taken</label>
       <select id="actionTaken" onchange="updateNotes()">
         <option value="Explained cancellation policy">Explained cancellation policy</option>
         <option value="Sent replacement order">Sent replacement order</option>
@@ -175,7 +192,8 @@ body.dark .output button, body.dark .top-buttons button { border: 1px solid whit
         <option value="Issued refund">Issued refund</option>
         <option value="General assistance">General assistance</option>
       </select>
-      <textarea id="actionExtra" placeholder="Detalles extra" oninput="updateNotes()"></textarea>
+      <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+
       <label>CEX</label>
       <div class="cex-buttons">
         <button type="button" style="background:#34c759;" onclick="selectCEX('Good')">Good</button>
@@ -183,16 +201,19 @@ body.dark .output button, body.dark .top-buttons button { border: 1px solid whit
         <button type="button" style="background:#ff3b30;" onclick="selectCEX('Bad')">Bad</button>
       </div>
       <select id="cexReason" onchange="updateNotes()"></select>
-      <label for="why">WHY</label>
-      <textarea id="why" placeholder="Explicación breve" oninput="updateNotes()"></textarea>
+
+      <label for="why">Why</label>
+      <textarea id="why" placeholder="Explanation" oninput="updateNotes()"></textarea>
     </form>
   </div>
+
   <div class="card output">
     <label for="notes">Generated Notes</label>
     <textarea id="notes" readonly></textarea>
     <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy</button>
   </div>
 </main>
+
 <div id="historyPanel" class="card">
   <h3>Call History</h3>
   <ul id="historyList"></ul>
@@ -201,8 +222,8 @@ body.dark .output button, body.dark .top-buttons button { border: 1px solid whit
 <script>
 let callHistory = [];
 let cexReasons = {
-  Good: ["Helped the customer", "Issue resolved", "Information clear"],
-  Neutral: ["Waited too long", "Partial resolution", "Info not clear"],
+  Good: ["Helped the customer", "Issue resolved", "Info clear"],
+  Neutral: ["Partial help", "Info unclear", "Waited long"],
   Bad: ["Not helpful", "Wrong info", "Issue unresolved"]
 };
 
@@ -224,14 +245,26 @@ function updateNotes() {
   const actionExtra = document.getElementById("actionExtra").value;
   const cex = document.getElementById("cexReason").value;
   const why = document.getElementById("why").value;
-  const notes = `BRAND: ${brand} //// CONTACT VIA: ${contactType} ${contactForm} //// NAME: ${name} //// ORDER: ${orderNumber} //// INQUIRY: ${inquiry}${inquiryExtra?" - "+inquiryExtra:""} //// ACTION TAKEN: ${actionTaken}${actionExtra?" - "+actionExtra:""} //// CEX: ${cex} //// WHY: ${why}`;
+  const notes = `BRAND: ${brand} //// CONTACT VIA: ${contactType} ${contactForm} //// NAME: ${name} //// ORDER: ${orderNumber} //// INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} //// ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} //// CEX: ${cex} //// WHY: ${why}`;
   document.getElementById("notes").value = notes;
+}
+
+function selectCEX(value) {
+  document.getElementById("cexReason").innerHTML = "";
+  cexReasons[value].forEach(r => {
+    let opt = document.createElement("option");
+    opt.value = r;
+    opt.textContent = r;
+    document.getElementById("cexReason").appendChild(opt);
+  });
+  updateNotes();
 }
 
 function newCall() {
   saveCurrentCall();
   document.getElementById("macroForm").reset();
   updateContactLabel();
+  selectCEX('Good');
   updateNotes();
 }
 
@@ -239,15 +272,75 @@ function saveCurrentCall() {
   const name = document.getElementById("name").value;
   const orderNumber = document.getElementById("orderNumber").value;
   if(name || orderNumber){
-    const callCopy = {
+    const call = {
       brand: document.getElementById("brand").value,
       contactType: document.getElementById("contactType").value,
       contactForm: document.getElementById("contactForm").value,
-      name: name,
-      orderNumber: orderNumber,
+      name,
+      orderNumber,
       inquiry: document.getElementById("inquiry").value,
       inquiryExtra: document.getElementById("inquiryExtra").value,
       actionTaken: document.getElementById("actionTaken").value,
       actionExtra: document.getElementById("actionExtra").value,
       cex: document.getElementById("cexReason").value,
-     
+      why: document.getElementById("why").value
+    };
+    callHistory.unshift(call);
+    if(callHistory.length>5) callHistory.pop();
+    renderHistory();
+  }
+}
+
+function renderHistory() {
+  const list = document.getElementById("historyList");
+  list.innerHTML = "";
+  callHistory.forEach((call, idx) => {
+    const li = document.createElement("li");
+    li.textContent = `${call.orderNumber} - ${call.name}`;
+    li.onclick = ()=> loadHistoryCall(idx);
+    list.appendChild(li);
+  });
+}
+
+function loadHistoryCall(idx){
+  const call = callHistory[idx];
+  document.getElementById("brand").value = call.brand;
+  document.getElementById("contactType").value = call.contactType;
+  updateContactLabel();
+  document.getElementById("contactForm").value = call.contactForm;
+  document.getElementById("name").value = call.name;
+  document.getElementById("orderNumber").value = call.orderNumber;
+  document.getElementById("inquiry").value = call.inquiry;
+  document.getElementById("inquiryExtra").value = call.inquiryExtra;
+  document.getElementById("actionTaken").value = call.actionTaken;
+  document.getElementById("actionExtra").value = call.actionExtra;
+  selectCEX(call.cex);
+  document.getElementById("why").value = call.why;
+  updateNotes();
+}
+
+function toggleHistoryPanel(){
+  const panel = document.getElementById("historyPanel");
+  panel.style.display = panel.style.display==="none"?"block":"none";
+}
+
+function copyNotes(){
+  const notesBox = document.getElementById("notes");
+  notesBox.select();
+  document.execCommand("copy");
+  notesBox.style.background = "#d1ffd1";
+  setTimeout(()=>{notesBox.style.background="#f2f2f7"},300);
+}
+
+function toggleDarkMode(){
+  document.body.classList.toggle("dark");
+}
+
+window.onload = ()=>{
+  updateContactLabel();
+  selectCEX('Good');
+  updateNotes();
+};
+</script>
+</body>
+</html>
