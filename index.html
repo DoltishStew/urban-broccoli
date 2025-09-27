@@ -64,13 +64,13 @@ main {
 .quick-card {
   background:#fff;
   border-radius:6px;
-  padding:10px;
-  flex: 1 1 300px;   /* Ajuste para que se comporte igual que los otros cards */
+  padding:8px;           /* 🔹 menos padding */
+  flex: 0 1 auto;        /* 🔹 ocupa solo lo que necesita */
   max-width:100%;
   box-sizing:border-box;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
-}
+  
 .quick-card-header {
   display:flex;
   justify-content:space-between;
