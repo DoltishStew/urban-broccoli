@@ -38,7 +38,7 @@ header {
   align-items: center;
   gap: 5px;
   border-radius: 8px;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 .top-buttons button:hover { background: #e08b00; }
 
@@ -75,6 +75,7 @@ main {
 .quick-card-header h3 { 
   margin:0; 
   color:#000;
+  transition: color 0.3s;
 }
 .quick-toggle-btn {
   background:#f39c12;
@@ -111,6 +112,7 @@ main {
   padding:20px;
   border-radius:6px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  transition: background 0.3s, color 0.3s;
 }
 label { font-weight:600; margin:10px 0 5px; text-transform: uppercase; }
 input, select, textarea {
@@ -122,6 +124,7 @@ input, select, textarea {
   border:1px solid #ccc;
   background:#f2f2f7;
   font-size:0.95rem;
+  transition: background 0.3s, color 0.3s, border 0.3s;
 }
 textarea { resize: vertical; }
 
@@ -157,6 +160,7 @@ textarea { resize: vertical; }
   background:#f2f2f7;
   font-family:monospace;
   font-size:0.95rem;
+  transition: background 0.3s, color 0.3s;
 }
 .copy-container { display:flex; justify-content:flex-end; gap:5px; }
 .copy-container button {
@@ -169,13 +173,14 @@ textarea { resize: vertical; }
   align-items:center;
   gap:5px;
   border-radius:6px;
+  transition: background 0.3s, color 0.3s;
 }
 .copy-container button:hover { background:#e08b00; }
 
 /* Dark mode */
 body.dark { background:#121212; color:white; }
 body.dark header { color:#fff; }
-body.dark .card, body.dark .quick-card { background:#1e1e1e; border:1px solid #444; box-shadow:none; }
+body.dark .card, body.dark .quick-card { background:#1e1e1e; border:1px solid #444; box-shadow:none; color:#fff; }
 body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; color:white; border:1px solid #555; }
 body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
 body.dark .cex-buttons button { color:#fff; }
@@ -196,9 +201,9 @@ body.dark .quick-card-header h3 { color:#fff; }
   border-radius:8px;
   box-shadow:0 6px 25px rgba(0,0,0,0.3);
   padding:20px;
-  color:#fff;
+  color:#000;
 }
-#historyPanel h3 { margin-top:0; text-align:center; }
+#historyPanel h3 { margin-top:0; text-align:center; color:#000; }
 #historyPanel ul { list-style:none; padding:0; margin:0; }
 #historyPanel li {
   padding:8px 10px;
@@ -207,7 +212,6 @@ body.dark .quick-card-header h3 { color:#fff; }
   border-radius:4px;
   cursor:pointer;
   transition: background 0.2s;
-  color:#000;
 }
 #historyPanel li:hover { background:#ccc; }
 #clearHistoryBtn {
@@ -235,7 +239,6 @@ body.dark .quick-card-header h3 { color:#fff; }
 
 <main>
   <div class="left-column">
-    <!-- Quick Notes Card -->
     <div class="quick-card" id="quickNotesCard">
       <div class="quick-card-header">
         <h3>Quick Notes</h3>
@@ -245,7 +248,6 @@ body.dark .quick-card-header h3 { color:#fff; }
       <div class="sub-buttons" id="subOptions" style="display:none;"></div>
     </div>
 
-    <!-- Form Card -->
     <div class="card" id="formCard">
       <form id="macroForm">
         <label for="brand">Brand</label>
@@ -289,7 +291,6 @@ body.dark .quick-card-header h3 { color:#fff; }
   </div>
 
   <div class="right-column">
-    <!-- Output Card -->
     <div class="card output">
       <label for="notes">Generated Notes</label>
       <textarea id="notes" readonly></textarea>
@@ -308,159 +309,50 @@ body.dark .quick-card-header h3 { color:#fff; }
 </div>
 
 <script>
-// Variables
-let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
-let isTyping = false;
-
-// CEX Data
-const cexData = {
-  Good: { reasons:["Helped the customer","Info clear","Issue resolved"], why:["Issue resolved","Customer pleased","Info understood"] },
-  Neutral: { reasons:["Partial help","Info unclear","Waited long"], why:["Info partially clear","Some issue unresolved"] },
-  Bad: { reasons:["Not helpful","Wrong info","Issue unresolved"], why:["Issue not resolved","Customer frustrated"] }
+// VARIABLES
+let callHistory=[], isTyping=false;
+let cexData={
+  Good:["Customer pleased","Helpful info","Issue resolved"],
+  Neutral:["Partial help","Info unclear","Waited long"],
+  Bad:["Not helpful","Wrong info","Issue unresolved"]
 };
-
-// Quick Notes Data
-let quickNotesData = {
+let cexWhyData={
+  "Customer pleased":["Issue resolved","Info clear"],
+  "Helpful info":["Assisted cx","Info understood"],
+  "Issue resolved":["Problem fixed","Order processed"],
+  "Partial help":["Still pending","Follow-up needed"],
+  "Info unclear":["Cx confused","Need more info"],
+  "Waited long":["Long wait","Delayed response"],
+  "Not helpful":["Wrong guidance","Not resolved"],
+  "Wrong info":["Incorrect details","Cx misled"],
+  "Issue unresolved":["Pending problem","No solution"]
+};
+let quickNotesData={
   "Order Status":{
-    "Processing": {inquiry:"Check order status", action:"Informed CX order is processing"},
-    "Shipped": {inquiry:"Check order status", action:"Provided tracking info"}
+    "Processing": {inquiry:"CCI to check order status", action:"Informed cx order processing."},
+    "Shipped": {inquiry:"CCI to check order status", action:"Informed cx order shipped, provided tracking."}
   },
   "New Order":{
-    "Filters": {inquiry:"Create new order", action:"Processed new filter order"},
-    "Main Unit": {inquiry:"Create new order", action:"Processed new main unit order"},
-    "Accessories": {inquiry:"Create new order", action:"Processed new accessories order"}
+    "Filters": {inquiry:"CCI to create order", action:"Processed filter order."},
+    "Main Unit": {inquiry:"CCI to create order", action:"Processed main unit order."},
+    "Accessories": {inquiry:"CCI to create order", action:"Processed accessory order."}
   }
 };
 
-// Initialize Brand
+// INIT BRAND
 let brandSelect=document.getElementById("brand");
 ["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
   let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
 });
 
-// Update Contact Label
+// CONTACT LABEL
 function updateContactLabel(){
   let type=document.getElementById("contactType").value;
   document.getElementById("contactFormLabel").innerText=type;
   document.getElementById("contactForm").placeholder=type+" #";
 }
 
-// Update Notes
-function updateNotes(){
-  let brand=document.getElementById("brand").value;
-  let contactType=document.getElementById("contactType").value;
-  let contactForm=document.getElementById("contactForm").value;
-  let name=document.getElementById("name").value;
-  let orderNumber=document.getElementById("orderNumber").value;
-  let inquiry=document.getElementById("inquiry").value;
-  let actionTaken=document.getElementById("actionTaken").value;
-  let cex=document.getElementById("cexReason").value;
-  let why=document.getElementById("cexWhy").value;
-
-  document.getElementById("notes").value=
-  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
-}
-
-// Select CEX
-function selectCEX(value){
-  let reasonSelect=document.getElementById("cexReason");
-  reasonSelect.innerHTML="";
-  cexData[value].reasons.forEach(r=>{
-    let o=document.createElement("option"); o.value=r; o.innerText=r;
-    reasonSelect.appendChild(o);
-  });
-  let whySelect=document.getElementById("cexWhy");
-  whySelect.innerHTML="";
-  cexData[value].why.forEach(w=>{
-    let o=document.createElement("option"); o.value=w; o.innerText=w;
-    whySelect.appendChild(o);
-  });
-  updateNotes();
-}
-
-// Copy Notes
-function copyNotes(){
-  let requiredFields = ["brand","contactForm","name","orderNumber","inquiry","actionTaken","cexReason","cexWhy"];
-  for(let f of requiredFields){
-    if(!document.getElementById(f).value){ return alert("Todos los campos deben estar completos antes de guardar."); }
-  }
-  let notesBox=document.getElementById("notes");
-  notesBox.select();
-  document.execCommand("copy");
-  saveCurrentCall();
-  let btn=document.getElementById("copy-btn");
-  btn.innerText="Copied!";
-  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
-}
-
-// Save Call
-function saveCurrentCall(){
-  let noteText=document.getElementById("notes").value;
-  if(noteText.trim()==="") return;
-  callHistory.push({
-    brand: document.getElementById("brand").value,
-    contactType: document.getElementById("contactType").value,
-    contactForm: document.getElementById("contactForm").value,
-    name: document.getElementById("name").value,
-    orderNumber: document.getElementById("orderNumber").value,
-    inquiry: document.getElementById("inquiry").value,
-    actionTaken: document.getElementById("actionTaken").value,
-    cex: document.getElementById("cexReason").value,
-    why: document.getElementById("cexWhy").value
-  });
-  localStorage.setItem("callHistory", JSON.stringify(callHistory));
-  renderHistory();
-}
-
-// Render History
-function renderHistory(){
-  let list=document.getElementById("historyList"); list.innerHTML="";
-  callHistory.slice().reverse().forEach(item=>{
-    let li=document.createElement("li"); li.innerText=`${item.orderNumber} - ${item.name}`;
-    list.appendChild(li);
-  });
-}
-
-// Toggle History Panel
-function toggleHistoryPanel(){
-  let panel=document.getElementById("historyPanel");
-  panel.style.display = panel.style.display==="block"?"none":"block";
-}
-
-// Close history on outside click
-window.addEventListener("click", function(e){
-  let panel=document.getElementById("historyPanel");
-  if(panel.style.display==="block" && !panel.contains(e.target) && !e.target.closest(".top-buttons button")){
-    panel.style.display="none";
-  }
-});
-
-// Clear History
-function clearHistory(){
-  if(confirm("¿Desea borrar todo el historial?")){
-    callHistory=[];
-    localStorage.removeItem("callHistory");
-    renderHistory();
-  }
-}
-
-// Clear Form
-function clearForm(){
-  document.getElementById("macroForm").reset();
-  document.getElementById("cexReason").innerHTML="";
-  document.getElementById("cexWhy").innerHTML="";
-  document.getElementById("notes").value="";
-  isTyping=false;
-  updateContactLabel();
-}
-
-// New Call
-function newCall(){ 
-  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall(); 
-  clearForm(); 
-}
-
-// Quick Notes
+// QUICK NOTES
 let toggleBtn=document.getElementById("toggleQuickNotes");
 let quickCategories=document.getElementById("quickCategories");
 let subOptions=document.getElementById("subOptions");
@@ -472,8 +364,7 @@ toggleBtn.addEventListener("click",()=>{
 });
 for(let cat in quickNotesData){
   let btn=document.createElement("button"); btn.innerText=cat; btn.className="quick-btn";
-  btn.onclick=()=>{
-    subOptions.innerHTML=""; subOptions.style.display="flex";
+  btn.onclick=()=>{ subOptions.innerHTML=""; subOptions.style.display="flex";
     for(let sub in quickNotesData[cat]){
       let subBtn=document.createElement("button"); subBtn.innerText=sub; subBtn.className="sub-btn";
       subBtn.onclick=()=>{
@@ -487,10 +378,135 @@ for(let cat in quickNotesData){
   quickCategories.appendChild(btn);
 }
 
-// Initialize
+// UPDATE NOTES
+function updateNotes(){
+  let brand=document.getElementById("brand").value;
+  let contactType=document.getElementById("contactType").value;
+  let contactForm=document.getElementById("contactForm").value;
+  let name=document.getElementById("name").value;
+  let orderNumber=document.getElementById("orderNumber").value;
+  let inquiry=document.getElementById("inquiry").value;
+  let actionTaken=document.getElementById("actionTaken").value;
+  let cex=document.getElementById("cexReason").value;
+  let why=document.getElementById("cexWhy").value;
+
+  document.getElementById("notes").value=
+    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
+}
+
+// CEX SELECT
+function selectCEX(value){
+  let reason=document.getElementById("cexReason");
+  let why=document.getElementById("cexWhy");
+  reason.innerHTML="";
+  why.innerHTML="";
+  cexData[value].forEach(r=>{
+    let o=document.createElement("option"); o.value=o.innerText=r; reason.appendChild(o);
+  });
+  updateNotes();
+}
+document.getElementById("cexReason").addEventListener("change",()=>{
+  let why=document.getElementById("cexWhy");
+  why.innerHTML="";
+  let sel=document.getElementById("cexReason").value;
+  if(sel && cexWhyData[sel]){
+    cexWhyData[sel].forEach(w=>{
+      let o=document.createElement("option"); o.value=o.innerText=w; why.appendChild(o);
+    });
+  }
+  updateNotes();
+});
+
+// COPY NOTES
+function copyNotes(){
+  let notesBox=document.getElementById("notes");
+  if(!notesBox.value || !document.getElementById("name").value || !document.getElementById("orderNumber").value) return alert("Complete todos los campos antes de guardar.");
+  notesBox.select(); document.execCommand("copy"); saveCurrentCall();
+  let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
+  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
+}
+
+// SAVE HISTORY
+function saveCurrentCall(){
+  let noteText=document.getElementById("notes").value;
+  if(noteText.trim()==="") return;
+  callHistory.push({
+    orderNumber: document.getElementById("orderNumber").value,
+    name: document.getElementById("name").value,
+    inquiry: document.getElementById("inquiry").value,
+    actionTaken: document.getElementById("actionTaken").value,
+    cexReason: document.getElementById("cexReason").value,
+    cexWhy: document.getElementById("cexWhy").value,
+    brand: document.getElementById("brand").value,
+    contactType: document.getElementById("contactType").value,
+    contactForm: document.getElementById("contactForm").value
+  });
+  renderHistory();
+}
+
+// RENDER HISTORY
+function renderHistory(){
+  let list=document.getElementById("historyList");
+  list.innerHTML="";
+  callHistory.slice().reverse().forEach((item,i)=>{
+    let li=document.createElement("li");
+    li.innerText=`${item.orderNumber} - ${item.name}`;
+    li.onclick=()=>{
+      document.getElementById("brand").value=item.brand;
+      document.getElementById("contactType").value=item.contactType;
+      updateContactLabel();
+      document.getElementById("contactForm").value=item.contactForm;
+      document.getElementById("name").value=item.name;
+      document.getElementById("orderNumber").value=item.orderNumber;
+      document.getElementById("inquiry").value=item.inquiry;
+      document.getElementById("actionTaken").value=item.actionTaken;
+      document.getElementById("cexReason").value=item.cexReason;
+      let why=document.getElementById("cexWhy");
+      why.innerHTML="";
+      if(cexWhyData[item.cexReason]) cexWhyData[item.cexReason].forEach(w=>{
+        let o=document.createElement("option"); o.value=o.innerText=w; why.appendChild(o);
+      });
+      why.value=item.cexWhy;
+      updateNotes();
+      toggleHistoryPanel();
+    };
+    list.appendChild(li);
+  });
+}
+
+// CLEAR HISTORY
+function clearHistory(){ callHistory=[]; renderHistory(); }
+
+// DARK MODE
+let darkMode=false;
+function toggleDarkMode(){document.body.classList.toggle("dark"); darkMode=!darkMode;}
+
+// HISTORY PANEL
+function toggleHistoryPanel(){
+  let panel=document.getElementById("historyPanel");
+  panel.style.display=panel.style.display==="block"?"none":"block";
+}
+window.addEventListener("click", function(e){
+  let panel=document.getElementById("historyPanel");
+  if(panel.style.display==="block" && !panel.contains(e.target) && !e.target.closest('.top-buttons button')) panel.style.display="none";
+});
+
+// FORM FUNCTIONS
+function clearForm(){
+  document.getElementById("macroForm").reset();
+  document.getElementById("cexReason").innerHTML="";
+  document.getElementById("cexWhy").innerHTML="";
+  document.getElementById("notes").value="";
+  updateContactLabel();
+}
+function newCall(){ 
+  if(document.getElementById("notes").value.trim()!=="") saveCurrentCall(); 
+  clearForm(); 
+}
+
+// INIT
 updateContactLabel();
 updateNotes();
-renderHistory();
 </script>
 </body>
 </html>
