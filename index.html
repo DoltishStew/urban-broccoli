@@ -366,10 +366,26 @@ function selectCEX(value){
 }
 
 function copyNotes(){
+  let brand=document.getElementById("brand").value;
+  let contactType=document.getElementById("contactType").value;
+  let contactForm=document.getElementById("contactForm").value;
+  let name=document.getElementById("name").value;
+  let orderNumber=document.getElementById("orderNumber").value;
+  let inquiry=document.getElementById("inquiry").value;
+  let actionTaken=document.getElementById("actionTaken").value;
+  let cex=document.getElementById("cexReason").value;
+  let why=document.getElementById("cexWhy").value;
+
+  if(!brand || !contactType || !contactForm || !name || !orderNumber || !inquiry || !actionTaken || !cex || !why){
+    return alert("Todos los campos deben estar completos antes de guardar.");
+  }
+
   let notesBox=document.getElementById("notes");
-  if(!notesBox.value) return alert("Complete todos los campos antes de guardar.");
-  notesBox.select(); document.execCommand("copy"); saveCurrentCall();
-  let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
+  notesBox.select();
+  document.execCommand("copy");
+  saveCurrentCall();
+  let btn=document.getElementById("copy-btn");
+  btn.innerText="Copied!";
   setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
