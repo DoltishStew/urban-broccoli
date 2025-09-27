@@ -1,365 +1,433 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Call Notes Logger</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-      color: #333;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MacrOs</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f5f5f7;
+  color: #000;
+  margin: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+header {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #000;
+  transition: color 0.3s;
+}
+.top-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+.top-buttons button {
+  background: #f39c12;
+  color: black;
+  border: none;
+  padding: 8px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.top-buttons button:hover { background: #e08b00; }
 
-    header {
-      background: #007bff;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
+/* Layout */
+main {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.left-column {
+  flex: 1;
+  min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.right-column {
+  flex: 1;
+  min-width: 350px;
+}
 
-    header h1 {
-      margin: 0;
-    }
+/* Quick Notes */
+.quick-card {
+  background:#fff;
+  border-radius:6px;
+  padding:10px;
+  width:100%;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+.quick-card-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.quick-card-header h3 { margin:0; }
+.quick-toggle-btn {
+  background:#f39c12;
+  color:#000;
+  border:none;
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.quick-toggle-btn:hover { background:#e08b00; }
+.quick-buttons, .sub-buttons {
+  display:flex;
+  flex-wrap: wrap;
+  gap:5px;
+  margin-top:5px;
+  justify-content: center;
+}
+.quick-btn, .sub-btn {
+  background:#007bff;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  padding:6px 10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.quick-btn:hover, .sub-btn:hover { background:#0056d6; }
 
-    .container {
-      display: flex;
-      flex-direction: row;
-      height: calc(100vh - 60px);
-    }
+/* Form */
+.card {
+  background:#fff;
+  padding:20px;
+  border-radius:6px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+label { font-weight:600; margin:10px 0 5px; text-transform: uppercase; }
+input, select, textarea {
+  width:100%;
+  box-sizing:border-box;
+  padding:8px 12px;
+  margin-bottom:12px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  background:#f2f2f7;
+  font-size:0.95rem;
+}
+textarea { resize: vertical; }
 
-    .form-section {
-      width: 50%;
-      padding: 20px;
-      overflow-y: auto;
-      background: #fff;
-    }
+/* CEX buttons */
+.cex-buttons {
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin-bottom:10px;
+}
+.cex-buttons button {
+  flex:1;
+  color:#fff;
+  border:none;
+  padding:6px;
+  border-radius:6px;
+  font-weight:bold;
+  cursor:pointer;
+  max-width: 120px;
+}
+.cex-good { background:#34c759; }
+.cex-neutral { background:#ff9500; }
+.cex-bad { background:#ff3b30; }
 
-    .form-group {
-      margin-bottom: 15px;
-    }
+/* Output */
+.output { display:flex; flex-direction:column; }
+.output textarea {
+  width:100%;
+  min-height:400px;
+  border-radius:6px;
+  padding:12px;
+  margin-bottom:5px;
+  background:#f2f2f7;
+  font-family:monospace;
+  font-size:0.95rem;
+}
+.copy-container { display:flex; justify-content:flex-end; gap:5px; }
+.copy-container button {
+  background:#f39c12;
+  color:black;
+  border:none;
+  padding:6px 12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  border-radius:6px;
+}
+.copy-container button:hover { background:#e08b00; }
 
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
+/* Dark mode */
+body.dark { background:#121212; color:white; }
+body.dark header { color:#fff; }
+body.dark .card, body.dark .quick-card { background:#1e1e1e; border:1px solid #444; box-shadow:none; }
+body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; color:white; border:1px solid #555; }
+body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
+body.dark .cex-buttons button { color:#fff; }
 
-    input, select, textarea, button {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    textarea {
-      height: 80px;
-      resize: vertical;
-    }
-
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    .notes-section {
-      width: 50%;
-      padding: 20px;
-      overflow-y: auto;
-      background: #eaeaea;
-    }
-
-    .note {
-      background: #fff;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .note h3 {
-      margin-top: 0;
-    }
-
-    /* Quick Notes */
-    .quick-notes {
-      margin-top: 20px;
-      padding: 15px;
-      background: #f9f9f9;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .quick-notes h3 {
-      margin-top: 0;
-    }
-
-    .quick-category {
-      margin-bottom: 10px;
-    }
-
-    .quick-category button {
-      width: auto;
-      display: inline-block;
-      margin: 5px 5px 0 0;
-    }
-
-    /* Dark mode */
-    .dark-mode {
-      background: #222;
-      color: #eee;
-    }
-
-    .dark-mode header {
-      background: #111;
-      color: #eee;
-    }
-
-    .dark-mode .form-section {
-      background: #333;
-      color: #eee;
-    }
-
-    .dark-mode .notes-section {
-      background: #222;
-      color: #eee;
-    }
-
-    .dark-mode .note {
-      background: #444;
-      border: 1px solid #666;
-    }
-
-    .dark-mode .quick-notes {
-      background: #333;
-      border: 1px solid #555;
-    }
-
-    .dark-mode input,
-    .dark-mode select,
-    .dark-mode textarea {
-      background: #555;
-      color: #eee;
-      border: 1px solid #777;
-    }
-
-    .dark-mode button {
-      background: #007bff;
-      color: white;
-    }
-  </style>
+/* History Panel */
+#historyPanel {
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:400px;
+  max-height:70%;
+  overflow-y:auto;
+  z-index:1000;
+  background:#ddd;
+  border-radius:8px;
+  box-shadow:0 6px 25px rgba(0,0,0,0.3);
+  padding:20px;
+}
+#historyPanel.active { background:#007bff; color:#fff; }
+#historyPanel h3 { margin-top:0; text-align:center; }
+#historyPanel ul { list-style:none; padding:0; margin:0; }
+#historyPanel li {
+  padding:8px 10px;
+  margin-bottom:6px;
+  background:#f5f5f5;
+  border-radius:4px;
+  cursor:pointer;
+  transition: background 0.2s;
+}
+#historyPanel.active li { background:#0056d6; }
+#historyPanel li:hover { background:#ccc; }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Call Notes Logger</h1>
-    <button id="darkModeToggle">🌙 Modo Oscuro</button>
-  </header>
+<header>MacrOs</header>
 
-  <div class="container">
-    <div class="form-section">
-      <div class="form-group">
-        <label for="ticket">Ticket #</label>
-        <input type="text" id="ticket">
-      </div>
-      <div class="form-group">
-        <label for="phone">Phone #</label>
-        <input type="text" id="phone">
-      </div>
-      <div class="form-group">
-        <label for="customer">Customer Name</label>
-        <input type="text" id="customer">
-      </div>
-      <div class="form-group">
-        <label for="order">Order #</label>
-        <input type="text" id="order">
-      </div>
-      <div class="form-group">
-        <label for="inquiry">Inquiry</label>
-        <select id="inquiry">
-          <option value="">--Select--</option>
-          <option value="shipping">Shipping</option>
-          <option value="billing">Billing</option>
-          <option value="technical">Technical Support</option>
-          <option value="return">Return / Refund</option>
-          <option value="general">General</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="actionTaken">Action Taken</label>
-        <select id="actionTaken">
-          <option value="">--Select--</option>
-          <option value="resolved">Resolved</option>
-          <option value="escalated">Escalated</option>
-          <option value="pending">Pending</option>
-          <option value="callback">Callback Scheduled</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="customNotes">Custom Notes</label>
-        <textarea id="customNotes"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="experience">Customer Experience (CEX)</label>
-        <select id="experience">
-          <option value="">--Select--</option>
-          <option value="good">Good</option>
-          <option value="neutral">Neutral</option>
-          <option value="bad">Bad</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="notes">Generated Note</label>
-        <textarea id="notes" readonly></textarea>
-      </div>
-      <button id="saveNote">Save Note</button>
+<div class="top-buttons">
+  <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
+  <button onclick="toggleHistoryPanel()"><i class="fas fa-history"></i> History</button>
+  <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
+</div>
 
-      <div class="quick-notes">
+<main>
+  <div class="left-column">
+    <!-- Quick Notes Card -->
+    <div class="quick-card" id="quickNotesCard">
+      <div class="quick-card-header">
         <h3>Quick Notes</h3>
-        <div id="quickNotesContainer"></div>
+        <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
       </div>
+      <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
+      <div class="sub-buttons" id="subOptions" style="display:none;"></div>
     </div>
 
-    <div class="notes-section">
-      <h2>Historial</h2>
-      <div id="history"></div>
+    <!-- Form Card -->
+    <div class="card" id="formCard">
+      <form id="macroForm">
+        <label for="brand">Brand</label>
+        <select id="brand" onchange="updateNotes()"></select>
+
+        <label for="contactType">Contact Type</label>
+        <select id="contactType" onchange="updateContactLabel(); updateNotes()">
+          <option value="Phone">Phone</option>
+          <option value="Ticket">Ticket</option>
+        </select>
+
+        <label id="contactFormLabel" for="contactForm">Phone</label>
+        <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
+
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
+
+        <label for="orderNumber">Order Number</label>
+        <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
+
+        <label for="inquiry">Inquiry</label>
+        <select id="inquiry" onchange="updateNotes()"></select>
+        <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+
+        <label for="actionTaken">Action Taken</label>
+        <select id="actionTaken" onchange="updateNotes()"></select>
+        <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+
+        <label>CEX</label>
+        <div class="cex-buttons">
+          <button type="button" class="cex-good" onclick="selectCEX('Good')">Good</button>
+          <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')">Neutral</button>
+          <button type="button" class="cex-bad" onclick="selectCEX('Bad')">Bad</button>
+        </div>
+        <label for="why">Reason</label>
+        <select id="cexReason" onchange="updateNotes()"></select>
+      </form>
     </div>
   </div>
 
-  <script>
-    const ticketInput = document.getElementById("ticket");
-    const phoneInput = document.getElementById("phone");
-    const customerInput = document.getElementById("customer");
-    const orderInput = document.getElementById("order");
-    const inquirySelect = document.getElementById("inquiry");
-    const actionSelect = document.getElementById("actionTaken");
-    const customNotes = document.getElementById("customNotes");
-    const experienceSelect = document.getElementById("experience");
-    const notesOutput = document.getElementById("notes");
-    const saveBtn = document.getElementById("saveNote");
-    const historyDiv = document.getElementById("history");
-    const quickNotesContainer = document.getElementById("quickNotesContainer");
-    const darkModeToggle = document.getElementById("darkModeToggle");
+  <div class="right-column">
+    <!-- Output Card -->
+    <div class="card output">
+      <label for="notes">Generated Notes</label>
+      <textarea id="notes" readonly></textarea>
+      <div class="copy-container">
+        <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
+        <button onclick="clearForm()">Clear</button>
+      </div>
+    </div>
+  </div>
+</main>
 
-    let callHistory = JSON.parse(localStorage.getItem("callHistory")) || [];
+<div id="historyPanel">
+  <h3>Call History</h3>
+  <ul id="historyList"></ul>
+</div>
 
-    function updateNotes() {
-      const note = `
-TICKET #: ${ticketInput.value}
-PHONE #: ${phoneInput.value}
-CUSTOMER NAME: ${customerInput.value}
-ORDER #: ${orderInput.value}
-REASON FOR CONTACT: ${inquirySelect.options[inquirySelect.selectedIndex]?.text}
-ACTION TAKEN: ${actionSelect.options[actionSelect.selectedIndex]?.text}
-CUSTOM NOTES: ${customNotes.value}
-CUSTOMER EXPERIENCE (CEX): ${experienceSelect.value}
-      `.trim();
+<script>
+// Variables
+let callHistory = JSON.parse(localStorage.getItem("callHistory")) || [];
+let isTyping=false;
+let cexReasons={
+  Good:["Helped the customer","Issue resolved","Info clear"],
+  Neutral:["Partial help","Info unclear","Waited long"],
+  Bad:["Not helpful","Wrong info","Issue unresolved"]
+};
+let quickNotesData={
+  "Order Status":{
+    "Processing": {inquiry:"CCI because he wanted to check the status of his order", action:"Informed cx that the order was still processing, provided estimated delivery timeframe to the cx."},
+    "Shipped": {inquiry:"CCI because he wanted to check the status of his order", action:"Informed cx that the order has been shipped, provided tracking information. Advised cx on the estimated delivery timeframe."}
+  },
+  "New Order":{
+    "Filters": {inquiry:"CCI to create new order", action:"Processed new order for filters."},
+    "Main Unit": {inquiry:"CCI to create new order", action:"Processed new order for main unit."},
+    "Accessories": {inquiry:"CCI to create new order", action:"Processed new order for accessories."}
+  }
+};
 
-      notesOutput.value = note;
+// Initialize Brand
+let brandSelect=document.getElementById("brand");
+["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
+  let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
+});
+
+// Event Listeners
+document.getElementById("macroForm").addEventListener("input",()=>{ isTyping=true; });
+
+function updateContactLabel(){
+  let type=document.getElementById("contactType").value;
+  document.getElementById("contactFormLabel").innerText=type;
+  document.getElementById("contactForm").placeholder=type+" #";
+}
+
+function updateNotes(){
+  let brand=document.getElementById("brand").value;
+  let contactType=document.getElementById("contactType").value;
+  let contactForm=document.getElementById("contactForm").value;
+  let name=document.getElementById("name").value;
+  let orderNumber=document.getElementById("orderNumber").value;
+  let inquiry=document.getElementById("inquiry").value;
+  let actionTaken=document.getElementById("actionTaken").value;
+  let cex=document.getElementById("cexReason").value;
+
+  document.getElementById("notes").value=
+  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex}`;
+}
+
+function selectCEX(value){
+  let select=document.getElementById("cexReason"); select.innerHTML="";
+  cexReasons[value].forEach(opt=>{
+    let o=document.createElement("option"); o.value=opt; o.innerText=opt;
+    select.appendChild(o);
+  });
+  updateNotes();
+}
+
+function copyNotes(){
+  let notesBox=document.getElementById("notes");
+  if(!notesBox.value) return alert("Complete todos los campos antes de guardar.");
+  notesBox.select(); document.execCommand("copy"); saveCurrentCall();
+  let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
+  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
+}
+
+function saveCurrentCall(){
+  let noteText=document.getElementById("notes").value;
+  if(noteText.trim()==="") return;
+  callHistory.push({
+    orderNumber: document.getElementById("orderNumber").value,
+    name: document.getElementById("name").value,
+    note: noteText
+  });
+  localStorage.setItem("callHistory", JSON.stringify(callHistory));
+  renderHistory();
+}
+
+function renderHistory(){
+  let list=document.getElementById("historyList"); list.innerHTML="";
+  callHistory.slice().reverse().forEach(item=>{
+    let li=document.createElement("li"); li.innerText=`${item.orderNumber} - ${item.name}`;
+    li.onclick=()=>{ document.getElementById("notes").value=item.note; };
+    list.appendChild(li);
+  });
+}
+
+function toggleDarkMode(){document.body.classList.toggle("dark");}
+function toggleHistoryPanel(){
+  let panel=document.getElementById("historyPanel");
+  panel.classList.toggle("active");
+  panel.style.display=panel.style.display==="block"?"none":"block";
+}
+function clearForm(){
+  document.getElementById("macroForm").reset();
+  document.getElementById("cexReason").innerHTML="";
+  document.getElementById("notes").value="";
+  isTyping=false;
+  updateContactLabel();
+}
+function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall(); clearForm(); }
+
+// Quick Notes
+let toggleBtn=document.getElementById("toggleQuickNotes");
+let quickCategories=document.getElementById("quickCategories");
+let subOptions=document.getElementById("subOptions");
+toggleBtn.addEventListener("click",()=>{
+  let isOpen=quickCategories.style.display!=="none";
+  quickCategories.style.display=isOpen?"none":"flex";
+  subOptions.style.display="none";
+  toggleBtn.innerText=isOpen?"+":"-";
+});
+for(let cat in quickNotesData){
+  let btn=document.createElement("button"); btn.innerText=cat; btn.className="quick-btn";
+  btn.onclick=()=>{
+    subOptions.innerHTML=""; subOptions.style.display="flex";
+    for(let sub in quickNotesData[cat]){
+      let subBtn=document.createElement("button"); subBtn.innerText=sub; subBtn.className="sub-btn";
+      subBtn.onclick=()=>{
+        // Agregar opciones sin borrar otras
+        let inquirySel=document.getElementById("inquiry");
+        let actionSel=document.getElementById("actionTaken");
+        let opt1=document.createElement("option"); opt1.value=quickNotesData[cat][sub].inquiry; opt1.innerText=quickNotesData[cat][sub].inquiry;
+        inquirySel.appendChild(opt1); inquirySel.value=opt1.value;
+        let opt2=document.createElement("option"); opt2.value=quickNotesData[cat][sub].action; opt2.innerText=quickNotesData[cat][sub].action;
+        actionSel.appendChild(opt2); actionSel.value=opt2.value;
+        updateNotes();
+      };
+      subOptions.appendChild(subBtn);
     }
+  };
+  quickCategories.appendChild(btn);
+}
 
-    [ticketInput, phoneInput, customerInput, orderInput, inquirySelect, actionSelect, customNotes, experienceSelect].forEach(el => {
-      el.addEventListener("input", updateNotes);
-      el.addEventListener("change", updateNotes);
-    });
-
-    saveBtn.addEventListener("click", () => {
-      if (!notesOutput.value) return;
-      callHistory.push(notesOutput.value);
-      localStorage.setItem("callHistory", JSON.stringify(callHistory));
-      renderHistory();
-      clearForm();
-    });
-
-    function renderHistory() {
-      historyDiv.innerHTML = "";
-      callHistory.forEach((note, index) => {
-        const div = document.createElement("div");
-        div.className = "note";
-        div.innerHTML = `<h3>Nota ${index + 1}</h3><pre>${note}</pre>`;
-        div.addEventListener("click", () => {
-          notesOutput.value = note;
-        });
-        historyDiv.appendChild(div);
-      });
-    }
-
-    function clearForm() {
-      ticketInput.value = "";
-      phoneInput.value = "";
-      customerInput.value = "";
-      orderInput.value = "";
-      inquirySelect.value = "";
-      actionSelect.value = "";
-      customNotes.value = "";
-      experienceSelect.value = "";
-      notesOutput.value = "";
-    }
-
-    const quickNotesData = {
-      "Shipping": {
-        "Delayed": { inquiry: "Shipping", action: "Pending" },
-        "Delivered": { inquiry: "Shipping", action: "Resolved" }
-      },
-      "Billing": {
-        "Refund Issued": { inquiry: "Billing", action: "Resolved" },
-        "Charge Dispute": { inquiry: "Billing", action: "Escalated" }
-      },
-      "Technical": {
-        "Troubleshooting": { inquiry: "Technical Support", action: "Pending" },
-        "Escalated": { inquiry: "Technical Support", action: "Escalated" }
-      }
-    };
-
-    function renderQuickNotes() {
-      quickNotesContainer.innerHTML = "";
-      Object.keys(quickNotesData).forEach(cat => {
-        const catDiv = document.createElement("div");
-        catDiv.className = "quick-category";
-        const h4 = document.createElement("h4");
-        h4.textContent = cat;
-        catDiv.appendChild(h4);
-
-        Object.keys(quickNotesData[cat]).forEach(sub => {
-          const subBtn = document.createElement("button");
-          subBtn.textContent = sub;
-          subBtn.onclick = () => {
-            // Seleccionar la opción sin borrar las demás
-            Array.from(inquirySelect.options).forEach(opt => {
-              if (opt.text === quickNotesData[cat][sub].inquiry) {
-                inquirySelect.value = opt.value;
-              }
-            });
-            Array.from(actionSelect.options).forEach(opt => {
-              if (opt.text === quickNotesData[cat][sub].action) {
-                actionSelect.value = opt.value;
-              }
-            });
-            updateNotes();
-          };
-          catDiv.appendChild(subBtn);
-        });
-
-        quickNotesContainer.appendChild(catDiv);
-      });
-    }
-
-    renderHistory();
-    renderQuickNotes();
-    updateNotes();
-
-    // Dark mode
-    darkModeToggle.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-    });
-  </script>
+renderHistory();
+updateContactLabel();
+updateNotes();
+</script>
 </body>
 </html>
