@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MacrOs</title>
+<title>MacrOS</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 body {
@@ -65,7 +65,9 @@ main {
   background:#fff;
   border-radius:6px;
   padding:10px;
-  width:100%;
+  flex: 1 1 300px;   /* Ajuste para que se comporte igual que los otros cards */
+  max-width:100%;
+  box-sizing:border-box;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
 }
@@ -74,7 +76,10 @@ main {
   justify-content:space-between;
   align-items:center;
 }
-.quick-card-header h3 { margin:0; }
+.quick-card-header h3 { 
+  margin:0; 
+  color:#000;
+}
 .quick-toggle-btn {
   background:#f39c12;
   color:#000;
@@ -178,6 +183,7 @@ body.dark .card, body.dark .quick-card { background:#1e1e1e; border:1px solid #4
 body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; color:white; border:1px solid #555; }
 body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
 body.dark .cex-buttons button { color:#fff; }
+body.dark .quick-card-header h3 { color:#fff; }
 
 /* History Panel */
 #historyPanel {
@@ -337,7 +343,7 @@ function updateNotes(){
   let cex=document.getElementById("cexReason").value;
 
   document.getElementById("notes").value=
-  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex}`;
+  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${cex}`;
 }
 
 function selectCEX(value){
@@ -360,11 +366,7 @@ function copyNotes(){
 function saveCurrentCall(){
   let noteText=document.getElementById("notes").value;
   if(noteText.trim()==="") return;
-  callHistory.push({
-    orderNumber: document.getElementById("orderNumber").value,
-    name: document.getElementById("name").value,
-    note: noteText
-  });
+  callHistory.push({orderNumber: document.getElementById("orderNumber").value,name: document.getElementById("name").value});
   localStorage.setItem("callHistory", JSON.stringify(callHistory));
   renderHistory();
 }
@@ -373,7 +375,6 @@ function renderHistory(){
   let list=document.getElementById("historyList"); list.innerHTML="";
   callHistory.slice().reverse().forEach(item=>{
     let li=document.createElement("li"); li.innerText=`${item.orderNumber} - ${item.name}`;
-    li.onclick=()=>{ document.getElementById("notes").value=item.note; };
     list.appendChild(li);
   });
 }
@@ -410,13 +411,8 @@ for(let cat in quickNotesData){
     for(let sub in quickNotesData[cat]){
       let subBtn=document.createElement("button"); subBtn.innerText=sub; subBtn.className="sub-btn";
       subBtn.onclick=()=>{
-        // Agregar opciones sin borrar otras
-        let inquirySel=document.getElementById("inquiry");
-        let actionSel=document.getElementById("actionTaken");
-        let opt1=document.createElement("option"); opt1.value=quickNotesData[cat][sub].inquiry; opt1.innerText=quickNotesData[cat][sub].inquiry;
-        inquirySel.appendChild(opt1); inquirySel.value=opt1.value;
-        let opt2=document.createElement("option"); opt2.value=quickNotesData[cat][sub].action; opt2.innerText=quickNotesData[cat][sub].action;
-        actionSel.appendChild(opt2); actionSel.value=opt2.value;
+        document.getElementById("inquiry").innerHTML=`<option>${quickNotesData[cat][sub].inquiry}</option>`;
+        document.getElementById("actionTaken").innerHTML=`<option>${quickNotesData[cat][sub].action}</option>`;
         updateNotes();
       };
       subOptions.appendChild(subBtn);
@@ -425,9 +421,9 @@ for(let cat in quickNotesData){
   quickCategories.appendChild(btn);
 }
 
-renderHistory();
 updateContactLabel();
 updateNotes();
+renderHistory();
 </script>
 </body>
 </html>
