@@ -8,7 +8,7 @@
 <style>
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #f0f0f0; /* gris claro */
+  background: #f5f5f7;
   color: #000;
   margin: 20px;
   transition: background 0.3s, color 0.3s;
@@ -37,7 +37,7 @@ header {
   align-items: center;
   gap: 5px;
   transition: background 0.2s;
-  border-radius: 8px; /* bordes redondeados */
+  border-radius: 8px;
 }
 .top-buttons button:hover { background: #e08b00; }
 main {
@@ -48,7 +48,7 @@ main {
 .card {
   flex: 1;
   min-width: 320px;
-  background: #fff; /* paneles blancos */
+  background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
@@ -78,7 +78,7 @@ textarea { resize: vertical; }
   color: #fff;
   border: none;
   padding: 6px;
-  border-radius: 8px; /* redondeo botones */
+  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -93,7 +93,7 @@ textarea { resize: vertical; }
   font-family: monospace;
   font-size: 0.95rem;
 }
-.copy-container { display: flex; justify-content: flex-end; margin-top: 5px; }
+.copy-container { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
 .copy-container button {
   background: #f39c12;
   color: black;
@@ -103,11 +103,11 @@ textarea { resize: vertical; }
   display: flex;
   align-items: center;
   gap: 5px;
-  border-radius: 8px; /* redondeo botones */
+  border-radius: 8px;
 }
 .copy-container button:hover { background: #e08b00; }
 
-/* History panel */
+/* History panel centered */
 #historyPanel {
   display: none;
   position: fixed;
@@ -138,38 +138,39 @@ textarea { resize: vertical; }
 #historyPanel li:hover { background: #ccc; }
 
 /* Dark mode */
-body.dark { background: #121212; color: white; }
+body.dark {
+  background: #121212;
+  color: white;
+}
 body.dark header { color: #fff; }
 body.dark .card { background: #1e1e1e; border: 1px solid #444; box-shadow: none; }
 body.dark input, body.dark select, body.dark textarea { background: #2a2a2a; color: white; border: 1px solid #555; }
 body.dark .copy-container button, body.dark .top-buttons button { border: 1px solid #fff; background: none; color: white; }
 body.dark .cex-buttons button { color: #fff; }
 
-/* Quick notes */
-.quick-notes { margin-top: 20px; }
-.quick-notes button {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
-  margin-right: 8px;
-  margin-bottom: 10px;
-  cursor: pointer;
+/* Quick Notes Card */
+.quick-card {
+  background: #f5f5f7;
   border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
 }
-.quick-notes button:hover { background: #0056b3; }
-.quick-options { margin-left: 10px; margin-top: 10px; }
-.quick-options button {
-  background: #6c757d;
-  color: #fff;
+.quick-card h3 { margin-top: 0; }
+.quick-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.quick-buttons button {
+  padding: 6px 10px;
   border: none;
-  padding: 5px 10px;
-  margin-right: 6px;
-  margin-bottom: 6px;
-  cursor: pointer;
   border-radius: 6px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
 }
-.quick-options button:hover { background: #5a6268; }
+.quick-buttons button:hover { background: #0056b3; }
 </style>
 </head>
 <body>
@@ -182,6 +183,18 @@ body.dark .cex-buttons button { color: #fff; }
 </div>
 
 <main>
+  <!-- QUICK NOTES -->
+  <div class="card quick-card">
+    <h3>Quick Notes</h3>
+    <div class="quick-buttons">
+      <button onclick="applyQuickNote('order_processing')">Order Status - Processing</button>
+      <button onclick="applyQuickNote('order_shipped')">Order Status - Shipped</button>
+      <button onclick="applyQuickNote('new_filters')">New Order - Filters</button>
+      <button onclick="applyQuickNote('new_main')">New Order - Main Unit</button>
+      <button onclick="applyQuickNote('new_accessories')">New Order - Accessories</button>
+    </div>
+  </div>
+
   <div class="card">
     <form id="macroForm">
       <label for="brand">Brand</label>
@@ -213,29 +226,10 @@ body.dark .cex-buttons button { color: #fff; }
       <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
 
       <label for="inquiry">Inquiry</label>
-      <select id="inquiry" onchange="updateNotes()">
-        <option value="New Order">New Order</option>
-        <option value="Missing Item">Missing Item</option>
-        <option value="Product Issues">Product Issues</option>
-        <option value="Shipping Status">Shipping Status</option>
-        <option value="Escalations">Escalations</option>
-        <option value="Returns">Returns</option>
-        <option value="Cancelations">Cancelations</option>
-        <option value="Other">Other</option>
-      </select>
-      <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+      <textarea id="inquiry" placeholder="Inquiry" oninput="updateNotes()"></textarea>
 
       <label for="actionTaken">Action Taken</label>
-      <select id="actionTaken" onchange="updateNotes()">
-        <option value="Explained cancellation policy">Explained cancellation policy</option>
-        <option value="Sent replacement order">Sent replacement order</option>
-        <option value="Provided tracking number">Provided tracking number</option>
-        <option value="Escalated to supervisor">Escalated to supervisor</option>
-        <option value="Processed return">Processed return</option>
-        <option value="Issued refund">Issued refund</option>
-        <option value="General assistance">General assistance</option>
-      </select>
-      <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+      <textarea id="actionTaken" placeholder="Action Taken" oninput="updateNotes()"></textarea>
 
       <label>CEX</label>
       <div class="cex-buttons">
@@ -248,31 +242,14 @@ body.dark .cex-buttons button { color: #fff; }
       <label for="why">Why</label>
       <select id="why" onchange="updateNotes()"></select>
     </form>
-
-    <!-- Quick notes section -->
-    <div class="quick-notes">
-      <h4>Quick Notes:</h4>
-      <button type="button" onclick="toggleQuickOptions('status')">Order Status</button>
-      <button type="button" onclick="toggleQuickOptions('new')">New Order</button>
-
-      <div id="quick-status" class="quick-options" style="display:none;">
-        <button type="button" onclick="applyQuickNote('processing')">Processing</button>
-        <button type="button" onclick="applyQuickNote('shipped')">Shipped</button>
-      </div>
-
-      <div id="quick-new" class="quick-options" style="display:none;">
-        <button type="button" onclick="applyQuickNote('filters')">Filters</button>
-        <button type="button" onclick="applyQuickNote('main')">Main Unit</button>
-        <button type="button" onclick="applyQuickNote('accessories')">Accessories</button>
-      </div>
-    </div>
   </div>
 
   <div class="card output">
     <label for="notes">Generated Notes</label>
     <textarea id="notes" readonly></textarea>
     <div class="copy-container">
-      <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy</button>
+      <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
+      <button onclick="clearNotes()"><i class="fas fa-eraser"></i> Clear</button>
     </div>
   </div>
 </main>
@@ -289,12 +266,11 @@ let cexReasons = {
   Neutral: ["Partial help", "Info unclear", "Waited long"],
   Bad: ["Not helpful", "Wrong info", "Issue unresolved"]
 };
-let whyReasons = {
-  Good: ["Fast resolution", "Clear explanation", "Customer satisfied"],
-  Neutral: ["Customer had to wait", "Partial resolution", "Unclear info"],
-  Bad: ["Escalation required", "No resolution", "Customer frustrated"]
+let whyOptions = {
+  Good: ["Customer satisfied with resolution", "Quick handling", "Clear communication"],
+  Neutral: ["Resolution pending", "Customer uncertain", "Information incomplete"],
+  Bad: ["Awaiting internal confirmation such as tracking, refund, or backoffice review.", "Escalation needed", "Customer dissatisfied"]
 };
-
 let isTyping = false;
 
 document.getElementById("macroForm").addEventListener("input", ()=>{ isTyping=true; });
@@ -312,16 +288,14 @@ function updateNotes() {
   const name = document.getElementById("name").value;
   const orderNumber = document.getElementById("orderNumber").value;
   const inquiry = document.getElementById("inquiry").value;
-  const inquiryExtra = document.getElementById("inquiryExtra").value;
   const actionTaken = document.getElementById("actionTaken").value;
-  const actionExtra = document.getElementById("actionExtra").value;
   const cex = document.getElementById("cexReason").value;
   const why = document.getElementById("why").value;
 
   const notes =
-    `BRAND: ${brand} //// CONTACT VIA: ${contactType} ${contactForm} //// ` +
-    `NAME: ${name} //// ORDER: ${orderNumber} //// INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} //// ` +
-    `ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} //// CEX: ${cex} //// WHY: ${why}`;
+    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | ` +
+    `NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ` +
+    `ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${why}`;
 
   document.getElementById("notes").value = notes;
 }
@@ -360,14 +334,14 @@ function renderHistory(){
 
 function selectCEX(value){
   document.getElementById("cexReason").innerHTML = "";
-  document.getElementById("why").innerHTML = "";
   cexReasons[value].forEach(opt=>{
     const option = document.createElement("option");
     option.value = opt;
     option.innerText = opt;
     document.getElementById("cexReason").appendChild(option);
   });
-  whyReasons[value].forEach(opt=>{
+  document.getElementById("why").innerHTML = "";
+  whyOptions[value].forEach(opt=>{
     const option = document.createElement("option");
     option.value = opt;
     option.innerText = opt;
@@ -380,9 +354,14 @@ function copyNotes(){
   const notesBox = document.getElementById("notes");
   notesBox.select();
   document.execCommand("copy");
+  saveCurrentCall();
   const btn = document.getElementById("copy-btn");
   btn.innerText = "Copied!";
-  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy', 1000);
+  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save', 1000);
+}
+
+function clearNotes(){
+  document.getElementById("notes").value = "";
 }
 
 function toggleDarkMode(){
@@ -395,35 +374,26 @@ function toggleHistoryPanel(){
   panel.style.display = panel.style.display==="block" ? "none" : "block";
 }
 
-/* Quick notes */
-function toggleQuickOptions(type){
-  if(type==="status"){
-    document.getElementById("quick-status").style.display =
-      document.getElementById("quick-status").style.display==="none" ? "block" : "none";
-    document.getElementById("quick-new").style.display="none";
-  } else {
-    document.getElementById("quick-new").style.display =
-      document.getElementById("quick-new").style.display==="none" ? "block" : "none";
-    document.getElementById("quick-status").style.display="none";
+function applyQuickNote(type){
+  if(type==="order_processing"){
+    document.getElementById("inquiry").value = "CCI because he wanted to check the status of his order";
+    document.getElementById("actionTaken").value = "Informed cx that the order was still processing, provided estimated delivery timeframe to the cx.";
   }
-}
-
-function applyQuickNote(option){
-  if(option==="processing"){
-    document.getElementById("inquiryExtra").value = "CCI because he wanted to check the status of his order";
-    document.getElementById("actionExtra").value = "Informed cx that the order was still processing, provided estimated delivery timeframe to the cx.";
-  } else if(option==="shipped"){
-    document.getElementById("inquiryExtra").value = "CCI because he wanted to check the status of his order";
-    document.getElementById("actionExtra").value = "Informed cx that the order has been shipped, provided tracking information. Advised cx on the estimated delivery timeframe.";
-  } else if(option==="filters"){
-    document.getElementById("inquiryExtra").value = "CCI to create new order";
-    document.getElementById("actionExtra").value = "Created order for filters.";
-  } else if(option==="main"){
-    document.getElementById("inquiryExtra").value = "CCI to create new order";
-    document.getElementById("actionExtra").value = "Created order for main unit.";
-  } else if(option==="accessories"){
-    document.getElementById("inquiryExtra").value = "CCI to create new order";
-    document.getElementById("actionExtra").value = "Created order for accessories.";
+  if(type==="order_shipped"){
+    document.getElementById("inquiry").value = "CCI because he wanted to check the status of his order";
+    document.getElementById("actionTaken").value = "Informed cx that the order has been shipped, provided tracking information. Advised cx on the estimated delivery timeframe.";
+  }
+  if(type==="new_filters"){
+    document.getElementById("inquiry").value = "CCI to create new order for filters";
+    document.getElementById("actionTaken").value = "Created order for filters.";
+  }
+  if(type==="new_main"){
+    document.getElementById("inquiry").value = "CCI to create new order for main unit";
+    document.getElementById("actionTaken").value = "Created order for main unit.";
+  }
+  if(type==="new_accessories"){
+    document.getElementById("inquiry").value = "CCI to create new order for accessories";
+    document.getElementById("actionTaken").value = "Created order for accessories.";
   }
   updateNotes();
 }
