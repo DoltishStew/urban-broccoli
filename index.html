@@ -36,7 +36,7 @@ header {
   display: flex;
   align-items: center;
   gap: 5px;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: background 0.2s;
 }
 .top-buttons button:hover { background: #e08b00; }
@@ -62,7 +62,7 @@ main {
 /* Quick Notes Card */
 .quick-card {
   background:#fff;
-  border-radius:8px;
+  border-radius:6px;
   padding:10px;
   width:100%;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
@@ -109,7 +109,7 @@ main {
 .card {
   background:#fff;
   padding:20px;
-  border-radius:8px;
+  border-radius:6px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
 }
 label { font-weight:600; margin:10px 0 5px; text-transform: uppercase; }
@@ -186,32 +186,33 @@ body.dark .cex-buttons button { color:#fff; }
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  width:400px;
+  width:450px;
   max-height:70%;
   overflow-y:auto;
   z-index:1000;
-  background:#ddd;
-  border-radius:8px;
-  box-shadow:0 6px 25px rgba(0,0,0,0.3);
+  background:#f0f0f0;
+  border-radius:4px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.2);
   padding:20px;
+  text-align:center;
 }
-#historyPanel.active { background:#007bff; color:#fff; }
-#historyPanel h3 { margin-top:0; text-align:center; }
+#historyPanel.active { background:#e0e0e0; color:#000; }
+#historyPanel h3 { margin-top:0; }
 #historyPanel ul { list-style:none; padding:0; margin:0; }
 #historyPanel li {
   padding:8px 10px;
   margin-bottom:6px;
-  background:#f5f5f5;
+  background:#fff;
   border-radius:4px;
   cursor:pointer;
   transition: background 0.2s;
 }
-#historyPanel.active li { background:#0056d6; }
-#historyPanel li:hover { background:#ccc; }
+#historyPanel li:hover { background:#d0d0d0; }
+
 </style>
 </head>
 <body>
-<header>MacrOs</header>
+<header>MacrOS</header>
 
 <div class="top-buttons">
   <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
@@ -224,7 +225,7 @@ body.dark .cex-buttons button { color:#fff; }
     <!-- Quick Notes Card -->
     <div class="quick-card" id="quickNotesCard">
       <div class="quick-card-header">
-        <h3>QUICKY NOTES</h3>
+        <h3>Quick Notes</h3>
         <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
       </div>
       <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
@@ -234,39 +235,39 @@ body.dark .cex-buttons button { color:#fff; }
     <!-- Form Card -->
     <div class="card" id="formCard">
       <form id="macroForm">
-        <label for="brand">Brand</label>
+        <label for="brand">BRAND:</label>
         <select id="brand" onchange="updateNotes()"></select>
 
-        <label for="contactType">Contact Type</label>
+        <label for="contactType">CONTACT TYPE:</label>
         <select id="contactType" onchange="updateContactLabel(); updateNotes()">
           <option value="Phone">Phone</option>
           <option value="Ticket">Ticket</option>
         </select>
 
-        <label id="contactFormLabel" for="contactForm">Phone</label>
+        <label id="contactFormLabel" for="contactForm">PHONE:</label>
         <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
 
-        <label for="name">Name</label>
+        <label for="name">NAME:</label>
         <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
 
-        <label for="orderNumber">Order Number</label>
+        <label for="orderNumber">ORDER NUMBER:</label>
         <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
 
-        <label for="inquiry">Inquiry</label>
+        <label for="inquiry">INQUIRY:</label>
         <select id="inquiry" onchange="updateNotes()"></select>
         <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
 
-        <label for="actionTaken">Action Taken</label>
+        <label for="actionTaken">ACTION TAKEN:</label>
         <select id="actionTaken" onchange="updateNotes()"></select>
         <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
 
-        <label>CEX</label>
+        <label>CEX:</label>
         <div class="cex-buttons">
           <button type="button" class="cex-good" onclick="selectCEX('Good')">Good</button>
           <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')">Neutral</button>
           <button type="button" class="cex-bad" onclick="selectCEX('Bad')">Bad</button>
         </div>
-        <label for="why">Reason</label>
+        <label for="why">REASON:</label>
         <select id="cexReason" onchange="updateNotes()"></select>
       </form>
     </div>
@@ -275,7 +276,7 @@ body.dark .cex-buttons button { color:#fff; }
   <div class="right-column">
     <!-- Output Card -->
     <div class="card output">
-      <label for="notes">Generated Notes</label>
+      <label for="notes">GENERATED NOTES:</label>
       <textarea id="notes" readonly></textarea>
       <div class="copy-container">
         <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
@@ -350,26 +351,37 @@ function selectCEX(value){
 
 function copyNotes(){
   let notesBox=document.getElementById("notes");
-  if(!notesBox.value) return alert("Complete todos los campos antes de guardar.");
+  if(!notesBox.value.trim()) return alert("Complete todos los campos antes de guardar.");
   notesBox.select(); document.execCommand("copy"); saveCurrentCall();
   let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
   setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
 function saveCurrentCall(){
-  let noteText=document.getElementById("notes").value;
-  if(noteText.trim()==="") return;
+  let noteText=document.getElementById("notes").value.trim();
+  let orderNumber=document.getElementById("orderNumber").value.trim();
+  let name=document.getElementById("name").value.trim();
+  if(noteText==="" || orderNumber==="" || name==="") return; 
   if(callHistory.length>=5) callHistory.shift();
-  callHistory.push({orderNumber: document.getElementById("orderNumber").value,name: document.getElementById("name").value});
+  callHistory.push({orderNumber, name});
   renderHistory();
 }
 
 function renderHistory(){
   let list=document.getElementById("historyList"); list.innerHTML="";
-  callHistory.slice().reverse().forEach(item=>{
-    let li=document.createElement("li"); li.innerText=`${item.orderNumber} - ${item.name}`;
+  callHistory.slice().reverse().forEach((item, idx)=>{
+    let li=document.createElement("li"); 
+    li.innerText=`${item.orderNumber} - ${item.name}`;
+    li.onclick=()=>loadCall(item);
     list.appendChild(li);
   });
+}
+
+function loadCall(item){
+  document.getElementById("orderNumber").value=item.orderNumber;
+  document.getElementById("name").value=item.name;
+  updateNotes();
+  toggleHistoryPanel();
 }
 
 function toggleDarkMode(){document.body.classList.toggle("dark");}
@@ -385,7 +397,10 @@ function clearForm(){
   isTyping=false;
   updateContactLabel();
 }
-function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall(); clearForm(); }
+function newCall(){
+  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall();
+  clearForm();
+}
 
 // Quick Notes
 let toggleBtn=document.getElementById("toggleQuickNotes");
