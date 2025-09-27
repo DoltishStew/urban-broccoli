@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MacrOS</title>
+<title>MacrOs</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 body {
@@ -212,7 +212,7 @@ body.dark .cex-buttons button { color:#fff; }
 </style>
 </head>
 <body>
-<header>MacrOS</header>
+<header>MacrOs</header>
 
 <div class="top-buttons">
   <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
@@ -235,39 +235,39 @@ body.dark .cex-buttons button { color:#fff; }
     <!-- Form Card -->
     <div class="card" id="formCard">
       <form id="macroForm">
-        <label for="brand">BRAND:</label>
+        <label for="brand">Brand</label>
         <select id="brand" onchange="updateNotes()"></select>
 
-        <label for="contactType">CONTACT TYPE:</label>
+        <label for="contactType">Contact Type</label>
         <select id="contactType" onchange="updateContactLabel(); updateNotes()">
           <option value="Phone">Phone</option>
           <option value="Ticket">Ticket</option>
         </select>
 
-        <label id="contactFormLabel" for="contactForm">PHONE:</label>
+        <label id="contactFormLabel" for="contactForm">Phone</label>
         <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
 
-        <label for="name">NAME:</label>
+        <label for="name">Name</label>
         <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
 
-        <label for="orderNumber">ORDER NUMBER:</label>
+        <label for="orderNumber">Order Number</label>
         <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
 
-        <label for="inquiry">INQUIRY:</label>
+        <label for="inquiry">Inquiry</label>
         <select id="inquiry" onchange="updateNotes()"></select>
         <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
 
-        <label for="actionTaken">ACTION TAKEN:</label>
+        <label for="actionTaken">Action Taken</label>
         <select id="actionTaken" onchange="updateNotes()"></select>
         <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
 
-        <label>CEX:</label>
+        <label>CEX</label>
         <div class="cex-buttons">
           <button type="button" class="cex-good" onclick="selectCEX('Good')">Good</button>
           <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')">Neutral</button>
           <button type="button" class="cex-bad" onclick="selectCEX('Bad')">Bad</button>
         </div>
-        <label for="why">REASON:</label>
+        <label for="why">Reason</label>
         <select id="cexReason" onchange="updateNotes()"></select>
       </form>
     </div>
@@ -276,7 +276,7 @@ body.dark .cex-buttons button { color:#fff; }
   <div class="right-column">
     <!-- Output Card -->
     <div class="card output">
-      <label for="notes">GENERATED NOTES:</label>
+      <label for="notes">Generated Notes</label>
       <textarea id="notes" readonly></textarea>
       <div class="copy-container">
         <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
@@ -293,7 +293,7 @@ body.dark .cex-buttons button { color:#fff; }
 
 <script>
 // Variables
-let callHistory=[], isTyping=false;
+let isTyping=false;
 let cexReasons={
   Good:["Helped the customer","Issue resolved","Info clear"],
   Neutral:["Partial help","Info unclear","Waited long"],
@@ -317,7 +317,9 @@ let brandSelect=document.getElementById("brand");
   let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
 });
 
-// Event Listeners
+// Load history from localStorage
+let callHistory = JSON.parse(localStorage.getItem("callHistory")||"[]");
+
 document.getElementById("macroForm").addEventListener("input",()=>{ isTyping=true; });
 
 function updateContactLabel(){
@@ -352,18 +354,22 @@ function selectCEX(value){
 function copyNotes(){
   let notesBox=document.getElementById("notes");
   if(!notesBox.value.trim()) return alert("Complete todos los campos antes de guardar.");
-  notesBox.select(); document.execCommand("copy"); saveCurrentCall();
+  notesBox.select(); document.execCommand("copy");
+  saveCurrentCall();
   let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
   setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
 function saveCurrentCall(){
-  let noteText=document.getElementById("notes").value.trim();
-  let orderNumber=document.getElementById("orderNumber").value.trim();
-  let name=document.getElementById("name").value.trim();
-  if(noteText==="" || orderNumber==="" || name==="") return; 
-  if(callHistory.length>=5) callHistory.shift();
-  callHistory.push({orderNumber, name});
+  let noteText=document.getElementById("notes").value;
+  if(noteText.trim()==="") return;
+  let callData={
+    orderNumber: document.getElementById("orderNumber").value,
+    name: document.getElementById("name").value,
+    notes: noteText
+  };
+  callHistory.push(callData);
+  localStorage.setItem("callHistory", JSON.stringify(callHistory));
   renderHistory();
 }
 
@@ -372,16 +378,22 @@ function renderHistory(){
   callHistory.slice().reverse().forEach((item, idx)=>{
     let li=document.createElement("li"); 
     li.innerText=`${item.orderNumber} - ${item.name}`;
-    li.onclick=()=>loadCall(item);
+    li.onclick=()=>{
+      // Fill form with selected history
+      let tempNotes = item.notes.split('|').map(s=>s.trim());
+      document.getElementById("brand").value = tempNotes[0].split(':')[1].trim();
+      document.getElementById("contactType").value = tempNotes[1].split(':')[1].trim().split(' ')[0];
+      document.getElementById("contactForm").value = tempNotes[1].split(':')[1].trim().split(' ').slice(1).join(' ');
+      document.getElementById("name").value = tempNotes[2].split(':')[1].trim();
+      document.getElementById("orderNumber").value = tempNotes[3].split(':')[1].trim();
+      document.getElementById("inquiry").innerHTML=`<option>${tempNotes[4].split(':')[1].trim()}</option>`;
+      document.getElementById("actionTaken").innerHTML=`<option>${tempNotes[5].split(':')[1].trim()}</option>`;
+      selectCEX(tempNotes[6].split(':')[1].trim());
+      updateNotes();
+      toggleHistoryPanel();
+    };
     list.appendChild(li);
   });
-}
-
-function loadCall(item){
-  document.getElementById("orderNumber").value=item.orderNumber;
-  document.getElementById("name").value=item.name;
-  updateNotes();
-  toggleHistoryPanel();
 }
 
 function toggleDarkMode(){document.body.classList.toggle("dark");}
@@ -397,9 +409,9 @@ function clearForm(){
   isTyping=false;
   updateContactLabel();
 }
-function newCall(){
-  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall();
-  clearForm();
+function newCall(){ 
+  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall(); 
+  clearForm(); 
 }
 
 // Quick Notes
@@ -429,8 +441,10 @@ for(let cat in quickNotesData){
   quickCategories.appendChild(btn);
 }
 
+// Initialize
 updateContactLabel();
 updateNotes();
+renderHistory();
 </script>
 </body>
 </html>
