@@ -64,8 +64,8 @@ main {
 .quick-card {
   background:#fff;
   border-radius:6px;
-  padding:8px;           /* menos padding */
-  flex: 0 1 auto;        /* ocupa solo lo que necesita */
+  padding:8px;
+  flex: 0 1 auto;
   max-width:100%;
   box-sizing:border-box;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
@@ -259,12 +259,10 @@ body.dark .quick-card-header h3 { color:#fff; }
         <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
 
         <label for="inquiry">Inquiry</label>
-        <select id="inquiry" onchange="updateNotes()"></select>
-        <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+        <input type="text" id="inquiry" placeholder="Type inquiry..." oninput="updateNotes()" />
 
         <label for="actionTaken">Action Taken</label>
-        <select id="actionTaken" onchange="updateNotes()"></select>
-        <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+        <input type="text" id="actionTaken" placeholder="Type action..." oninput="updateNotes()" />
 
         <label>CEX</label>
         <div class="cex-buttons">
@@ -272,8 +270,12 @@ body.dark .quick-card-header h3 { color:#fff; }
           <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')">Neutral</button>
           <button type="button" class="cex-bad" onclick="selectCEX('Bad')">Bad</button>
         </div>
-        <label for="why">Reason</label>
+
+        <label for="cexReason">Reason</label>
         <select id="cexReason" onchange="updateNotes()"></select>
+
+        <label for="cexWhy">WHY</label>
+        <select id="cexWhy" onchange="updateNotes()"></select>
       </form>
     </div>
   </div>
@@ -300,21 +302,10 @@ body.dark .quick-card-header h3 { color:#fff; }
 // Variables
 let callHistory = JSON.parse(localStorage.getItem("callHistory")) || [];
 let isTyping=false;
-let cexReasons={
-  Good:["Helped the customer","Issue resolved","Info clear"],
-  Neutral:["Partial help","Info unclear","Waited long"],
-  Bad:["Not helpful","Wrong info","Issue unresolved"]
-};
-let quickNotesData={
-  "Order Status":{
-    "Processing": {inquiry:"CCI because he wanted to check the status of his order", action:"Informed cx that the order was still processing, provided estimated delivery timeframe to the cx."},
-    "Shipped": {inquiry:"CCI because he wanted to check the status of his order", action:"Informed cx that the order has been shipped, provided tracking information. Advised cx on the estimated delivery timeframe."}
-  },
-  "New Order":{
-    "Filters": {inquiry:"CCI to create new order", action:"Processed new order for filters."},
-    "Main Unit": {inquiry:"CCI to create new order", action:"Processed new order for main unit."},
-    "Accessories": {inquiry:"CCI to create new order", action:"Processed new order for accessories."}
-  }
+let cexData={
+  Good: {reasons:["Customer pleased","Info clear"], why:["Issue resolved","Provided detailed info"]},
+  Neutral: {reasons:["Partial help","Waited long"], why:["Issue partially resolved","Had to follow up"]},
+  Bad: {reasons:["Not helpful","Wrong info"], why:["Issue unresolved","Incorrect info given"]}
 };
 
 // Initialize Brand
@@ -341,16 +332,26 @@ function updateNotes(){
   let inquiry=document.getElementById("inquiry").value;
   let actionTaken=document.getElementById("actionTaken").value;
   let cex=document.getElementById("cexReason").value;
+  let why=document.getElementById("cexWhy").value;
 
   document.getElementById("notes").value=
-  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${cex}`;
+  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${cex} -> ${why}`;
 }
 
 function selectCEX(value){
-  let select=document.getElementById("cexReason"); select.innerHTML="";
-  cexReasons[value].forEach(opt=>{
-    let o=document.createElement("option"); o.value=opt; o.innerText=opt;
-    select.appendChild(o);
+  // populate reason
+  let reasonSelect=document.getElementById("cexReason");
+  reasonSelect.innerHTML="";
+  cexData[value].reasons.forEach(r=>{
+    let o=document.createElement("option"); o.value=r; o.innerText=r;
+    reasonSelect.appendChild(o);
+  });
+  // populate WHY
+  let whySelect=document.getElementById("cexWhy");
+  whySelect.innerHTML="";
+  cexData[value].why.forEach(w=>{
+    let o=document.createElement("option"); o.value=w; o.innerText=w;
+    whySelect.appendChild(o);
   });
   updateNotes();
 }
@@ -366,7 +367,17 @@ function copyNotes(){
 function saveCurrentCall(){
   let noteText=document.getElementById("notes").value;
   if(noteText.trim()==="") return;
-  callHistory.push({orderNumber: document.getElementById("orderNumber").value,name: document.getElementById("name").value});
+  callHistory.push({
+    brand: document.getElementById("brand").value,
+    contactType: document.getElementById("contactType").value,
+    contactForm: document.getElementById("contactForm").value,
+    name: document.getElementById("name").value,
+    orderNumber: document.getElementById("orderNumber").value,
+    inquiry: document.getElementById("inquiry").value,
+    actionTaken: document.getElementById("actionTaken").value,
+    cex: document.getElementById("cexReason").value,
+    why: document.getElementById("cexWhy").value
+  });
   localStorage.setItem("callHistory", JSON.stringify(callHistory));
   renderHistory();
 }
@@ -388,13 +399,14 @@ function toggleHistoryPanel(){
 function clearForm(){
   document.getElementById("macroForm").reset();
   document.getElementById("cexReason").innerHTML="";
+  document.getElementById("cexWhy").innerHTML="";
   document.getElementById("notes").value="";
   isTyping=false;
   updateContactLabel();
 }
 function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall(); clearForm(); }
 
-// Quick Notes
+// Quick Notes (optional, puedes mantener como antes)
 let toggleBtn=document.getElementById("toggleQuickNotes");
 let quickCategories=document.getElementById("quickCategories");
 let subOptions=document.getElementById("subOptions");
@@ -404,22 +416,6 @@ toggleBtn.addEventListener("click",()=>{
   subOptions.style.display="none";
   toggleBtn.innerText=isOpen?"+":"-";
 });
-for(let cat in quickNotesData){
-  let btn=document.createElement("button"); btn.innerText=cat; btn.className="quick-btn";
-  btn.onclick=()=>{
-    subOptions.innerHTML=""; subOptions.style.display="flex";
-    for(let sub in quickNotesData[cat]){
-      let subBtn=document.createElement("button"); subBtn.innerText=sub; subBtn.className="sub-btn";
-      subBtn.onclick=()=>{
-        document.getElementById("inquiry").innerHTML=`<option>${quickNotesData[cat][sub].inquiry}</option>`;
-        document.getElementById("actionTaken").innerHTML=`<option>${quickNotesData[cat][sub].action}</option>`;
-        updateNotes();
-      };
-      subOptions.appendChild(subBtn);
-    }
-  };
-  quickCategories.appendChild(btn);
-}
 
 updateContactLabel();
 updateNotes();
