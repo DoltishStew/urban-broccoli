@@ -93,7 +93,7 @@ textarea { resize: vertical; }
   font-family: monospace;
   font-size: 0.95rem;
 }
-.copy-container { display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px; }
+.copy-container { display: flex; justify-content: flex-end; gap: 5px; margin-top: 5px; }
 .copy-container button {
   background: #f39c12;
   color: black;
@@ -103,50 +103,67 @@ textarea { resize: vertical; }
   display: flex;
   align-items: center;
   gap: 5px;
-  border-radius:6px;
+  border-radius: 6px;
 }
 .copy-container button:hover { background: #e08b00; }
 
-/* Quick Notes card */
+/* QUICK NOTES CARD */
 .quick-card {
   flex: 1;
   min-width: 250px;
-  max-height: 300px;
-  overflow-y: auto;
-  transition: max-height 0.3s ease;
-  display:flex;
-  flex-direction:column;
-}
-
-/* History panel centered */
-#historyPanel {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  max-height: 70%;
-  overflow-y: auto;
-  z-index: 1000;
-  background: #ddd;
+  background: #fff;
   border-radius: 8px;
-  box-shadow: 0 6px 25px rgba(0,0,0,0.3);
-  padding: 20px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: height 0.3s ease;
 }
-#historyPanel.active { background: #007bff; color: #fff; }
-#historyPanel h3 { margin-top: 0; text-align: center; }
-#historyPanel ul { list-style: none; padding: 0; margin: 0; }
-#historyPanel li {
-  padding: 8px 10px;
-  margin-bottom: 6px;
-  background: #f5f5f5;
-  border-radius: 4px;
+.quick-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.quick-card-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.quick-toggle-btn {
+  font-weight: bold;
+  font-size: 1.3rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #f39c12;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   transition: background 0.2s;
 }
-#historyPanel.active li { background: #0056d6; }
-#historyPanel li:hover { background: #ccc; }
+.quick-toggle-btn:hover { background: #e08b00; }
+.quick-buttons button, .sub-buttons button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  background: #f39c12;
+  color: black;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.quick-buttons button:hover, .sub-buttons button:hover {
+  background: #e08b00;
+}
+.quick-buttons, .sub-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
 
 /* Dark mode */
 body.dark {
@@ -156,8 +173,10 @@ body.dark {
 body.dark header { color: #fff; }
 body.dark .card { background: #1e1e1e; border: 1px solid #444; box-shadow: none; }
 body.dark input, body.dark select, body.dark textarea { background: #2a2a2a; color: white; border: 1px solid #555; }
-body.dark .copy-container button, body.dark .top-buttons button { border: 1px solid #fff; background: none; color: white; }
+body.dark .copy-container button, body.dark .top-buttons button, body.dark .quick-toggle-btn { border: 1px solid #fff; background: none; color: white; }
 body.dark .cex-buttons button { color: #fff; }
+body.dark .quick-buttons button, body.dark .sub-buttons button { color: white; border:1px solid #fff; background:none; }
+
 </style>
 </head>
 <body>
@@ -171,16 +190,16 @@ body.dark .cex-buttons button { color: #fff; }
 
 <main>
   <!-- QUICK NOTES CARD -->
-  <div class="card quick-card" id="quickNotesCard">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
+  <div class="quick-card" id="quickNotesCard" style="height:50px;">
+    <div class="quick-card-header">
       <h3>Quick Notes</h3>
-      <button id="toggleQuickNotes" style="padding:2px 6px; cursor:pointer; font-weight:bold;">+</button>
+      <button class="quick-toggle-btn" id="toggleQuickNotes">+</button>
     </div>
-    <div class="quick-buttons" id="quickCategories" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
-    <div class="sub-buttons" id="subOptions" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
+    <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
+    <div class="sub-buttons" id="subOptions" style="display:none;"></div>
   </div>
 
-  <!-- MAIN FORM -->
+  <!-- FORM CARD -->
   <div class="card">
     <form id="macroForm">
       <label for="brand">Brand</label>
@@ -266,16 +285,17 @@ body.dark .cex-buttons button { color: #fff; }
 </div>
 
 <script>
-// -------------------- QUICK NOTES LOGIC --------------------
+// VARIABLES
 let callHistory = [];
+let isTyping = false;
 let cexReasons = {
   Good: ["Helped the customer", "Issue resolved", "Info clear"],
   Neutral: ["Partial help", "Info unclear", "Waited long"],
   Bad: ["Not helpful", "Wrong info", "Issue unresolved"]
 };
-let isTyping = false;
 document.getElementById("macroForm").addEventListener("input", ()=>{ isTyping=true; });
 
+// QUICK NOTES DATA
 const quickNotesData = {
   "New Order": {
     "Filters": { inquiry: "CCI to create new order", action: "Created new order: Filters" },
@@ -288,35 +308,31 @@ const quickNotesData = {
   }
 };
 
-// GENERAR BOTONES DE CATEGORÍA
+// ELEMENTOS
 const quickCategoriesDiv = document.getElementById("quickCategories");
 const subOptionsDiv = document.getElementById("subOptions");
+
+// CREAR BOTONES DE CATEGORÍA
 for(const category in quickNotesData){
   const btn = document.createElement("button");
   btn.innerText = category;
-  btn.onclick = ()=>showSubOptions(category);
+  btn.onclick = () => showSubOptions(category);
   quickCategoriesDiv.appendChild(btn);
 }
 
-// MOSTRAR SUBOPCIONES SEGÚN CATEGORÍA
+// FUNCIÓN SUB OPCIONES
 function showSubOptions(category){
-  subOptionsDiv.innerHTML = "";
-  const subOptions = quickNotesData[category];
-  if(!subOptions) return;
-  subOptionsDiv.style.display = "flex";
-  for(const sub in subOptions){
+  subOptionsDiv.innerHTML="";
+  for(const sub in quickNotesData[category]){
     const btn = document.createElement("button");
     btn.innerText = sub;
-    btn.onclick = ()=>{
-      applyQuickNote(category, sub);
-      subOptionsDiv.innerHTML = "";
-      subOptionsDiv.style.display = "none";
-    };
+    btn.onclick = () => applyQuickNote(category, sub);
     subOptionsDiv.appendChild(btn);
   }
+  subOptionsDiv.style.display="flex";
 }
 
-// APLICAR VALORES DE QUICK NOTE
+// APLICAR QUICK NOTE
 function applyQuickNote(category, sub){
   const data = quickNotesData[category][sub];
   document.getElementById("inquiry").value = data.inquiry;
@@ -324,82 +340,23 @@ function applyQuickNote(category, sub){
   updateNotes();
 }
 
-// BOTÓN COLAPSAR/EXPANDIR
-const toggleBtn = document.getElementById("toggleQuickNotes");
-const quickCard = document.getElementById("quickNotesCard");
-let isCollapsed = false;
-toggleBtn.onclick = ()=>{
-  if(isCollapsed){
-    quickCard.style.maxHeight = "300px";
-    quickCategoriesDiv.style.display = "flex";
-    toggleBtn.innerText = "+";
-    isCollapsed = false;
-  } else {
-    quickCard.style.maxHeight = "40px";
-    quickCategoriesDiv.style.display = "none";
-    subOptionsDiv.style.display = "none";
-    toggleBtn.innerText = "−";
-    isCollapsed = true;
-  }
-}
+// TOGGLE QUICK NOTES
+document.getElementById("toggleQuickNotes").onclick = ()=>{
+  const btn = document.getElementById("toggleQuickNotes");
+  const expanded = quickCategoriesDiv.style.display==="flex";
+  quickCategoriesDiv.style.display = expanded ? "none":"flex";
+  subOptionsDiv.style.display="none";
+  btn.innerText = expanded ? "+":"-";
+};
 
-// -------------------- FORM & NOTES LOGIC --------------------
+// CONTACT LABEL
 function updateContactLabel() {
   const type = document.getElementById("contactType").value;
   document.getElementById("contactFormLabel").innerText = type;
   document.getElementById("contactForm").placeholder = type + " #";
 }
 
-function updateNotes() {
-  const brand = document.getElementById("brand").value;
-  const contactType = document.getElementById("contactType").value;
-  const contactForm = document.getElementById("contactForm").value;
-  const name = document.getElementById("name").value;
-  const orderNumber = document.getElementById("orderNumber").value;
-  const inquiry = document.getElementById("inquiry").value;
-  const inquiryExtra = document.getElementById("inquiryExtra").value;
-  const actionTaken = document.getElementById("actionTaken").value;
-  const actionExtra = document.getElementById("actionExtra").value;
-  const cex = document.getElementById("cexReason").value;
-  const why = document.getElementById("why").value;
-
-  const notes =
-    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} | ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} | CEX: ${cex} | REASON: ${why}`;
-
-  document.getElementById("notes").value = notes;
-}
-
-function newCall() {
-  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall();
-  document.getElementById("macroForm").reset();
-  document.getElementById("cexReason").innerHTML = "";
-  updateContactLabel();
-  updateNotes();
-  isTyping=false;
-}
-
-function saveCurrentCall() {
-  const noteText = document.getElementById("notes").value;
-  if(noteText.trim() === "") return;
-  if(callHistory.length >=5) callHistory.shift();
-  callHistory.push({
-    orderNumber: document.getElementById("orderNumber").value,
-    name: document.getElementById("name").value
-  });
-  renderHistory();
-  isTyping=false;
-}
-
-function renderHistory(){
-  const list = document.getElementById("historyList");
-  list.innerHTML = "";
-  callHistory.slice().reverse().forEach(item=>{
-    const li = document.createElement("li");
-    li.innerText = `${item.orderNumber} - ${item.name}`;
-    list.appendChild(li);
-  });
-}
-
+// CEX
 function selectCEX(value){
   document.getElementById("cexReason").innerHTML = "";
   cexReasons[value].forEach(opt=>{
@@ -411,16 +368,25 @@ function selectCEX(value){
   updateNotes();
 }
 
+// NOTAS
+function updateNotes() {
+  const brand = document.getElementById("brand").value;
+  const contactType = document.getElementById("contactType").value;
+  const contactForm = document.getElementById("contactForm").value;
+  const name = document.getElementById("name").value;
+  const orderNumber = document.getElementById("orderNumber").value;
+  const inquiry = document.getElementById("inquiry").value;
+  const actionTaken = document.getElementById("actionTaken").value;
+  const cex = document.getElementById("cexReason").value;
+  const why = document.getElementById("why").value;
+
+  document.getElementById("notes").value =
+    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${why}`;
+}
+
+// COPY AND SAVE
 function copyNotes(){
-  const requiredFields = ["brand","contactForm","name","orderNumber","inquiry","actionTaken","cexReason","why"];
-  let emptyFields = [];
-  requiredFields.forEach(id=>{
-    if(document.getElementById(id).value.trim()==="") emptyFields.push(id);
-  });
-  if(emptyFields.length>0){
-    alert("Por favor completa todos los campos antes de guardar la nota.");
-    return;
-  }
+  if(!validateForm()) return alert("Fill all fields before saving!");
   const notesBox = document.getElementById("notes");
   notesBox.select();
   document.execCommand("copy");
@@ -430,25 +396,68 @@ function copyNotes(){
   setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save', 1000);
 }
 
+// CLEAR
 function clearForm(){
   document.getElementById("macroForm").reset();
-  document.getElementById("cexReason").innerHTML = "";
+  document.getElementById("cexReason").innerHTML="";
   updateContactLabel();
   updateNotes();
 }
 
+// NEW CALL
+function newCall(){
+  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall();
+  clearForm();
+  isTyping=false;
+}
+
+// VALIDACIÓN
+function validateForm(){
+  const fields = ["brand","contactForm","name","orderNumber","inquiry","actionTaken","cexReason","why"];
+  for(const f of fields){
+    if(!document.getElementById(f).value.trim()) return false;
+  }
+  return true;
+}
+
+// SAVE HISTORY
+function saveCurrentCall(){
+  const noteText = document.getElementById("notes").value;
+  if(noteText.trim() === "") return;
+  if(callHistory.length >=5) callHistory.shift();
+  callHistory.push({
+    orderNumber: document.getElementById("orderNumber").value,
+    name: document.getElementById("name").value
+  });
+  renderHistory();
+  isTyping=false;
+}
+
+// RENDER HISTORY
+function renderHistory(){
+  const list = document.getElementById("historyList");
+  list.innerHTML = "";
+  callHistory.slice().reverse().forEach(item=>{
+    const li = document.createElement("li");
+    li.innerText = `${item.orderNumber} - ${item.name}`;
+    list.appendChild(li);
+  });
+}
+
+// DARK MODE
 function toggleDarkMode(){
   document.body.classList.toggle("dark");
 }
 
+// HISTORY PANEL
 function toggleHistoryPanel(){
   const panel = document.getElementById("historyPanel");
-  panel.classList.toggle("active");
   panel.style.display = panel.style.display==="block" ? "none" : "block";
 }
 
 updateContactLabel();
 updateNotes();
+
 </script>
 </body>
 </html>
