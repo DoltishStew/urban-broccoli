@@ -42,7 +42,6 @@ header {
 }
 .top-buttons button:hover { background: #e08b00; }
 
-/* Layout */
 main {
   display: flex;
   gap: 20px;
@@ -65,9 +64,6 @@ main {
   background:#fff;
   border-radius:6px;
   padding:8px;
-  flex: 0 1 auto;
-  max-width:100%;
-  box-sizing:border-box;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
 }
@@ -300,12 +296,27 @@ body.dark .quick-card-header h3 { color:#fff; }
 
 <script>
 // Variables
-let callHistory = JSON.parse(localStorage.getItem("callHistory")) || [];
-let isTyping=false;
-let cexData={
-  Good: {reasons:["Customer pleased","Info clear"], why:["Issue resolved","Provided detailed info"]},
-  Neutral: {reasons:["Partial help","Waited long"], why:["Issue partially resolved","Had to follow up"]},
-  Bad: {reasons:["Not helpful","Wrong info"], why:["Issue unresolved","Incorrect info given"]}
+let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
+let isTyping = false;
+
+// CEX Data
+const cexData = {
+  Good: { reasons:["Helped the customer","Info clear","Issue resolved"], why:["Issue resolved","Customer pleased","Info understood"] },
+  Neutral: { reasons:["Partial help","Info unclear","Waited long"], why:["Info partially clear","Some issue unresolved"] },
+  Bad: { reasons:["Not helpful","Wrong info","Issue unresolved"], why:["Issue not resolved","Customer frustrated"] }
+};
+
+// Quick Notes Data
+let quickNotesData = {
+  "Order Status":{
+    "Processing": {inquiry:"Customer wanted order status", action:"Informed order is processing, gave ETA."},
+    "Shipped": {inquiry:"Customer wanted order status", action:"Informed order shipped, gave tracking info."}
+  },
+  "New Order":{
+    "Filters": {inquiry:"Create new order", action:"Processed new order for filters."},
+    "Main Unit": {inquiry:"Create new order", action:"Processed new main unit order."},
+    "Accessories": {inquiry:"Create new order", action:"Processed new accessories order."}
+  }
 };
 
 // Initialize Brand
@@ -335,18 +346,16 @@ function updateNotes(){
   let why=document.getElementById("cexWhy").value;
 
   document.getElementById("notes").value=
-  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${cex} -> ${why}`;
+  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
 }
 
 function selectCEX(value){
-  // populate reason
   let reasonSelect=document.getElementById("cexReason");
   reasonSelect.innerHTML="";
   cexData[value].reasons.forEach(r=>{
     let o=document.createElement("option"); o.value=r; o.innerText=r;
     reasonSelect.appendChild(o);
   });
-  // populate WHY
   let whySelect=document.getElementById("cexWhy");
   whySelect.innerHTML="";
   cexData[value].why.forEach(w=>{
@@ -406,7 +415,7 @@ function clearForm(){
 }
 function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall(); clearForm(); }
 
-// Quick Notes (optional, puedes mantener como antes)
+// Quick Notes
 let toggleBtn=document.getElementById("toggleQuickNotes");
 let quickCategories=document.getElementById("quickCategories");
 let subOptions=document.getElementById("subOptions");
@@ -416,6 +425,22 @@ toggleBtn.addEventListener("click",()=>{
   subOptions.style.display="none";
   toggleBtn.innerText=isOpen?"+":"-";
 });
+for(let cat in quickNotesData){
+  let btn=document.createElement("button"); btn.innerText=cat; btn.className="quick-btn";
+  btn.onclick=()=>{
+    subOptions.innerHTML=""; subOptions.style.display="flex";
+    for(let sub in quickNotesData[cat]){
+      let subBtn=document.createElement("button"); subBtn.innerText=sub; subBtn.className="sub-btn";
+      subBtn.onclick=()=>{
+        document.getElementById("inquiry").value=quickNotesData[cat][sub].inquiry;
+        document.getElementById("actionTaken").value=quickNotesData[cat][sub].action;
+        updateNotes();
+      };
+      subOptions.appendChild(subBtn);
+    }
+  };
+  quickCategories.appendChild(btn);
+}
 
 updateContactLabel();
 updateNotes();
