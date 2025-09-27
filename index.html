@@ -41,10 +41,22 @@ header {
 }
 .top-buttons button:hover { background: #e08b00; }
 
+/* Layout dos columnas */
 main {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+}
+.left-column {
+  flex: 1;
+  min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.right-column {
+  flex: 1;
+  min-width: 350px;
 }
 
 /* Quick Notes Card */
@@ -80,6 +92,7 @@ main {
   flex-wrap: wrap;
   gap:5px;
   margin-top:5px;
+  justify-content: center;
 }
 
 /* Form Card */
@@ -88,7 +101,6 @@ main {
   padding:20px;
   border-radius:8px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-  flex:1;
 }
 label { font-weight:600; margin:10px 0 5px; text-transform: uppercase; }
 input, select, textarea {
@@ -107,6 +119,7 @@ textarea { resize: vertical; }
 .cex-buttons {
   display:flex;
   gap:8px;
+  justify-content:center;
   margin-bottom:10px;
 }
 .cex-buttons button {
@@ -117,11 +130,14 @@ textarea { resize: vertical; }
   border-radius:6px;
   font-weight:bold;
   cursor:pointer;
+  max-width: 120px;
 }
-.output { display:flex; flex-direction:column; flex:1; }
+
+/* Output */
+.output { display:flex; flex-direction:column; }
 .output textarea {
   width:100%;
-  min-height:200px;
+  min-height:400px;
   border-radius:6px;
   padding:12px;
   margin-bottom:5px;
@@ -150,6 +166,7 @@ body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; colo
 body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
 body.dark .cex-buttons button { color:#fff; }
 
+/* History Panel */
 #historyPanel {
   display:none;
   position:fixed;
@@ -189,93 +206,80 @@ body.dark .cex-buttons button { color:#fff; }
   <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
 </div>
 
-<main style="flex-direction:column; width:100%;">
-  <!-- Quick Notes Card -->
-  <div class="quick-card" id="quickNotesCard">
-    <div class="quick-card-header">
-      <h3>Quick Notes</h3>
-      <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
-    </div>
-    <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
-    <div class="sub-buttons" id="subOptions" style="display:none;"></div>
-  </div>
-
-  <!-- Form Card -->
-  <div class="card" id="formCard">
-    <form id="macroForm">
-      <label for="brand">Brand</label>
-      <select id="brand" onchange="updateNotes()">
-        <option value="Air Doctor">Air Doctor</option>
-        <option value="AquaTru">AquaTru</option>
-        <option value="Better Bladder">Better Bladder</option>
-        <option value="Prosvent">Prosvent</option>
-        <option value="IdealProstate">IdealProstate</option>
-        <option value="Walkfit">Walkfit</option>
-        <option value="Superthotics">Superthotics</option>
-        <option value="Rotorazer">Rotorazer</option>
-        <option value="Miracle Blade">Miracle Blade</option>
-      </select>
-
-      <label for="contactType">Contact Type</label>
-      <select id="contactType" onchange="updateContactLabel(); updateNotes()">
-        <option value="Phone">Phone</option>
-        <option value="Ticket">Ticket</option>
-      </select>
-
-      <label id="contactFormLabel" for="contactForm">Phone</label>
-      <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
-
-      <label for="name">Name</label>
-      <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
-
-      <label for="orderNumber">Order Number</label>
-      <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
-
-      <label for="inquiry">Inquiry</label>
-      <select id="inquiry" onchange="updateNotes()">
-        <option value="New Order">New Order</option>
-        <option value="Missing Item">Missing Item</option>
-        <option value="Product Issues">Product Issues</option>
-        <option value="Shipping Status">Shipping Status</option>
-        <option value="Escalations">Escalations</option>
-        <option value="Returns">Returns</option>
-        <option value="Cancelations">Cancelations</option>
-        <option value="Other">Other</option>
-      </select>
-      <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
-
-      <label for="actionTaken">Action Taken</label>
-      <select id="actionTaken" onchange="updateNotes()">
-        <option value="Explained cancellation policy">Explained cancellation policy</option>
-        <option value="Sent replacement order">Sent replacement order</option>
-        <option value="Provided tracking number">Provided tracking number</option>
-        <option value="Escalated to supervisor">Escalated to supervisor</option>
-        <option value="Processed return">Processed return</option>
-        <option value="Issued refund">Issued refund</option>
-        <option value="General assistance">General assistance</option>
-      </select>
-      <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
-
-      <label>CEX</label>
-      <div class="cex-buttons">
-        <button type="button" style="background:#34c759;" onclick="selectCEX('Good')">Good</button>
-        <button type="button" style="background:#ff9500;" onclick="selectCEX('Neutral')">Neutral</button>
-        <button type="button" style="background:#ff3b30;" onclick="selectCEX('Bad')">Bad</button>
+<main>
+  <div class="left-column">
+    <!-- Quick Notes Card -->
+    <div class="quick-card" id="quickNotesCard">
+      <div class="quick-card-header">
+        <h3>Quick Notes</h3>
+        <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
       </div>
-      <select id="cexReason" onchange="updateNotes()"></select>
+      <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
+      <div class="sub-buttons" id="subOptions" style="display:none;"></div>
+    </div>
 
-      <label for="why">Why</label>
-      <textarea id="why" placeholder="Explanation" oninput="updateNotes()"></textarea>
-    </form>
+    <!-- Form Card -->
+    <div class="card" id="formCard">
+      <form id="macroForm">
+        <label for="brand">Brand</label>
+        <select id="brand" onchange="updateNotes()">
+          <option value="Air Doctor">Air Doctor</option>
+          <option value="AquaTru">AquaTru</option>
+          <option value="Better Bladder">Better Bladder</option>
+          <option value="Prosvent">Prosvent</option>
+          <option value="IdealProstate">IdealProstate</option>
+          <option value="Walkfit">Walkfit</option>
+          <option value="Superthotics">Superthotics</option>
+          <option value="Rotorazer">Rotorazer</option>
+          <option value="Miracle Blade">Miracle Blade</option>
+        </select>
+
+        <label for="contactType">Contact Type</label>
+        <select id="contactType" onchange="updateContactLabel(); updateNotes()">
+          <option value="Phone">Phone</option>
+          <option value="Ticket">Ticket</option>
+        </select>
+
+        <label id="contactFormLabel" for="contactForm">Phone</label>
+        <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
+
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
+
+        <label for="orderNumber">Order Number</label>
+        <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
+
+        <label for="inquiry">Inquiry</label>
+        <select id="inquiry" onchange="updateNotes()"></select>
+        <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+
+        <label for="actionTaken">Action Taken</label>
+        <select id="actionTaken" onchange="updateNotes()"></select>
+        <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+
+        <label>CEX</label>
+        <div class="cex-buttons">
+          <button type="button" style="background:#34c759;" onclick="selectCEX('Good')">Good</button>
+          <button type="button" style="background:#ff9500;" onclick="selectCEX('Neutral')">Neutral</button>
+          <button type="button" style="background:#ff3b30;" onclick="selectCEX('Bad')">Bad</button>
+        </div>
+        <select id="cexReason" onchange="updateNotes()"></select>
+
+        <label for="why">Why</label>
+        <textarea id="why" placeholder="Explanation" oninput="updateNotes()"></textarea>
+      </form>
+    </div>
   </div>
 
-  <!-- Output Card -->
-  <div class="card output">
-    <label for="notes">Generated Notes</label>
-    <textarea id="notes" readonly></textarea>
-    <div class="copy-container">
-      <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
-      <button onclick="clearForm()">Clear</button>
+  <div class="right-column">
+    <!-- Output Card -->
+    <div class="card output">
+      <label for="notes">Generated Notes</label>
+      <textarea id="notes" readonly></textarea>
+      <div class="copy-container">
+        <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
+        <button onclick="clearForm()">Clear</button>
+      </div>
     </div>
   </div>
 </main>
@@ -304,156 +308,141 @@ let quickNotesData = {
     }
   },
   "New Order": {
-    "Main Unit": {
-      inquiry:"CCI to create new order",
-      action:"Processed order for main unit."
-    },
     "Filters": {
       inquiry:"CCI to create new order",
-      action:"Processed order for filters."
+      action:"Processed new order for filters."
+    },
+    "Main Unit": {
+      inquiry:"CCI to create new order",
+      action:"Processed new order for main unit."
     },
     "Accessories": {
       inquiry:"CCI to create new order",
-      action:"Processed order for accessories."
+      action:"Processed new order for accessories."
     }
   }
 };
-let isTyping = false;
-const quickCategoriesDiv = document.getElementById("quickCategories");
-const subOptionsDiv = document.getElementById("subOptions");
+let isTyping=false;
 
 document.getElementById("macroForm").addEventListener("input", ()=>{ isTyping=true; });
 
 function updateContactLabel() {
-  const type = document.getElementById("contactType").value;
-  document.getElementById("contactFormLabel").innerText = type;
-  document.getElementById("contactForm").placeholder = type + " #";
+  const type=document.getElementById("contactType").value;
+  document.getElementById("contactFormLabel").innerText=type;
+  document.getElementById("contactForm").placeholder=type+" #";
+}
+
+function updateNotes() {
+  const brand=document.getElementById("brand").value;
+  const contactType=document.getElementById("contactType").value;
+  const contactForm=document.getElementById("contactForm").value;
+  const name=document.getElementById("name").value;
+  const orderNumber=document.getElementById("orderNumber").value;
+  const inquiry=document.getElementById("inquiry").value;
+  const actionTaken=document.getElementById("actionTaken").value;
+  const cex=document.getElementById("cexReason").value;
+  const why=document.getElementById("why").value;
+
+  const notes=`BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${why}`;
+  document.getElementById("notes").value=notes;
 }
 
 function selectCEX(value){
-  document.getElementById("cexReason").innerHTML = "";
+  const select=document.getElementById("cexReason");
+  select.innerHTML="";
   cexReasons[value].forEach(opt=>{
-    const option = document.createElement("option");
-    option.value = opt;
-    option.innerText = opt;
-    document.getElementById("cexReason").appendChild(option);
+    const option=document.createElement("option");
+    option.value=opt;
+    option.innerText=opt;
+    select.appendChild(option);
   });
   updateNotes();
 }
 
-function updateNotes() {
-  const brand = document.getElementById("brand").value;
-  const contactType = document.getElementById("contactType").value;
-  const contactForm = document.getElementById("contactForm").value;
-  const name = document.getElementById("name").value;
-  const orderNumber = document.getElementById("orderNumber").value;
-  const inquiry = document.getElementById("inquiry").value;
-  const actionTaken = document.getElementById("actionTaken").value;
-  const cex = document.getElementById("cexReason").value;
-  const why = document.getElementById("why").value;
-
-  document.getElementById("notes").value =
-    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${why}`;
-}
-
-// Quick Notes
-const quickBtnToggle = document.getElementById("toggleQuickNotes");
-quickBtnToggle.onclick = ()=>{
-  const expanded = quickCategoriesDiv.style.display==="flex";
-  quickCategoriesDiv.style.display = expanded?"none":"flex";
-  subOptionsDiv.style.display="none";
-  quickBtnToggle.innerText = expanded?"+":"-";
-};
-for(const category in quickNotesData){
-  const btn = document.createElement("button");
-  btn.innerText = category;
-  btn.onclick = ()=>showSubOptions(category);
-  quickCategoriesDiv.appendChild(btn);
-}
-function showSubOptions(category){
-  subOptionsDiv.innerHTML="";
-  for(const sub in quickNotesData[category]){
-    const btn = document.createElement("button");
-    btn.innerText = sub;
-    btn.onclick = ()=>applyQuickNote(category, sub);
-    subOptionsDiv.appendChild(btn);
-  }
-  subOptionsDiv.style.display="flex";
-}
-function applyQuickNote(category, sub){
-  const data = quickNotesData[category][sub];
-  document.getElementById("inquiry").value = data.inquiry;
-  document.getElementById("actionTaken").value = data.action;
-  updateNotes();
-}
-
-// Copy and Save
 function copyNotes(){
-  if(!validateForm()) return alert("Fill all fields before saving!");
-  const notesBox = document.getElementById("notes");
+  const notesBox=document.getElementById("notes");
+  if(!notesBox.value) return alert("Complete todos los campos antes de guardar.");
   notesBox.select();
   document.execCommand("copy");
   saveCurrentCall();
-  const btn = document.getElementById("copy-btn");
-  btn.innerText = "Copied!";
-  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save', 1000);
+  const btn=document.getElementById("copy-btn");
+  btn.innerText="Copied!";
+  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
-// Clear
-function clearForm(){
-  document.getElementById("macroForm").reset();
-  document.getElementById("cexReason").innerHTML="";
-  updateContactLabel();
-  updateNotes();
-}
-
-// New Call
-function newCall(){
-  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall();
-  clearForm();
-  isTyping=false;
-}
-
-// Validation
-function validateForm(){
-  const fields = ["brand","contactForm","name","orderNumber","inquiry","actionTaken","cexReason","why"];
-  for(const f of fields){
-    if(!document.getElementById(f).value.trim()) return false;
-  }
-  return true;
-}
-
-// Save History
 function saveCurrentCall(){
-  const noteText = document.getElementById("notes").value;
-  if(noteText.trim() === "") return;
-  if(callHistory.length >=5) callHistory.shift();
+  const noteText=document.getElementById("notes").value;
+  if(noteText.trim()==="") return;
+  if(callHistory.length>=5) callHistory.shift();
   callHistory.push({
     orderNumber: document.getElementById("orderNumber").value,
     name: document.getElementById("name").value
   });
   renderHistory();
-  isTyping=false;
 }
 
-// Render History
 function renderHistory(){
-  const list = document.getElementById("historyList");
-  list.innerHTML = "";
+  const list=document.getElementById("historyList");
+  list.innerHTML="";
   callHistory.slice().reverse().forEach(item=>{
-    const li = document.createElement("li");
-    li.innerText = `${item.orderNumber} - ${item.name}`;
+    const li=document.createElement("li");
+    li.innerText=`${item.orderNumber} - ${item.name}`;
     list.appendChild(li);
   });
 }
 
-// Dark Mode
-function toggleDarkMode(){ document.body.classList.toggle("dark"); }
+function toggleDarkMode(){
+  document.body.classList.toggle("dark");
+}
 
-// History Panel
 function toggleHistoryPanel(){
-  const panel = document.getElementById("historyPanel");
-  panel.style.display = panel.style.display==="block" ? "none" : "block";
+  const panel=document.getElementById("historyPanel");
+  panel.classList.toggle("active");
+  panel.style.display=panel.style.display==="block"?"none":"block";
+}
+
+function clearForm(){
+  document.getElementById("macroForm").reset();
+  document.getElementById("cexReason").innerHTML="";
+  document.getElementById("notes").value="";
+  isTyping=false;
+  updateContactLabel();
+}
+
+function newCall(){
+  if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall();
+  clearForm();
+}
+
+// Quick Notes functions
+const toggleBtn=document.getElementById("toggleQuickNotes");
+const quickCategories=document.getElementById("quickCategories");
+const subOptions=document.getElementById("subOptions");
+toggleBtn.addEventListener("click",()=>{
+  const isOpen=quickCategories.style.display!=="none";
+  quickCategories.style.display=isOpen?"none":"flex";
+  subOptions.style.display="none";
+  toggleBtn.innerText=isOpen?"+":"-";
+});
+for(let cat in quickNotesData){
+  const btn=document.createElement("button");
+  btn.innerText=cat;
+  btn.className="quick-btn";
+  btn.onclick=()=>{
+    subOptions.innerHTML="";
+    subOptions.style.display="flex";
+    for(let sub in quickNotesData[cat]){
+      const subBtn=document.createElement("button");
+      subBtn.innerText=sub;
+      subBtn.onclick=()=>{
+        document.getElementById("inquiry").innerHTML=`<option>${quickNotesData[cat][sub].inquiry}</option>`;
+        document.getElementById("actionTaken").innerHTML=`<option>${quickNotesData[cat][sub].action}</option>`;
+        updateNotes();
+      };
+      subOptions.appendChild(subBtn);
+    }
+  };
+  quickCategories.appendChild(btn);
 }
 
 updateContactLabel();
