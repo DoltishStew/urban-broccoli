@@ -189,15 +189,107 @@ body.dark .cex-buttons button { color: #fff; }
 
 <main>
   <div class="left-column">
-    <!-- QUICK NOTES JERÁRQUICO -->
-    <div class="card quick-card">
-      <h3>Quick Notes</h3>
-      <div class="quick-buttons">
-        <button onclick="showSubOptions('new_order')">New Order</button>
-        <button onclick="showSubOptions('order_status')">Order Status</button>
-      </div>
-      <div class="sub-buttons" id="subOptions"></div>
-    </div>
+    
+   <!-- QUICK NOTES DINÁMICO COLAPSABLE -->
+<div class="card quick-card" id="quickNotesCard" style="flex: 1; min-width: 250px; max-height: 300px; overflow-y: auto; transition: max-height 0.3s ease;">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h3>Quick Notes</h3>
+    <button id="toggleQuickNotes" style="padding:4px 8px; cursor:pointer;">Collapse</button>
+  </div>
+  <div class="quick-buttons" id="quickCategories" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
+  <div class="sub-buttons" id="subOptions" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
+</div>
+
+<script>
+// DEFINICIÓN DE QUICK NOTES
+const quickNotesData = {
+  "New Order": {
+    "Filters": { inquiry: "CCI to create new order", action: "Created new order: Filters" },
+    "Accessories": { inquiry: "CCI to create new order", action: "Created new order: Accessories" },
+    "Main Unit": { inquiry: "CCI to create new order", action: "Created new order: Main Unit" }
+  },
+  "Order Status": {
+    "Processing": { inquiry: "CCI because he wanted to check the status of his order", action: "Informed cx that the order was still processing, provided estimated delivery timeframe to the cx." },
+    "Shipped": { inquiry: "CCI because he wanted to check the status of his order", action: "Informed cx that the order has been shipped, provided tracking information. Advised cx on the estimated delivery timeframe." }
+  }
+};
+
+// GENERAR BOTONES DE CATEGORÍA
+const quickCategoriesDiv = document.getElementById("quickCategories");
+const subOptionsDiv = document.getElementById("subOptions");
+for(const category in quickNotesData){
+  const btn = document.createElement("button");
+  btn.innerText = category;
+  btn.onclick = ()=>showSubOptions(category);
+  quickCategoriesDiv.appendChild(btn);
+}
+
+// MOSTRAR SUBOPCIONES SEGÚN CATEGORÍA
+function showSubOptions(category){
+  subOptionsDiv.innerHTML = "";
+  const subOptions = quickNotesData[category];
+  if(!subOptions) return;
+  subOptionsDiv.style.display = "flex";
+  for(const sub in subOptions){
+    const btn = document.createElement("button");
+    btn.innerText = sub;
+    btn.onclick = ()=>{
+      applyQuickNote(category, sub);
+      subOptionsDiv.innerHTML = ""; // ocultar subopciones automáticamente
+      subOptionsDiv.style.display = "none";
+    };
+    subOptionsDiv.appendChild(btn);
+  }
+}
+
+// APLICAR VALORES DE QUICK NOTE
+function applyQuickNote(category, sub){
+  const data = quickNotesData[category][sub];
+  document.getElementById("inquiry").value = data.inquiry;
+  document.getElementById("actionTaken").value = data.action;
+  updateNotes();
+}
+
+// BOTÓN DE COLAPSAR/EXPANDIR
+const toggleBtn = document.getElementById("toggleQuickNotes");
+const quickCard = document.getElementById("quickNotesCard");
+let isCollapsed = false;
+toggleBtn.onclick = ()=>{
+  if(isCollapsed){
+    quickCard.style.maxHeight = "300px";
+    quickCategoriesDiv.style.display = "flex";
+    toggleBtn.innerText = "Collapse";
+    isCollapsed = false;
+  } else {
+    quickCard.style.maxHeight = "40px";
+    quickCategoriesDiv.style.display = "none";
+    subOptionsDiv.style.display = "none";
+    toggleBtn.innerText = "Expand";
+    isCollapsed = true;
+  }
+}
+
+// VALIDACIÓN ANTES DE GUARDAR EN HISTORIAL
+function copyNotes(){
+  const requiredFields = ["brand","contactForm","name","orderNumber","inquiry","actionTaken","cexReason","why"];
+  let emptyFields = [];
+  requiredFields.forEach(id=>{
+    if(document.getElementById(id).value.trim()==="") emptyFields.push(id);
+  });
+  if(emptyFields.length>0){
+    alert("Por favor completa todos los campos antes de guardar la nota.");
+    return;
+  }
+  const notesBox = document.getElementById("notes");
+  notesBox.select();
+  document.execCommand("copy");
+  saveCurrentCall();
+  const btn = document.getElementById("copy-btn");
+  btn.innerText = "Copied!";
+  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save', 1000);
+}
+</script>
+
 
     <!-- FORMULARIO -->
     <div class="card">
