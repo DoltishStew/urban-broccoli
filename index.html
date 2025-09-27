@@ -6,175 +6,43 @@
 <title>MacrOs</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #f5f5f7;
-  color: #000;
-  margin: 20px;
-  transition: background 0.3s, color 0.3s;
-}
-header {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: #000;
-  transition: color 0.3s;
-}
-.top-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 25px;
-}
-.top-buttons button {
-  background: #f39c12;
-  color: black;
-  border: none;
-  padding: 8px 14px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border-radius: 8px;
-  transition: background 0.2s, color 0.2s;
-}
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; color: #000; margin: 20px; transition: all 0.3s; }
+header { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: #000; }
+.top-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+.top-buttons button { background: #f39c12; color: black; border: none; padding: 8px 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; border-radius: 8px; transition: 0.2s; }
 .top-buttons button:hover { background: #e08b00; }
 
-main {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.left-column {
-  flex: 1;
-  min-width: 350px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-.right-column {
-  flex: 1;
-  min-width: 350px;
-}
+/* Layout dos columnas */
+main { display: flex; gap: 20px; flex-wrap: wrap; }
+.left-column { flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: 15px; }
+.right-column { flex: 1; min-width: 350px; }
 
-/* Quick Notes */
-.quick-card {
-  background:#fff;
-  border-radius:6px;
-  padding:8px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-  transition: all 0.3s ease;
-}
-.quick-card-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.quick-card-header h3 { 
-  margin:0; 
-  color:#000;
-  transition: color 0.3s;
-}
-.quick-toggle-btn {
-  background:#f39c12;
-  color:#000;
-  border:none;
-  border-radius:50%;
-  width:30px;
-  height:30px;
-  cursor:pointer;
-  font-weight:bold;
-}
+/* Quick Notes Card */
+.quick-card { background:#fff; border-radius:8px; padding:10px; width:100%; box-shadow: 0 6px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; }
+.quick-card-header { display:flex; justify-content:space-between; align-items:center; }
+.quick-card-header h3 { margin:0; }
+.quick-toggle-btn { background:#f39c12; color:#000; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; }
 .quick-toggle-btn:hover { background:#e08b00; }
-.quick-buttons, .sub-buttons {
-  display:flex;
-  flex-wrap: wrap;
-  gap:5px;
-  margin-top:5px;
-  justify-content: center;
-}
-.quick-btn, .sub-btn {
-  background:#007bff;
-  color:#fff;
-  border:none;
-  border-radius:6px;
-  padding:6px 10px;
-  cursor:pointer;
-  font-weight:bold;
-}
+.quick-buttons, .sub-buttons { display:flex; flex-wrap: wrap; gap:5px; margin-top:5px; justify-content: center; }
+.quick-btn, .sub-btn { background:#007bff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-weight:bold; }
 .quick-btn:hover, .sub-btn:hover { background:#0056d6; }
 
-/* Form */
-.card {
-  background:#fff;
-  padding:20px;
-  border-radius:6px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-  transition: background 0.3s, color 0.3s;
-}
+/* Form Card */
+.card { background:#fff; padding:20px; border-radius:8px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
 label { font-weight:600; margin:10px 0 5px; text-transform: uppercase; }
-input, select, textarea {
-  width:100%;
-  box-sizing:border-box;
-  padding:8px 12px;
-  margin-bottom:12px;
-  border-radius:6px;
-  border:1px solid #ccc;
-  background:#f2f2f7;
-  font-size:0.95rem;
-  transition: background 0.3s, color 0.3s, border 0.3s;
-}
+input, select, textarea { width:100%; box-sizing:border-box; padding:8px 12px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; background:#f2f2f7; font-size:0.95rem; color: #000; }
 textarea { resize: vertical; }
 
 /* CEX buttons */
-.cex-buttons {
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  margin-bottom:10px;
-}
-.cex-buttons button {
-  flex:1;
-  color:#fff;
-  border:none;
-  padding:6px;
-  border-radius:6px;
-  font-weight:bold;
-  cursor:pointer;
-  max-width: 120px;
-}
-.cex-good { background:#34c759; }
-.cex-neutral { background:#ff9500; }
-.cex-bad { background:#ff3b30; }
+.cex-buttons { display:flex; gap:8px; justify-content:center; margin-bottom:10px; }
+.cex-buttons button { flex:1; color:#fff; border:none; padding:6px; border-radius:6px; font-weight:bold; cursor:pointer; max-width: 120px; }
+.cex-good { background:#34c759; } .cex-neutral { background:#ff9500; } .cex-bad { background:#ff3b30; }
 
 /* Output */
 .output { display:flex; flex-direction:column; }
-.output textarea {
-  width:100%;
-  min-height:400px;
-  border-radius:6px;
-  padding:12px;
-  margin-bottom:5px;
-  background:#f2f2f7;
-  font-family:monospace;
-  font-size:0.95rem;
-  transition: background 0.3s, color 0.3s;
-}
+.output textarea { width:100%; min-height:400px; border-radius:6px; padding:12px; margin-bottom:5px; background:#f2f2f7; font-family:monospace; font-size:0.95rem; color: #000; }
 .copy-container { display:flex; justify-content:flex-end; gap:5px; }
-.copy-container button {
-  background:#f39c12;
-  color:black;
-  border:none;
-  padding:6px 12px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:5px;
-  border-radius:6px;
-  transition: background 0.3s, color 0.3s;
-}
+.copy-container button { background:#f39c12; color:black; border:none; padding:6px 12px; cursor:pointer; display:flex; align-items:center; gap:5px; border-radius:6px; }
 .copy-container button:hover { background:#e08b00; }
 
 /* Dark mode */
@@ -185,47 +53,18 @@ body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; colo
 body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
 body.dark .cex-buttons button { color:#fff; }
 body.dark .quick-card-header h3 { color:#fff; }
+body.dark #historyPanel { background:#d3d3d3; color:white; }
+body.dark #historyPanel li { background:#ccc; color:#000; }
+body.dark #clearHistoryBtn { background:#ff3b30; color:white; }
 
 /* History Panel */
-#historyPanel {
-  display:none;
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:400px;
-  max-height:70%;
-  overflow-y:auto;
-  z-index:1000;
-  background:#dcdcdc;
-  border-radius:8px;
-  box-shadow:0 6px 25px rgba(0,0,0,0.3);
-  padding:20px;
-  color:#000;
-}
-#historyPanel h3 { margin-top:0; text-align:center; color:#000; }
+#historyPanel { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:400px; max-height:70%; overflow-y:auto; z-index:1000; background:#ddd; border-radius:8px; box-shadow:0 6px 25px rgba(0,0,0,0.3); padding:20px; }
+#historyPanel.active { background:#007bff; color:#fff; }
+#historyPanel h3 { margin-top:0; text-align:center; }
 #historyPanel ul { list-style:none; padding:0; margin:0; }
-#historyPanel li {
-  padding:8px 10px;
-  margin-bottom:6px;
-  background:#e0e0e0;
-  border-radius:4px;
-  cursor:pointer;
-  transition: background 0.2s;
-}
+#historyPanel li { padding:8px 10px; margin-bottom:6px; background:#f5f5f5; border-radius:4px; cursor:pointer; transition: background 0.2s; }
 #historyPanel li:hover { background:#ccc; }
-#clearHistoryBtn {
-  margin-top:10px;
-  padding:6px 12px;
-  width:100%;
-  border:none;
-  border-radius:6px;
-  background:#ff3b30;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-}
-#clearHistoryBtn:hover { background:#d32f2f; }
+#clearHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#ff3b30; color:white; }
 </style>
 </head>
 <body>
@@ -234,7 +73,7 @@ body.dark .quick-card-header h3 { color:#fff; }
 <div class="top-buttons">
   <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
   <button onclick="toggleHistoryPanel()"><i class="fas fa-history"></i> History</button>
-  <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
+  <button id="darkModeBtn"><i class="fas fa-moon"></i> Dark Mode</button>
 </div>
 
 <main>
@@ -269,10 +108,10 @@ body.dark .quick-card-header h3 { color:#fff; }
         <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
 
         <label for="inquiry">Inquiry</label>
-        <input type="text" id="inquiry" placeholder="Type inquiry..." oninput="updateNotes()" />
+        <input type="text" id="inquiry" placeholder="Inquiry" oninput="updateNotes()" />
 
         <label for="actionTaken">Action Taken</label>
-        <input type="text" id="actionTaken" placeholder="Type action..." oninput="updateNotes()" />
+        <input type="text" id="actionTaken" placeholder="Action Taken" oninput="updateNotes()" />
 
         <label>CEX</label>
         <div class="cex-buttons">
@@ -282,7 +121,7 @@ body.dark .quick-card-header h3 { color:#fff; }
         </div>
 
         <label for="cexReason">Reason</label>
-        <select id="cexReason" onchange="updateNotes()"></select>
+        <select id="cexReason" onchange="updateWhy()"></select>
 
         <label for="cexWhy">WHY</label>
         <select id="cexWhy" onchange="updateNotes()"></select>
@@ -309,50 +148,178 @@ body.dark .quick-card-header h3 { color:#fff; }
 </div>
 
 <script>
-// VARIABLES
+// Variables
 let callHistory=[], isTyping=false;
-let cexData={
-  Good:["Customer pleased","Helpful info","Issue resolved"],
+let cexReasons = {
+  Good:["Customer was pleased","Info clear","Issue resolved"],
   Neutral:["Partial help","Info unclear","Waited long"],
   Bad:["Not helpful","Wrong info","Issue unresolved"]
 };
-let cexWhyData={
-  "Customer pleased":["Issue resolved","Info clear"],
-  "Helpful info":["Assisted cx","Info understood"],
-  "Issue resolved":["Problem fixed","Order processed"],
-  "Partial help":["Still pending","Follow-up needed"],
-  "Info unclear":["Cx confused","Need more info"],
-  "Waited long":["Long wait","Delayed response"],
-  "Not helpful":["Wrong guidance","Not resolved"],
-  "Wrong info":["Incorrect details","Cx misled"],
-  "Issue unresolved":["Pending problem","No solution"]
+let cexWhy = {
+  "Customer was pleased":["Issue resolved","Provided info"], 
+  "Info clear":["CX understood"], 
+  "Issue resolved":["Resolved successfully"],
+  "Partial help":["Follow-up needed"],
+  "Info unclear":["CX confused"], 
+  "Waited long":["CX frustrated"],
+  "Not helpful":["CX upset"], 
+  "Wrong info":["Mistake corrected"], 
+  "Issue unresolved":["Pending follow-up"]
 };
+
 let quickNotesData={
   "Order Status":{
-    "Processing": {inquiry:"CCI to check order status", action:"Informed cx order processing."},
-    "Shipped": {inquiry:"CCI to check order status", action:"Informed cx order shipped, provided tracking."}
+    "Processing": {inquiry:"CCI because he wanted to check the status of his order", action:"Informed cx that the order was still processing, provided estimated delivery timeframe."},
+    "Shipped": {inquiry:"CCI because he wanted to check the status of his order", action:"Informed cx that the order has been shipped, provided tracking information."}
   },
   "New Order":{
-    "Filters": {inquiry:"CCI to create order", action:"Processed filter order."},
-    "Main Unit": {inquiry:"CCI to create order", action:"Processed main unit order."},
-    "Accessories": {inquiry:"CCI to create order", action:"Processed accessory order."}
+    "Filters": {inquiry:"CCI to create new order", action:"Processed new order for filters."},
+    "Main Unit": {inquiry:"CCI to create new order", action:"Processed new order for main unit."},
+    "Accessories": {inquiry:"CCI to create new order", action:"Processed new order for accessories."}
   }
 };
 
-// INIT BRAND
+// Initialize Brand
 let brandSelect=document.getElementById("brand");
 ["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
   let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
 });
 
-// CONTACT LABEL
+// Contact label
 function updateContactLabel(){
   let type=document.getElementById("contactType").value;
   document.getElementById("contactFormLabel").innerText=type;
   document.getElementById("contactForm").placeholder=type+" #";
 }
 
-// QUICK NOTES
+// Notes
+function updateNotes(){
+  let brand=document.getElementById("brand").value;
+  let contactType=document.getElementById("contactType").value;
+  let contactForm=document.getElementById("contactForm").value;
+  let name=document.getElementById("name").value;
+  let orderNumber=document.getElementById("orderNumber").value;
+  let inquiry=document.getElementById("inquiry").value;
+  let actionTaken=document.getElementById("actionTaken").value;
+  let cex=document.getElementById("cexReason").value;
+  let why=document.getElementById("cexWhy").value;
+
+  document.getElementById("notes").value=
+  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
+}
+
+// CEX selection
+function selectCEX(value){
+  let select=document.getElementById("cexReason"); select.innerHTML="";
+  cexReasons[value].forEach(opt=>{
+    let o=document.createElement("option"); o.value=o.innerText=opt;
+    select.appendChild(o);
+  });
+  updateWhy();
+}
+
+// WHY update
+function updateWhy(){
+  let reason=document.getElementById("cexReason").value;
+  let whySelect=document.getElementById("cexWhy"); whySelect.innerHTML="";
+  if(cexWhy[reason]){
+    cexWhy[reason].forEach(w=>{
+      let o=document.createElement("option"); o.value=o.innerText=w;
+      whySelect.appendChild(o);
+    });
+  }
+  updateNotes();
+}
+
+// Copy Notes
+function copyNotes(){
+  let notesBox=document.getElementById("notes");
+  if(!notesBox.value || !document.getElementById("brand").value || !document.getElementById("contactForm").value) 
+    return alert("Complete todos los campos antes de guardar.");
+  notesBox.select(); document.execCommand("copy"); saveCurrentCall();
+  let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
+  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
+}
+
+// Save Call
+function saveCurrentCall(){
+  let noteText=document.getElementById("notes").value;
+  if(noteText.trim()==="") return;
+  callHistory.push({
+    orderNumber: document.getElementById("orderNumber").value,
+    name: document.getElementById("name").value,
+    brand: document.getElementById("brand").value,
+    contactType: document.getElementById("contactType").value,
+    contactForm: document.getElementById("contactForm").value,
+    inquiry: document.getElementById("inquiry").value,
+    actionTaken: document.getElementById("actionTaken").value,
+    cex: document.getElementById("cexReason").value,
+    why: document.getElementById("cexWhy").value
+  });
+  renderHistory();
+}
+
+// Render History
+function renderHistory(){
+  let list=document.getElementById("historyList"); list.innerHTML="";
+  callHistory.slice().reverse().forEach((item,index)=>{
+    let li=document.createElement("li"); 
+    li.innerText=`${item.orderNumber} - ${item.name}`;
+    li.onclick=()=> loadCall(index);
+    list.appendChild(li);
+  });
+}
+
+// Load call from history
+function loadCall(index){
+  let item=callHistory[index];
+  document.getElementById("brand").value=item.brand;
+  updateContactLabel();
+  document.getElementById("contactType").value=item.contactType;
+  document.getElementById("contactForm").value=item.contactForm;
+  document.getElementById("name").value=item.name;
+  document.getElementById("orderNumber").value=item.orderNumber;
+  document.getElementById("inquiry").value=item.inquiry;
+  document.getElementById("actionTaken").value=item.actionTaken;
+  selectCEX(item.cex.split(" ")[0]);
+  setTimeout(()=>{document.getElementById("cexWhy").value=item.why; updateNotes();},10);
+  toggleHistoryPanel(false);
+}
+
+// Toggle Dark Mode
+document.getElementById("darkModeBtn").addEventListener("click", ()=>document.body.classList.toggle("dark"));
+
+// History panel toggle
+function toggleHistoryPanel(force){
+  let panel=document.getElementById("historyPanel");
+  if(force===false){ panel.style.display="none"; panel.classList.remove("active"); return; }
+  panel.classList.toggle("active");
+  panel.style.display=(panel.style.display==="block")?"none":"block";
+}
+document.addEventListener("click", (e)=>{
+  let panel=document.getElementById("historyPanel");
+  if(panel.style.display==="block" && !panel.contains(e.target) && !e.target.matches('.top-buttons button:nth-child(2)')){
+    panel.style.display="none"; panel.classList.remove("active");
+  }
+});
+
+// Clear History
+function clearHistory(){ callHistory=[]; renderHistory(); }
+
+// Clear Form
+function clearForm(){
+  document.getElementById("macroForm").reset();
+  document.getElementById("cexReason").innerHTML="";
+  document.getElementById("cexWhy").innerHTML="";
+  document.getElementById("notes").value="";
+  isTyping=false;
+  updateContactLabel();
+}
+
+// New Call
+function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall(); clearForm(); }
+
+// Quick Notes
 let toggleBtn=document.getElementById("toggleQuickNotes");
 let quickCategories=document.getElementById("quickCategories");
 let subOptions=document.getElementById("subOptions");
@@ -364,7 +331,8 @@ toggleBtn.addEventListener("click",()=>{
 });
 for(let cat in quickNotesData){
   let btn=document.createElement("button"); btn.innerText=cat; btn.className="quick-btn";
-  btn.onclick=()=>{ subOptions.innerHTML=""; subOptions.style.display="flex";
+  btn.onclick=()=>{
+    subOptions.innerHTML=""; subOptions.style.display="flex";
     for(let sub in quickNotesData[cat]){
       let subBtn=document.createElement("button"); subBtn.innerText=sub; subBtn.className="sub-btn";
       subBtn.onclick=()=>{
@@ -378,133 +346,6 @@ for(let cat in quickNotesData){
   quickCategories.appendChild(btn);
 }
 
-// UPDATE NOTES
-function updateNotes(){
-  let brand=document.getElementById("brand").value;
-  let contactType=document.getElementById("contactType").value;
-  let contactForm=document.getElementById("contactForm").value;
-  let name=document.getElementById("name").value;
-  let orderNumber=document.getElementById("orderNumber").value;
-  let inquiry=document.getElementById("inquiry").value;
-  let actionTaken=document.getElementById("actionTaken").value;
-  let cex=document.getElementById("cexReason").value;
-  let why=document.getElementById("cexWhy").value;
-
-  document.getElementById("notes").value=
-    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
-}
-
-// CEX SELECT
-function selectCEX(value){
-  let reason=document.getElementById("cexReason");
-  let why=document.getElementById("cexWhy");
-  reason.innerHTML="";
-  why.innerHTML="";
-  cexData[value].forEach(r=>{
-    let o=document.createElement("option"); o.value=o.innerText=r; reason.appendChild(o);
-  });
-  updateNotes();
-}
-document.getElementById("cexReason").addEventListener("change",()=>{
-  let why=document.getElementById("cexWhy");
-  why.innerHTML="";
-  let sel=document.getElementById("cexReason").value;
-  if(sel && cexWhyData[sel]){
-    cexWhyData[sel].forEach(w=>{
-      let o=document.createElement("option"); o.value=o.innerText=w; why.appendChild(o);
-    });
-  }
-  updateNotes();
-});
-
-// COPY NOTES
-function copyNotes(){
-  let notesBox=document.getElementById("notes");
-  if(!notesBox.value || !document.getElementById("name").value || !document.getElementById("orderNumber").value) return alert("Complete todos los campos antes de guardar.");
-  notesBox.select(); document.execCommand("copy"); saveCurrentCall();
-  let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
-  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
-}
-
-// SAVE HISTORY
-function saveCurrentCall(){
-  let noteText=document.getElementById("notes").value;
-  if(noteText.trim()==="") return;
-  callHistory.push({
-    orderNumber: document.getElementById("orderNumber").value,
-    name: document.getElementById("name").value,
-    inquiry: document.getElementById("inquiry").value,
-    actionTaken: document.getElementById("actionTaken").value,
-    cexReason: document.getElementById("cexReason").value,
-    cexWhy: document.getElementById("cexWhy").value,
-    brand: document.getElementById("brand").value,
-    contactType: document.getElementById("contactType").value,
-    contactForm: document.getElementById("contactForm").value
-  });
-  renderHistory();
-}
-
-// RENDER HISTORY
-function renderHistory(){
-  let list=document.getElementById("historyList");
-  list.innerHTML="";
-  callHistory.slice().reverse().forEach((item,i)=>{
-    let li=document.createElement("li");
-    li.innerText=`${item.orderNumber} - ${item.name}`;
-    li.onclick=()=>{
-      document.getElementById("brand").value=item.brand;
-      document.getElementById("contactType").value=item.contactType;
-      updateContactLabel();
-      document.getElementById("contactForm").value=item.contactForm;
-      document.getElementById("name").value=item.name;
-      document.getElementById("orderNumber").value=item.orderNumber;
-      document.getElementById("inquiry").value=item.inquiry;
-      document.getElementById("actionTaken").value=item.actionTaken;
-      document.getElementById("cexReason").value=item.cexReason;
-      let why=document.getElementById("cexWhy");
-      why.innerHTML="";
-      if(cexWhyData[item.cexReason]) cexWhyData[item.cexReason].forEach(w=>{
-        let o=document.createElement("option"); o.value=o.innerText=w; why.appendChild(o);
-      });
-      why.value=item.cexWhy;
-      updateNotes();
-      toggleHistoryPanel();
-    };
-    list.appendChild(li);
-  });
-}
-
-// CLEAR HISTORY
-function clearHistory(){ callHistory=[]; renderHistory(); }
-
-// DARK MODE
-let darkMode=false;
-function toggleDarkMode(){document.body.classList.toggle("dark"); darkMode=!darkMode;}
-
-// HISTORY PANEL
-function toggleHistoryPanel(){
-  let panel=document.getElementById("historyPanel");
-  panel.style.display=panel.style.display==="block"?"none":"block";
-}
-window.addEventListener("click", function(e){
-  let panel=document.getElementById("historyPanel");
-  if(panel.style.display==="block" && !panel.contains(e.target) && !e.target.closest('.top-buttons button')) panel.style.display="none";
-});
-
-// FORM FUNCTIONS
-function clearForm(){
-  document.getElementById("macroForm").reset();
-  document.getElementById("cexReason").innerHTML="";
-  document.getElementById("cexWhy").innerHTML="";
-  document.getElementById("notes").value="";
-  updateContactLabel();
-}
-function newCall(){ 
-  if(document.getElementById("notes").value.trim()!=="") saveCurrentCall(); 
-  clearForm(); 
-}
-
-// INIT
 updateContactLabel();
 updateNotes();
 </script>
