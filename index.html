@@ -36,8 +36,8 @@ header {
   display: flex;
   align-items: center;
   gap: 5px;
+  border-radius: 6px;
   transition: background 0.2s;
-  border-radius: 8px;
 }
 .top-buttons button:hover { background: #e08b00; }
 main {
@@ -45,20 +45,16 @@ main {
   gap: 20px;
   flex-wrap: wrap;
 }
-.left-column {
+.card {
   flex: 1;
   min-width: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.card {
   background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
 }
 label { font-weight: 600; margin: 10px 0 5px; text-transform: uppercase; }
 input, select, textarea {
@@ -86,10 +82,10 @@ textarea { resize: vertical; }
   font-weight: bold;
   cursor: pointer;
 }
-.output { flex: 1; display: flex; flex-direction: column; }
+.output { position: relative; display: flex; flex-direction: column; }
 .output textarea {
   width: 100%;
-  min-height: 500px;
+  min-height: 200px;
   border-radius: 6px;
   padding: 12px;
   margin-bottom: 5px;
@@ -97,7 +93,7 @@ textarea { resize: vertical; }
   font-family: monospace;
   font-size: 0.95rem;
 }
-.copy-container { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
+.copy-container { display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px; }
 .copy-container button {
   background: #f39c12;
   color: black;
@@ -107,9 +103,20 @@ textarea { resize: vertical; }
   display: flex;
   align-items: center;
   gap: 5px;
-  border-radius: 8px;
+  border-radius:6px;
 }
 .copy-container button:hover { background: #e08b00; }
+
+/* Quick Notes card */
+.quick-card {
+  flex: 1;
+  min-width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+  transition: max-height 0.3s ease;
+  display:flex;
+  flex-direction:column;
+}
 
 /* History panel centered */
 #historyPanel {
@@ -151,31 +158,6 @@ body.dark .card { background: #1e1e1e; border: 1px solid #444; box-shadow: none;
 body.dark input, body.dark select, body.dark textarea { background: #2a2a2a; color: white; border: 1px solid #555; }
 body.dark .copy-container button, body.dark .top-buttons button { border: 1px solid #fff; background: none; color: white; }
 body.dark .cex-buttons button { color: #fff; }
-
-/* Quick Notes Card */
-.quick-card {
-  background: #f5f5f7;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-.quick-card h3 { margin-top: 0; }
-.quick-buttons, .sub-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-.quick-buttons button, .sub-buttons button {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  background: #007bff;
-  color: white;
-  cursor: pointer;
-}
-.quick-buttons button:hover, .sub-buttons button:hover { background: #0056b3; }
-.sub-buttons { display: none; }
 </style>
 </head>
 <body>
@@ -188,20 +170,112 @@ body.dark .cex-buttons button { color: #fff; }
 </div>
 
 <main>
-  <div class="left-column">
-    
-   <!-- QUICK NOTES DINÁMICO COLAPSABLE -->
-<div class="card quick-card" id="quickNotesCard" style="flex: 1; min-width: 250px; max-height: 300px; overflow-y: auto; transition: max-height 0.3s ease;">
-  <div style="display:flex; justify-content:space-between; align-items:center;">
-    <h3>Quick Notes</h3>
-    <button id="toggleQuickNotes" style="padding:4px 8px; cursor:pointer;">Collapse</button>
+  <!-- QUICK NOTES CARD -->
+  <div class="card quick-card" id="quickNotesCard">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3>Quick Notes</h3>
+      <button id="toggleQuickNotes" style="padding:2px 6px; cursor:pointer; font-weight:bold;">+</button>
+    </div>
+    <div class="quick-buttons" id="quickCategories" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
+    <div class="sub-buttons" id="subOptions" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
   </div>
-  <div class="quick-buttons" id="quickCategories" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
-  <div class="sub-buttons" id="subOptions" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
+
+  <!-- MAIN FORM -->
+  <div class="card">
+    <form id="macroForm">
+      <label for="brand">Brand</label>
+      <select id="brand" onchange="updateNotes()">
+        <option value="Air Doctor">Air Doctor</option>
+        <option value="AquaTru">AquaTru</option>
+        <option value="Better Bladder">Better Bladder</option>
+        <option value="Prosvent">Prosvent</option>
+        <option value="IdealProstate">IdealProstate</option>
+        <option value="Walkfit">Walkfit</option>
+        <option value="Superthotics">Superthotics</option>
+        <option value="Rotorazer">Rotorazer</option>
+        <option value="Miracle Blade">Miracle Blade</option>
+      </select>
+
+      <label for="contactType">Contact Type</label>
+      <select id="contactType" onchange="updateContactLabel(); updateNotes()">
+        <option value="Phone">Phone</option>
+        <option value="Ticket">Ticket</option>
+      </select>
+
+      <label id="contactFormLabel" for="contactForm">Phone</label>
+      <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
+
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
+
+      <label for="orderNumber">Order Number</label>
+      <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
+
+      <label for="inquiry">Inquiry</label>
+      <select id="inquiry" onchange="updateNotes()">
+        <option value="New Order">New Order</option>
+        <option value="Missing Item">Missing Item</option>
+        <option value="Product Issues">Product Issues</option>
+        <option value="Shipping Status">Shipping Status</option>
+        <option value="Escalations">Escalations</option>
+        <option value="Returns">Returns</option>
+        <option value="Cancelations">Cancelations</option>
+        <option value="Other">Other</option>
+      </select>
+      <textarea id="inquiryExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+
+      <label for="actionTaken">Action Taken</label>
+      <select id="actionTaken" onchange="updateNotes()">
+        <option value="Explained cancellation policy">Explained cancellation policy</option>
+        <option value="Sent replacement order">Sent replacement order</option>
+        <option value="Provided tracking number">Provided tracking number</option>
+        <option value="Escalated to supervisor">Escalated to supervisor</option>
+        <option value="Processed return">Processed return</option>
+        <option value="Issued refund">Issued refund</option>
+        <option value="General assistance">General assistance</option>
+      </select>
+      <textarea id="actionExtra" placeholder="Additional Details" oninput="updateNotes()"></textarea>
+
+      <label>CEX</label>
+      <div class="cex-buttons">
+        <button type="button" style="background:#34c759;" onclick="selectCEX('Good')">Good</button>
+        <button type="button" style="background:#ff9500;" onclick="selectCEX('Neutral')">Neutral</button>
+        <button type="button" style="background:#ff3b30;" onclick="selectCEX('Bad')">Bad</button>
+      </div>
+      <select id="cexReason" onchange="updateNotes()"></select>
+
+      <label for="why">Why</label>
+      <textarea id="why" placeholder="Explanation" oninput="updateNotes()"></textarea>
+    </form>
+  </div>
+
+  <!-- NOTES OUTPUT -->
+  <div class="card output">
+    <label for="notes">Generated Notes</label>
+    <textarea id="notes" readonly></textarea>
+    <div class="copy-container">
+      <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
+      <button onclick="clearForm()">Clear</button>
+    </div>
+  </div>
+</main>
+
+<div id="historyPanel">
+  <h3>Call History</h3>
+  <ul id="historyList"></ul>
 </div>
 
 <script>
-// DEFINICIÓN DE QUICK NOTES
+// -------------------- QUICK NOTES LOGIC --------------------
+let callHistory = [];
+let cexReasons = {
+  Good: ["Helped the customer", "Issue resolved", "Info clear"],
+  Neutral: ["Partial help", "Info unclear", "Waited long"],
+  Bad: ["Not helpful", "Wrong info", "Issue unresolved"]
+};
+let isTyping = false;
+document.getElementById("macroForm").addEventListener("input", ()=>{ isTyping=true; });
+
 const quickNotesData = {
   "New Order": {
     "Filters": { inquiry: "CCI to create new order", action: "Created new order: Filters" },
@@ -235,7 +309,7 @@ function showSubOptions(category){
     btn.innerText = sub;
     btn.onclick = ()=>{
       applyQuickNote(category, sub);
-      subOptionsDiv.innerHTML = ""; // ocultar subopciones automáticamente
+      subOptionsDiv.innerHTML = "";
       subOptionsDiv.style.display = "none";
     };
     subOptionsDiv.appendChild(btn);
@@ -250,7 +324,7 @@ function applyQuickNote(category, sub){
   updateNotes();
 }
 
-// BOTÓN DE COLAPSAR/EXPANDIR
+// BOTÓN COLAPSAR/EXPANDIR
 const toggleBtn = document.getElementById("toggleQuickNotes");
 const quickCard = document.getElementById("quickNotesCard");
 let isCollapsed = false;
@@ -258,122 +332,18 @@ toggleBtn.onclick = ()=>{
   if(isCollapsed){
     quickCard.style.maxHeight = "300px";
     quickCategoriesDiv.style.display = "flex";
-    toggleBtn.innerText = "Collapse";
+    toggleBtn.innerText = "+";
     isCollapsed = false;
   } else {
     quickCard.style.maxHeight = "40px";
     quickCategoriesDiv.style.display = "none";
     subOptionsDiv.style.display = "none";
-    toggleBtn.innerText = "Expand";
+    toggleBtn.innerText = "−";
     isCollapsed = true;
   }
 }
 
-// VALIDACIÓN ANTES DE GUARDAR EN HISTORIAL
-function copyNotes(){
-  const requiredFields = ["brand","contactForm","name","orderNumber","inquiry","actionTaken","cexReason","why"];
-  let emptyFields = [];
-  requiredFields.forEach(id=>{
-    if(document.getElementById(id).value.trim()==="") emptyFields.push(id);
-  });
-  if(emptyFields.length>0){
-    alert("Por favor completa todos los campos antes de guardar la nota.");
-    return;
-  }
-  const notesBox = document.getElementById("notes");
-  notesBox.select();
-  document.execCommand("copy");
-  saveCurrentCall();
-  const btn = document.getElementById("copy-btn");
-  btn.innerText = "Copied!";
-  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save', 1000);
-}
-</script>
-
-
-    <!-- FORMULARIO -->
-    <div class="card">
-      <form id="macroForm">
-        <label for="brand">Brand</label>
-        <select id="brand" onchange="updateNotes()">
-          <option value="Air Doctor">Air Doctor</option>
-          <option value="AquaTru">AquaTru</option>
-          <option value="Better Bladder">Better Bladder</option>
-          <option value="Prosvent">Prosvent</option>
-          <option value="IdealProstate">IdealProstate</option>
-          <option value="Walkfit">Walkfit</option>
-          <option value="Superthotics">Superthotics</option>
-          <option value="Rotorazer">Rotorazer</option>
-          <option value="Miracle Blade">Miracle Blade</option>
-        </select>
-
-        <label for="contactType">Contact Type</label>
-        <select id="contactType" onchange="updateContactLabel(); updateNotes()">
-          <option value="Phone">Phone</option>
-          <option value="Ticket">Ticket</option>
-        </select>
-
-        <label id="contactFormLabel" for="contactForm">Phone</label>
-        <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
-
-        <label for="name">Name</label>
-        <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
-
-        <label for="orderNumber">Order Number</label>
-        <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
-
-        <label for="inquiry">Inquiry</label>
-        <textarea id="inquiry" placeholder="Inquiry" oninput="updateNotes()"></textarea>
-
-        <label for="actionTaken">Action Taken</label>
-        <textarea id="actionTaken" placeholder="Action Taken" oninput="updateNotes()"></textarea>
-
-        <label>CEX</label>
-        <div class="cex-buttons">
-          <button type="button" style="background:#34c759;" onclick="selectCEX('Good')">Good</button>
-          <button type="button" style="background:#ff9500;" onclick="selectCEX('Neutral')">Neutral</button>
-          <button type="button" style="background:#ff3b30;" onclick="selectCEX('Bad')">Bad</button>
-        </div>
-        <select id="cexReason" onchange="updateNotes()"></select>
-
-        <label for="why">Why</label>
-        <select id="why" onchange="updateNotes()"></select>
-      </form>
-    </div>
-  </div>
-
-  <!-- PANEL DERECHO PARA NOTAS -->
-  <div class="card output">
-    <label for="notes">Generated Notes</label>
-    <textarea id="notes" readonly></textarea>
-    <div class="copy-container">
-      <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
-      <button onclick="clearNotes()"><i class="fas fa-eraser"></i> Clear</button>
-    </div>
-  </div>
-</main>
-
-<div id="historyPanel">
-  <h3>Call History</h3>
-  <ul id="historyList"></ul>
-</div>
-
-<script>
-let callHistory = [];
-let cexReasons = {
-  Good: ["Helped the customer", "Issue resolved", "Info clear"],
-  Neutral: ["Partial help", "Info unclear", "Waited long"],
-  Bad: ["Not helpful", "Wrong info", "Issue unresolved"]
-};
-let whyOptions = {
-  Good: ["Customer satisfied with resolution", "Quick handling", "Clear communication"],
-  Neutral: ["Resolution pending", "Customer uncertain", "Information incomplete"],
-  Bad: ["Awaiting internal confirmation such as tracking, refund, or backoffice review.", "Escalation needed", "Customer dissatisfied"]
-};
-let isTyping = false;
-
-document.getElementById("macroForm").addEventListener("input", ()=>{ isTyping=true; });
-
+// -------------------- FORM & NOTES LOGIC --------------------
 function updateContactLabel() {
   const type = document.getElementById("contactType").value;
   document.getElementById("contactFormLabel").innerText = type;
@@ -387,12 +357,14 @@ function updateNotes() {
   const name = document.getElementById("name").value;
   const orderNumber = document.getElementById("orderNumber").value;
   const inquiry = document.getElementById("inquiry").value;
+  const inquiryExtra = document.getElementById("inquiryExtra").value;
   const actionTaken = document.getElementById("actionTaken").value;
+  const actionExtra = document.getElementById("actionExtra").value;
   const cex = document.getElementById("cexReason").value;
   const why = document.getElementById("why").value;
 
   const notes =
-    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | REASON: ${why}`;
+    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry}${inquiryExtra ? " - " + inquiryExtra : ""} | ACTION TAKEN: ${actionTaken}${actionExtra ? " - " + actionExtra : ""} | CEX: ${cex} | REASON: ${why}`;
 
   document.getElementById("notes").value = notes;
 }
@@ -401,7 +373,6 @@ function newCall() {
   if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall();
   document.getElementById("macroForm").reset();
   document.getElementById("cexReason").innerHTML = "";
-  document.getElementById("why").innerHTML = "";
   updateContactLabel();
   updateNotes();
   isTyping=false;
@@ -437,17 +408,19 @@ function selectCEX(value){
     option.innerText = opt;
     document.getElementById("cexReason").appendChild(option);
   });
-  document.getElementById("why").innerHTML = "";
-  whyOptions[value].forEach(opt=>{
-    const option = document.createElement("option");
-    option.value = opt;
-    option.innerText = opt;
-    document.getElementById("why").appendChild(option);
-  });
   updateNotes();
 }
 
 function copyNotes(){
+  const requiredFields = ["brand","contactForm","name","orderNumber","inquiry","actionTaken","cexReason","why"];
+  let emptyFields = [];
+  requiredFields.forEach(id=>{
+    if(document.getElementById(id).value.trim()==="") emptyFields.push(id);
+  });
+  if(emptyFields.length>0){
+    alert("Por favor completa todos los campos antes de guardar la nota.");
+    return;
+  }
   const notesBox = document.getElementById("notes");
   notesBox.select();
   document.execCommand("copy");
@@ -457,13 +430,11 @@ function copyNotes(){
   setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save', 1000);
 }
 
-function clearNotes(){
+function clearForm(){
   document.getElementById("macroForm").reset();
   document.getElementById("cexReason").innerHTML = "";
-  document.getElementById("why").innerHTML = "";
   updateContactLabel();
   updateNotes();
-  isTyping=false;
 }
 
 function toggleDarkMode(){
@@ -474,40 +445,6 @@ function toggleHistoryPanel(){
   const panel = document.getElementById("historyPanel");
   panel.classList.toggle("active");
   panel.style.display = panel.style.display==="block" ? "none" : "block";
-}
-
-// QUICK NOTES JERÁRQUICO
-const quickNotesData = {
-  new_order: ["Filters", "Accessories", "Main Unit"],
-  order_status: ["Processing", "Shipped"]
-};
-
-function showSubOptions(category){
-  const subDiv = document.getElementById("subOptions");
-  subDiv.innerHTML = "";
-  if(!quickNotesData[category]) return;
-  subDiv.style.display = "flex";
-  quickNotesData[category].forEach(item=>{
-    const btn = document.createElement("button");
-    btn.innerText = item;
-    btn.onclick = ()=>applyQuickNote(category, item);
-    subDiv.appendChild(btn);
-  });
-}
-
-function applyQuickNote(category, item){
-  if(category==="new_order"){
-    document.getElementById("inquiry").value = `CCI to create new order`;
-    document.getElementById("actionTaken").value = `Created new order: ${item}`;
-  } else if(category==="order_status"){
-    document.getElementById("inquiry").value = `CCI because he wanted to check the status of his order`;
-    if(item==="Processing"){
-      document.getElementById("actionTaken").value = `Informed cx that the order was still processing, provided estimated delivery timeframe to the cx.`;
-    } else if(item==="Shipped"){
-      document.getElementById("actionTaken").value = `Informed cx that the order has been shipped, provided tracking information. Advised cx on the estimated delivery timeframe.`;
-    }
-  }
-  updateNotes();
 }
 
 updateContactLabel();
