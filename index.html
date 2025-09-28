@@ -1,4 +1,4 @@
-macrosv2.2-PreAlpha
+MACROSv2.0-Pre-Alpha
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -19,22 +19,26 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .right-column { flex: 1; min-width: 350px; }
 
 /* Quick Notes Card */
-.quick-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  .quick-card {
+  background: #fff;                  /* fondo blanco */
+  border-radius: 8px;                /* esquinas redondeadas */
+  padding: 10px;                     /* espacio interno */
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* sombra suave */
   transition: all 0.3s ease;
-  display: flex;
+  display: flex;                     /* organiza contenido verticalmente */
   flex-direction: column;
 }
 .quick-card-header {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
+  align-items: center;       /* centra verticalmente */
+  justify-content: flex-start; /* botones al lado del título */
+  gap: 8px;                  /* espacio entre título y botones */
 }
-.quick-card-header h3 { margin: 0; margin-right: 10px; }
+.quick-card-header h3 {
+  margin: 0;
+  margin-right: 10px;        /* separa del primer botón */
+}
+
 .quick-toggle-btn { background:#f39c12; color:#000; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; }
 .quick-toggle-btn:hover { background:#e08b00; }
 .quick-buttons, .sub-buttons { display:flex; flex-wrap: wrap; gap:5px; margin-top:8px; justify-content: center; }
@@ -45,7 +49,11 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .manage-quick { margin-top:12px; border-top:1px solid #eee; padding-top:10px; }
 .manage-quick input, .manage-quick textarea { padding:6px; margin-bottom:6px; }
 .manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
-.manage-quick .button-row { display: flex; gap: 8px; align-items: center; }
+.manage-quick .button-row {
+  display: flex;
+  gap: 8px;      /* espacio entre botones */
+  align-items: center; /* alineación vertical */
+}
 
 /* Form Card */
 .card { background:#fff; padding:20px; border-radius:8px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
@@ -54,7 +62,12 @@ input, select, textarea { width:100%; box-sizing:border-box; padding:8px 12px; m
 textarea { resize: vertical; }
 
 /* CEX buttons */
-.cex-buttons { display: flex; gap: 8px; justify-content: center; margin: 10px 0 12px; }
+.cex-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 10px 0 12px; /* arriba 10px, lados 0, abajo 12px */
+}
 .cex-buttons button { flex:1; color:#fff; border:none; padding:6px; border-radius:6px; font-weight:bold; cursor:pointer; max-width: 120px; }
 .cex-good { background:#34c759; } .cex-neutral { background:#ff9500; } .cex-bad { background:#ff3b30; }
 
@@ -91,11 +104,17 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 #undoBtn { background:#34c759; color:white; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; display:none; }
 
 /* responsive tweaks */
-@media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;} }
+@media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;}}
+  #inquiry, #actionTaken {
+  resize: vertical;   /* solo expandir verticalmente */
+  min-height: 30px;   /* altura mínima */
+  max-height: 100px;  /* altura máxima opcional */
+}
 </style>
 </head>
 <body>
 <header>MacrOS</header>
+
 <div class="top-buttons">
   <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
   <button onclick="toggleHistoryPanel()"><i class="fas fa-history"></i> History</button>
@@ -104,76 +123,96 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 
 <main>
   <div class="left-column">
-    <div class="quick-card">
+    <div class="quick-card" id="quickNotesCard">
       <div class="quick-card-header">
-        <h3>Quick Notes</h3>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
-          <button id="manageQuickToggle" class="quick-toggle-btn" title="Manage Quick Notes">⚙</button>
-        </div>
-      </div>
+  <h3>Quick Notes</h3>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
+    <button id="manageQuickToggle" class="quick-toggle-btn" title="Manage Quick Notes">⚙</button>
+  </div>
+</div>
       <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
       <div class="sub-buttons" id="subOptions" style="display:none;"></div>
       <div class="manage-quick" id="manageQuick" style="display:none;">
         <label>Add Quick Note</label>
-        <input id="mqCategory" placeholder="Category" />
-        <input id="mqTitle" placeholder="Title" />
-        <textarea id="mqInquiry" placeholder="Inquiry"></textarea>
-        <textarea id="mqAction" placeholder="Action taken"></textarea>
+        <input id="mqCategory" placeholder="Category (e.g. Shipping)" />
+        <input id="mqTitle" placeholder="Title (e.g. Delayed)" />
+        <textarea id="mqInquiry" placeholder="Inquiry text"></textarea>
+        <textarea id="mqAction" placeholder="Action taken text"></textarea>
         <div class="button-row">
-          <button id="addQuickBtn">Add</button>
-          <select id="mqDeleteSelect" style="flex:1;"></select>
-          <button id="editQuickBtn" style="background:#ff9500;">Edit</button>
-          <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
-        </div>
+  <button id="addQuickBtn">Add</button>
+  <select id="mqDeleteSelect" style="flex:1;"></select>
+  <button id="editQuickBtn" style="background:#ff9500;">Edit</button>
+  <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
+</div>
       </div>
     </div>
 
     <div class="card" id="formCard">
       <form id="macroForm">
         <label for="brand">Brand</label>
-        <select id="brand"></select>
+        <select id="brand" onchange="updateNotes()"></select>
+
         <label for="contactType">Contact Type</label>
-        <select id="contactType" onchange="updateContactLabel()">
+        <select id="contactType" onchange="updateContactLabel(); updateNotes()">
           <option value="Phone">Phone</option>
           <option value="Ticket">Ticket</option>
         </select>
-        <label id="contactFormLabel">Phone</label>
-        <input type="text" id="name" placeholder="Customer Name" />
-        <input type="text" id="orderNumber" placeholder="Order #" />
-        <textarea id="inquiry" placeholder="Inquiry"></textarea>
-        <textarea id="actionTaken" placeholder="Action Taken"></textarea>
 
+        <label id="contactFormLabel" for="contactForm">Phone</label>
+        <input type="text" id="contactForm" placeholder="Phone #" />
+
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Customer Name" />
+
+        <label for="orderNumber">Order Number</label>
+        <input type="text" id="orderNumber" placeholder="Order Number" />
+
+       <label for="inquiry">Inquiry</label>
+<textarea id="inquiry" placeholder="Inquiry"></textarea>
+
+<label for="actionTaken">Action Taken</label>
+<textarea id="actionTaken" placeholder="Action Taken"></textarea>
+
+        <label>Customer Satisfaction(CEX)</label>
         <div class="cex-buttons">
-          <button type="button" class="cex-good" onclick="selectCEX('Good')">Good</button>
-          <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')">Neutral</button>
-          <button type="button" class="cex-bad" onclick="selectCEX('Bad')">Bad</button>
+          <button type="button" class="cex-good" onclick="selectCEX('Good')"><i class="fas fa-thumbs-up"></i> Good</button>
+          <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')"><i class="fas fa-meh"></i> Neutral</button>
+          <button type="button" class="cex-bad" onclick="selectCEX('Bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
         </div>
+
+        <label for="cexReason">Reason(Why)</label>
+        <select id="cexReason" onchange="updateWhy()"></select>
+
+        <label for="cexWhy">WHY</label>
+        <select id="cexWhy" onchange="updateNotes()"></select>
       </form>
     </div>
   </div>
 
   <div class="right-column">
     <div class="card output">
+      <label for="notes">Generated Notes</label>
       <textarea id="notes" readonly></textarea>
       <div class="copy-container">
-        <button onclick="copyNotes()"><i class="fas fa-copy"></i> Copy & Save</button>
-        <button id="undoBtn" onclick="undoClear()"><i class="fas fa-undo"></i> Undo</button>
+        <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
+        <button onclick="clearForm()">Clear</button>
+        <button id="undoBtn" onclick="undoClear()">Undo</button>
       </div>
     </div>
   </div>
 </main>
 
-<!-- History Panel -->
 <div id="historyBackdrop"></div>
 <div id="historyPanel">
-  <h3>History</h3>
-  <input id="historySearch" placeholder="Search..." oninput="renderHistory()" />
+  <h3>Call History</h3>
+  <input type="text" id="historySearch" placeholder="Search by name/order..." oninput="renderHistory()" style="width:100%; padding:6px; margin-bottom:10px; border-radius:6px; border:1px solid #bbb;">
   <ul id="historyList"></ul>
-  <button id="clearHistoryBtn" onclick="clearHistory()">Clear All</button>
+  <button id="clearHistoryBtn" onclick="clearHistory()">Clear History</button>
   <button id="closeHistoryBtn" onclick="toggleHistoryPanel(false)">Close</button>
 </div>
-  <script>
+
+<script>
 // Variables y persistencia
 let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
 let savedQuickNotes = JSON.parse(localStorage.getItem("quickNotesData") || "null");
@@ -248,6 +287,7 @@ function updateNotes(){
     let orderNumber=document.getElementById("orderNumber").value;
     let inquiry=document.getElementById("inquiry").value;
     let actionTaken=document.getElementById("actionTaken").value;
+    let cex=document.getElementById("cexReason").value;
     let extra=document.getElementById("extraDetails")?.value.trim() || "";
     isTyping = inquiry.trim()!=="" || actionTaken.trim()!=="" || name.trim()!=="" || orderNumber.trim()!=="" || contactForm.trim()!=="" || extra!=="";
 
