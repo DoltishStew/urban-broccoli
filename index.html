@@ -1,4 +1,5 @@
 MACROSv2.0-Pre-Alpha
+MACROSv2.0-Pre-Alpha
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,6 +13,25 @@ header { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom:
 .top-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
 .top-buttons button { background: #f39c12; color: black; border: none; padding: 8px 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; border-radius: 8px; transition: 0.2s; }
 .top-buttons button:hover { background: #e08b00; }
+
+/* Botones primarios / secundarios (parche mínimo) */
+.btn-primary {
+  background-color: #007bff !important;
+  color: #fff !important;
+  border: none !important;
+}
+.btn-primary:hover {
+  background-color: #0056d6 !important;
+}
+
+.btn-secondary {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border: none !important;
+}
+.btn-secondary:hover {
+  background-color: #1e7e34 !important;
+}
 
 /* Layout dos columnas */
 main { display: flex; gap: 20px; flex-wrap: wrap; }
@@ -71,6 +91,8 @@ textarea { resize: vertical; }
 .cex-buttons button { flex:1; color:#fff; border:none; padding:6px; border-radius:6px; font-weight:bold; cursor:pointer; max-width: 120px; }
 .cex-good { background:#34c759; } .cex-neutral { background:#ff9500; } .cex-bad { background:#ff3b30; }
 
+ /* keep CEX untouched */
+
 /* Output */
 .output { display:flex; flex-direction:column; }
 .output textarea { width:100%; min-height:150px; border-radius:6px; padding:12px; margin-bottom:5px; background:#f2f2f7; font-family:monospace; font-size:0.95rem; color: #000; }
@@ -116,9 +138,9 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 <header>MacrOS</header>
 
 <div class="top-buttons">
-  <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
-  <button onclick="toggleHistoryPanel()"><i class="fas fa-history"></i> History</button>
-  <button id="darkModeBtn"><i class="fas fa-moon"></i> Dark Mode</button>
+  <button onclick="newCall()" class="btn-primary"><i class="fas fa-plus"></i> New Call</button>
+  <button onclick="toggleHistoryPanel()" class="btn-primary"><i class="fas fa-history"></i> History</button>
+  <button id="darkModeBtn" class="btn-secondary"><i class="fas fa-moon"></i> Dark Mode</button>
 </div>
 
 <main>
@@ -140,10 +162,10 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
         <textarea id="mqInquiry" placeholder="Inquiry text"></textarea>
         <textarea id="mqAction" placeholder="Action taken text"></textarea>
         <div class="button-row">
-  <button id="addQuickBtn">Add</button>
+  <button id="addQuickBtn" class="btn-primary">Add</button>
   <select id="mqDeleteSelect" style="flex:1;"></select>
-  <button id="editQuickBtn" style="background:#ff9500;">Edit</button>
-  <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
+  <button id="editQuickBtn" class="btn-secondary">Edit</button>
+  <button id="deleteQuickBtn" style="background:#ff3b30; color:white;">Delete</button>
 </div>
       </div>
     </div>
@@ -192,9 +214,9 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
       <label for="notes">Generated Notes</label>
       <textarea id="notes" readonly></textarea>
       <div class="copy-container">
-        <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
-        <button onclick="clearForm()">Clear</button>
-        <button id="undoBtn" onclick="undoClear()">Undo</button>
+        <button id="copy-btn" class="btn-primary" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
+        <button class="btn-secondary" onclick="clearForm()">Clear</button>
+        <button id="undoBtn" class="btn-secondary" onclick="undoClear()">Undo</button>
       </div>
     </div>
   </div>
@@ -206,7 +228,7 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
   <input type="text" id="historySearch" placeholder="Search by name/order..." oninput="renderHistory()" style="width:100%; padding:6px; margin-bottom:10px; border-radius:6px; border:1px solid #bbb;">
   <ul id="historyList"></ul>
   <button id="clearHistoryBtn" onclick="clearHistory()">Clear History</button>
-  <button id="closeHistoryBtn" onclick="toggleHistoryPanel(false)">Close</button>
+  <button id="closeHistoryBtn" class="btn-secondary" onclick="toggleHistoryPanel(false)">Close</button>
 </div>
 
 <script>
@@ -538,3 +560,4 @@ applyDarkFromStorage();
 </script>
 </body>
 </html>
+
