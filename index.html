@@ -387,7 +387,6 @@ const manageQuickBtn = document.getElementById('manageQuickToggle');
 const quickCategoriesDiv = document.getElementById('quickCategories');
 const subOptionsDiv = document.getElementById('subOptions');
 const manageQuickDiv = document.getElementById('manageQuick');
-
 const mqCategory = document.getElementById('mqCategory');
 const mqTitle = document.getElementById('mqTitle');
 const mqInquiry = document.getElementById('mqInquiry');
@@ -396,6 +395,9 @@ const addQuickBtn = document.getElementById('addQuickBtn');
 const editQuickBtn = document.getElementById('editQuickBtn');
 const deleteQuickBtn = document.getElementById('deleteQuickBtn');
 const mqDeleteSelect = document.getElementById('mqDeleteSelect');
+
+// ======== Data ========
+let quickNotesData = JSON.parse(localStorage.getItem("quickNotesData")) || {};
 
 // ==== Render Categories ====
 function renderQuickCategories(){
@@ -427,7 +429,8 @@ function applyQuickNote(cat,title){
   let data = quickNotesData[cat][title];
   document.getElementById('inquiry').value = data.inquiry;
   document.getElementById('actionTaken').value = data.action;
-  updateNotes();
+  mqCategory.value = cat;
+  mqTitle.value = title;
 }
 
 // ==== Toggle visibility ====
@@ -441,7 +444,9 @@ manageQuickBtn.onclick = () => {
 };
 
 // ==== Save to localStorage ====
-function saveQuickNotes(){ localStorage.setItem("quickNotesData", JSON.stringify(quickNotesData)); }
+function saveQuickNotes(){ 
+  localStorage.setItem("quickNotesData", JSON.stringify(quickNotesData)); 
+}
 
 // ==== Add Quick Note ====
 addQuickBtn.onclick = ()=>{
@@ -477,6 +482,7 @@ deleteQuickBtn.onclick = ()=>{
   saveQuickNotes();
   renderQuickCategories();
   renderMQDelete();
+  mqCategory.value=''; mqTitle.value=''; mqInquiry.value=''; mqAction.value='';
 };
 
 // ==== Update delete/edit select ====
@@ -492,9 +498,24 @@ function renderMQDelete(){
   });
 }
 
+// ==== Auto-save while typing ====
+[mqCategory, mqTitle, mqInquiry, mqAction].forEach(input=>{
+  input.addEventListener('input', ()=>{
+    let cat = mqCategory.value.trim();
+    let title = mqTitle.value.trim();
+    if(!cat || !title) return;
+    if(!quickNotesData[cat]) quickNotesData[cat] = {};
+    quickNotesData[cat][title] = { inquiry: mqInquiry.value, action: mqAction.value };
+    saveQuickNotes();
+    renderQuickCategories();
+    renderMQDelete();
+  });
+});
+
 // ==== Init ====
 renderQuickCategories();
 renderMQDelete();
+
 </script>
 </body>
 </html>
