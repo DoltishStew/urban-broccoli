@@ -14,23 +14,51 @@ header { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom:
 .top-buttons button { background: #f39c12; color: black; border: none; padding: 8px 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; border-radius: 8px; transition: 0.2s; }
 .top-buttons button:hover { background: #e08b00; }
 
-/* Botones primarios / secundarios (parche mínimo) */
+/* Botón primario: azul */
 .btn-primary {
-  background-color: #007bff !important;
-  color: #fff !important;
-  border: none !important;
+  background-color: #006DB2;
+  color: #fff;
 }
 .btn-primary:hover {
-  background-color: #0056d6 !important;
+  background-color: #005a91;
 }
 
+/* Botón secundario: verde */
 .btn-secondary {
-  background-color: #28a745 !important;
-  color: #fff !important;
-  border: none !important;
+  background-color: #28a745;
+  color: #fff;
 }
 .btn-secondary:hover {
-  background-color: #1e7e34 !important;
+  background-color: #1e7e34;
+}
+
+/* Botón de Dark Mode */
+.dark-mode-toggle {
+  background-color: #006DB2 !important;
+  color: #fff !important;
+}
+.dark-mode-toggle:hover {
+  background-color: #005a91 !important;
+}
+
+/* Botones "+" y ⚙ (los de quick notes arriba) */
+#quickNoteForm button,
+.quick-notes h3 button {
+  background-color: #006DB2;
+  color: #fff;
+}
+#quickNoteForm button:hover,
+.quick-notes h3 button:hover {
+  background-color: #005a91;
+}
+
+/* Botones dentro de cada Quick Note */
+.quick-note-item button {
+  background-color: #28a745;
+  color: #fff;
+}
+.quick-note-item button:hover {
+  background-color: #1e7e34;
 }
 
 /* Layout dos columnas */
