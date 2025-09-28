@@ -203,13 +203,33 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 </div>
 
 <script>
-// Variables and persistence
+// Variables y persistencia
 let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
 let savedQuickNotes = JSON.parse(localStorage.getItem("quickNotesData") || "null");
-let quickNotesData = savedQuickNotes || {"Order Status":{"Processing":{inquiry:"CCI because he wanted to check the status of his order",action:"Informed cx that the order was still processing, provided estimated delivery timeframe."},"Shipped":{inquiry:"CCI because he wanted to check the status of his order",action:"Informed cx that the order has been shipped, provided tracking information."}},"New Order":{"Filters":{inquiry:"CCI to create new order",action:"Processed new order for filters."},"Main Unit":{inquiry:"CCI to create new order",action:"Processed new order for main unit."},"Accessories":{inquiry:"CCI to create new order",action:"Processed new order for accessories."}}};
+let quickNotesData = savedQuickNotes || {
+    "Order Status":{
+        "Processing":{inquiry:"CCI porque quería verificar el estado de su orden",action:"Informé que la orden aún estaba procesándose y di tiempo estimado de entrega."},
+        "Shipped":{inquiry:"CCI porque quería verificar el estado de su orden",action:"Informé que la orden había sido enviada y proporcioné el rastreo."}
+    },
+    "New Order":{
+        "Filters":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de filtros."},
+        "Main Unit":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de unidad principal."},
+        "Accessories":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de accesorios."}
+    }
+};
 let isTyping=false, lastCleared=null;
 let cexReasons = {Good:["Customer was pleased","Info clear","Issue resolved"],Neutral:["Partial help","Info unclear","Waited long"],Bad:["Not helpful","Wrong info","Issue unresolved"]};
-let cexWhy = {"Customer was pleased":["Issue resolved","Provided info"],"Info clear":["CX understood"],"Issue resolved":["Resolved successfully"],"Partial help":["Follow-up needed"],"Info unclear":["CX confused"],"Waited long":["CX frustrated"],"Not helpful":["CX upset"],"Wrong info":["Mistake corrected"],"Issue unresolved":["Pending follow-up"]};
+let cexWhy = {
+    "Customer was pleased":["Issue resolved","Provided info"],
+    "Info clear":["CX understood"],
+    "Issue resolved":["Resolved successfully"],
+    "Partial help":["Follow-up needed"],
+    "Info unclear":["CX confused"],
+    "Waited long":["CX frustrated"],
+    "Not helpful":["CX upset"],
+    "Wrong info":["Mistake corrected"],
+    "Issue unresolved":["Pending follow-up"]
+};
 
 // Brand init
 let brandSelect=document.getElementById("brand");
@@ -217,167 +237,181 @@ let brandSelect=document.getElementById("brand");
 
 // Contact label
 function updateContactLabel(){
-  let type=document.getElementById("contactType").value;
-  document.getElementById("contactFormLabel").innerText=type;
-  document.getElementById("contactForm").placeholder=type+" #";
+    let type=document.getElementById("contactType").value;
+    document.getElementById("contactFormLabel").innerText=type;
+    document.getElementById("contactForm").placeholder=type+" #";
 }
 
 // Notes generation
 function updateNotes(){
-  let brand=document.getElementById("brand").value;
-  let contactType=document.getElementById("contactType").value;
-  let contactForm=document.getElementById("contactForm").value;
-  let name=document.getElementById("name").value;
-  let orderNumber=document.getElementById("orderNumber").value;
-  let inquiry=document.getElementById("inquiry").value;
-  let actionTaken=document.getElementById("actionTaken").value;
-  let cex=document.getElementById("cexReason").value;
-  let why=document.getElementById("cexWhy").value;
-  isTyping=true;
-  document.getElementById("notes").value=
-  `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
+    let brand=document.getElementById("brand").value;
+    let contactType=document.getElementById("contactType").value;
+    let contactForm=document.getElementById("contactForm").value;
+    let name=document.getElementById("name").value;
+    let orderNumber=document.getElementById("orderNumber").value;
+    let inquiry=document.getElementById("inquiry").value;
+    let actionTaken=document.getElementById("actionTaken").value;
+    let cex=document.getElementById("cexReason").value;
+    let why=document.getElementById("cexWhy").value;
+    isTyping = inquiry.trim()!=="" || actionTaken.trim()!=="" || name.trim()!=="" || orderNumber.trim()!=="" || contactForm.trim()!=="";
+    document.getElementById("notes").value=
+        `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
 }
 
 // CEX selection
 function selectCEX(value){
-  let select=document.getElementById("cexReason"); select.innerHTML="";
-  cexReasons[value].forEach(opt=>{let o=document.createElement("option"); o.value=o.innerText=opt; select.appendChild(o);});
-  updateWhy();
+    let select=document.getElementById("cexReason"); select.innerHTML="";
+    cexReasons[value].forEach(opt=>{let o=document.createElement("option"); o.value=o.innerText=opt; select.appendChild(o);});
+    updateWhy();
 }
 
 // WHY update
 function updateWhy(){
-  let reason=document.getElementById("cexReason").value;
-  let whySelect=document.getElementById("cexWhy"); whySelect.innerHTML="";
-  if(cexWhy[reason]){ cexWhy[reason].forEach(w=>{ let o=document.createElement("option"); o.value=o.innerText=w; whySelect.appendChild(o); }); }
-  updateNotes();
+    let reason=document.getElementById("cexReason").value;
+    let whySelect=document.getElementById("cexWhy"); whySelect.innerHTML="";
+    if(cexWhy[reason]){ cexWhy[reason].forEach(w=>{ let o=document.createElement("option"); o.value=o.innerText=w; whySelect.appendChild(o); }); }
+    updateNotes();
 }
 
 // Copy Notes
 function copyNotes(){
-  let notesBox=document.getElementById("notes");
-  if(!notesBox.value || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
-  notesBox.select(); document.execCommand("copy"); saveCurrentCall();
-  let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
-  setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
+    let notesBox=document.getElementById("notes");
+    if(!notesBox.value.trim() || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
+    notesBox.select(); document.execCommand("copy"); saveCurrentCall();
+    let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
+    setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
 // Save Call
 function saveCurrentCall(){
-  let noteText=document.getElementById("notes").value;
-  if(noteText.trim()==="") return;
-  callHistory.push({orderNumber:document.getElementById("orderNumber").value,name:document.getElementById("name").value,brand:document.getElementById("brand").value,contactType:document.getElementById("contactType").value,contactForm:document.getElementById("contactForm").value,inquiry:document.getElementById("inquiry").value,actionTaken:document.getElementById("actionTaken").value,cex:document.getElementById("cexReason").value,why:document.getElementById("cexWhy").value,date:new Date().toLocaleString()});
-  localStorage.setItem("callHistory",JSON.stringify(callHistory));
-  renderHistory();
-  isTyping=false;
+    let noteText=document.getElementById("notes").value;
+    if(noteText.trim()==="") return;
+    callHistory.push({
+        orderNumber:document.getElementById("orderNumber").value,
+        name:document.getElementById("name").value,
+        brand:document.getElementById("brand").value,
+        contactType:document.getElementById("contactType").value,
+        contactForm:document.getElementById("contactForm").value,
+        inquiry:document.getElementById("inquiry").value,
+        actionTaken:document.getElementById("actionTaken").value,
+        cex:document.getElementById("cexReason").value,
+        why:document.getElementById("cexWhy").value,
+        date:new Date().toLocaleString()
+    });
+    localStorage.setItem("callHistory",JSON.stringify(callHistory));
+    renderHistory();
+    isTyping=false;
 }
 
 // Render History with search
 function renderHistory(){
-  let list=document.getElementById("historyList"); list.innerHTML="";
-  let query=document.getElementById("historySearch").value.toLowerCase();
-  callHistory.slice().reverse().forEach((item,index)=>{
-    if(query && !(`${item.orderNumber} ${item.name}`.toLowerCase().includes(query))) return;
-    let li=document.createElement("li");
-    li.innerText=`${item.orderNumber} - ${item.name} (${item.date})`;
-    li.onclick=()=> loadCall(callHistory.length-1-index);
-    list.appendChild(li);
-  });
+    let list=document.getElementById("historyList"); list.innerHTML="";
+    let query=document.getElementById("historySearch").value.toLowerCase();
+    callHistory.slice().reverse().forEach((item,index)=>{
+        if(query && !(`${item.orderNumber} ${item.name}`.toLowerCase().includes(query))) return;
+        let li=document.createElement("li");
+        li.innerText=`${item.orderNumber} - ${item.name} (${item.date})`;
+        li.onclick=()=> loadCall(callHistory.length-1-index);
+        list.appendChild(li);
+    });
 }
 
 // Load call from history
 function loadCall(index){
-  let item=callHistory[index];
-  if(!item) return;
-  document.getElementById("brand").value=item.brand;
-  document.getElementById("contactType").value=item.contactType;
-  updateContactLabel();
-  document.getElementById("contactForm").value=item.contactForm;
-  document.getElementById("name").value=item.name;
-  document.getElementById("orderNumber").value=item.orderNumber;
-  document.getElementById("inquiry").value=item.inquiry;
-  document.getElementById("actionTaken").value=item.actionTaken;
-  // select CEX from reason first word fallback
-  let firstWord = item.cex ? item.cex.split(" ")[0] : "Good";
-  selectCEX(["Good","Neutral","Bad"].includes(firstWord)?firstWord:"Good");
-  setTimeout(()=>{document.getElementById("cexWhy").value=item.why; updateNotes();},10);
-  toggleHistoryPanel(false);
+    let item=callHistory[index];
+    if(!item) return;
+    document.getElementById("brand").value=item.brand;
+    document.getElementById("contactType").value=item.contactType;
+    updateContactLabel();
+    document.getElementById("contactForm").value=item.contactForm;
+    document.getElementById("name").value=item.name;
+    document.getElementById("orderNumber").value=item.orderNumber;
+    document.getElementById("inquiry").value=item.inquiry;
+    document.getElementById("actionTaken").value=item.actionTaken;
+    let firstWord = item.cex ? item.cex.split(" ")[0] : "Good";
+    selectCEX(["Good","Neutral","Bad"].includes(firstWord)?firstWord:"Good");
+    setTimeout(()=>{document.getElementById("cexWhy").value=item.why; updateNotes();},10);
+    toggleHistoryPanel(false);
 }
 
-// Toggle Dark Mode with icon + localStorage
+// Dark Mode
 let darkBtn=document.getElementById("darkModeBtn");
 function applyDarkFromStorage(){
-  if(localStorage.getItem("darkMode")==="true"){ document.body.classList.add("dark"); darkBtn.querySelector('i').className='fas fa-sun'; darkBtn.childNodes[1] && (darkBtn.childNodes[1].nodeValue = ' Sun Mode'); }
-  else{ document.body.classList.remove("dark"); darkBtn.querySelector('i').className='fas fa-moon'; darkBtn.childNodes[1] && (darkBtn.childNodes[1].nodeValue = ' Dark Mode'); }
+    if(localStorage.getItem("darkMode")==="true"){ 
+        document.body.classList.add("dark"); 
+        darkBtn.querySelector('i').className='fas fa-sun'; 
+    } else { 
+        document.body.classList.remove("dark"); 
+        darkBtn.querySelector('i').className='fas fa-moon'; 
+    }
 }
 darkBtn.addEventListener("click", ()=>{
-  document.body.classList.toggle("dark");
-  let icon=document.querySelector("#darkModeBtn i");
-  if(document.body.classList.contains("dark")){icon.className="fas fa-sun"; localStorage.setItem("darkMode","true");}
-  else{icon.className="fas fa-moon"; localStorage.setItem("darkMode","false");}
+    document.body.classList.toggle("dark");
+    let icon=document.querySelector("#darkModeBtn i");
+    if(document.body.classList.contains("dark")){icon.className="fas fa-sun"; localStorage.setItem("darkMode","true");}
+    else{icon.className="fas fa-moon"; localStorage.setItem("darkMode","false");}
 });
 
-// History panel toggle with backdrop and animation
+// History panel toggle
 let backdrop=document.getElementById('historyBackdrop');
 let panel=document.getElementById('historyPanel');
 function toggleHistoryPanel(force){
-  let isOpen = panel.classList.contains('active');
-  if(force===false || (typeof force==='boolean' && force===false)) { panel.classList.remove('active'); backdrop.classList.remove('active'); return; }
-  if(isOpen){ panel.classList.remove('active'); backdrop.classList.remove('active'); }
-  else{ panel.classList.add('active'); backdrop.classList.add('active'); renderHistory(); }
+    if(force===false){ panel.classList.remove('active'); backdrop.classList.remove('active'); return; }
+    panel.classList.toggle('active');
+    backdrop.classList.toggle('active');
+    renderHistory();
 }
 backdrop.addEventListener('click', ()=>toggleHistoryPanel(false));
 
 // Clear History
 function clearHistory(){
-  if(!confirm('¿Borrar todo el historial? Esta acción no se puede deshacer.')) return;
-  callHistory = [];
-  localStorage.removeItem('callHistory');
-  renderHistory();
+    if(!confirm('¿Borrar todo el historial?')) return;
+    callHistory=[]; localStorage.removeItem('callHistory'); renderHistory();
 }
 
-// Clear Form with undo
+// Clear Form with Undo
 function clearForm(){
-  // store current state for undo
-  lastCleared = {
-    brand: document.getElementById('brand').value,
-    contactType: document.getElementById('contactType').value,
-    contactForm: document.getElementById('contactForm').value,
-    name: document.getElementById('name').value,
-    orderNumber: document.getElementById('orderNumber').value,
-    inquiry: document.getElementById('inquiry').value,
-    actionTaken: document.getElementById('actionTaken').value,
-    cexReason: document.getElementById('cexReason').value,
-    cexWhy: document.getElementById('cexWhy').value,
-    notes: document.getElementById('notes').value
-  };
-  document.getElementById('macroForm').reset();
-  document.getElementById('cexReason').innerHTML='';
-  document.getElementById('cexWhy').innerHTML='';
-  document.getElementById('notes').value='';
-  isTyping=false;
-  updateContactLabel();
-  document.getElementById('undoBtn').style.display='inline-block';
+    if(isTyping && document.getElementById("notes").value.trim()!=""){
+        lastCleared = {
+            brand: document.getElementById('brand').value,
+            contactType: document.getElementById('contactType').value,
+            contactForm: document.getElementById('contactForm').value,
+            name: document.getElementById('name').value,
+            orderNumber: document.getElementById('orderNumber').value,
+            inquiry: document.getElementById('inquiry').value,
+            actionTaken: document.getElementById('actionTaken').value,
+            cexReason: document.getElementById('cexReason').value,
+            cexWhy: document.getElementById('cexWhy').value,
+            notes: document.getElementById('notes').value
+        };
+        document.getElementById('undoBtn').style.display='inline-block';
+    }
+    document.getElementById('macroForm').reset();
+    document.getElementById('cexReason').innerHTML='';
+    document.getElementById('cexWhy').innerHTML='';
+    document.getElementById('notes').value='';
+    isTyping=false;
+    updateContactLabel();
 }
 
 function undoClear(){
-  if(!lastCleared) return alert('No hay nada que deshacer.');
-  document.getElementById('brand').value=lastCleared.brand;
-  document.getElementById('contactType').value=lastCleared.contactType;
-  updateContactLabel();
-  document.getElementById('contactForm').value=lastCleared.contactForm;
-  document.getElementById('name').value=lastCleared.name;
-  document.getElementById('orderNumber').value=lastCleared.orderNumber;
-  document.getElementById('inquiry').value=lastCleared.inquiry;
-  document.getElementById('actionTaken').value=lastCleared.actionTaken;
-  selectCEX(lastCleared.cexReason ? lastCleared.cexReason.split(' ')[0] : 'Good');
-  setTimeout(()=>{ document.getElementById('cexWhy').value=lastCleared.cexWhy; document.getElementById('notes').value=lastCleared.notes; },10);
-  document.getElementById('undoBtn').style.display='none';
-  lastCleared=null;
+    if(!lastCleared) return alert('No hay nada que deshacer.');
+    Object.keys(lastCleared).forEach(k=>{
+        if(document.getElementById(k)) document.getElementById(k).value=lastCleared[k];
+    });
+    selectCEX(lastCleared.cexReason ? lastCleared.cexReason.split(' ')[0] : 'Good');
+    setTimeout(()=>{document.getElementById('cexWhy').value=lastCleared.cexWhy; document.getElementById('notes').value=lastCleared.notes;},10);
+    document.getElementById('undoBtn').style.display='none';
+    lastCleared=null;
 }
 
 // New Call
-function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!="") saveCurrentCall(); clearForm(); }
+function newCall(){
+    if(isTyping && document.getElementById("notes").value.trim()!=""){
+        if(confirm("¿Guardar nota actual antes de limpiar?")) saveCurrentCall();
+    }
+    clearForm();
+}
 
 // Quick Notes UI
 let toggleBtn=document.getElementById("toggleQuickNotes");
@@ -387,63 +421,73 @@ let manageToggle=document.getElementById('manageQuickToggle');
 let managePanel=document.getElementById('manageQuick');
 
 function renderQuickCategories(){
-  quickCategories.innerHTML=''; subOptions.innerHTML='';
-  for(let cat in quickNotesData){
-    let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
-    btn.onclick=()=>{
-      subOptions.innerHTML=''; subOptions.style.display='flex';
-      for(let sub in quickNotesData[cat]){
-        let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
-        subBtn.onclick=()=>{ document.getElementById('inquiry').value=quickNotesData[cat][sub].inquiry; document.getElementById('actionTaken').value=quickNotesData[cat][sub].action; updateNotes(); };
-        subOptions.appendChild(subBtn);
-      }
-    };
-    quickCategories.appendChild(btn);
-  }
-  // populate delete select
-  let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
-  for(let cat in quickNotesData){ for(let sub in quickNotesData[cat]){ let opt=document.createElement('option'); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt);} }
+    quickCategories.innerHTML=''; subOptions.innerHTML='';
+    for(let cat in quickNotesData){
+        let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
+        btn.onclick=()=>{
+            subOptions.innerHTML=''; subOptions.style.display='flex';
+            for(let sub in quickNotesData[cat]){
+                let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
+                subBtn.onclick=()=>{
+                    // Append instead of replace
+                    let inquiryField=document.getElementById('inquiry');
+                    let actionField=document.getElementById('actionTaken');
+                    inquiryField.value = inquiryField.value ? inquiryField.value + " | " + quickNotesData[cat][sub].inquiry : quickNotesData[cat][sub].inquiry;
+                    actionField.value = actionField.value ? actionField.value + " | " + quickNotesData[cat][sub].action : quickNotesData[cat][sub].action;
+                    updateNotes();
+                };
+                subOptions.appendChild(subBtn);
+            }
+        };
+        quickCategories.appendChild(btn);
+    }
+    // populate delete select
+    let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
+    for(let cat in quickNotesData){ 
+        for(let sub in quickNotesData[cat]){
+            let opt=document.createElement('option'); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt);
+        }
+    }
 }
 
-// manage quick notes actions
+// Manage Quick Notes Actions
 document.getElementById('addQuickBtn').addEventListener('click', ()=>{
-  let cat=document.getElementById('mqCategory').value.trim();
-  let title=document.getElementById('mqTitle').value.trim();
-  let inquiry=document.getElementById('mqInquiry').value.trim();
-  let action=document.getElementById('mqAction').value.trim();
-  if(!cat || !title) return alert('Category y Title son obligatorios');
-  if(!quickNotesData[cat]) quickNotesData[cat] = {};
-  quickNotesData[cat][title] = {inquiry: inquiry || '', action: action || ''};
-  localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
-  document.getElementById('mqCategory').value=''; document.getElementById('mqTitle').value=''; document.getElementById('mqInquiry').value=''; document.getElementById('mqAction').value='';
-  renderQuickCategories();
-  alert('Quick note añadida');
+    let cat=document.getElementById('mqCategory').value.trim();
+    let title=document.getElementById('mqTitle').value.trim();
+    let inquiry=document.getElementById('mqInquiry').value.trim();
+    let action=document.getElementById('mqAction').value.trim();
+    if(!cat || !title) return alert('Category y Title son obligatorios');
+    if(!quickNotesData[cat]) quickNotesData[cat] = {};
+    quickNotesData[cat][title] = {inquiry: inquiry || '', action: action || ''};
+    localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+    document.getElementById('mqCategory').value=''; document.getElementById('mqTitle').value=''; document.getElementById('mqInquiry').value=''; document.getElementById('mqAction').value='';
+    renderQuickCategories();
+    alert('Quick note añadida');
 });
 
 // Delete Quick Note
 document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
-  let val=document.getElementById('mqDeleteSelect').value;
-  if(!val) return; 
-  let [cat,sub]=val.split('|||');
-  if(confirm(`Eliminar '${sub}' de '${cat}'?`)){
-    delete quickNotesData[cat][sub];
-    if(Object.keys(quickNotesData[cat]).length===0) delete quickNotesData[cat];
-    localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
-    renderQuickCategories();
-  }
-}); // <-- cerrar aquí la función delete
+    let val=document.getElementById('mqDeleteSelect').value;
+    if(!val) return; 
+    let [cat,sub]=val.split('|||');
+    if(confirm(`Eliminar '${sub}' de '${cat}'?`)){
+        delete quickNotesData[cat][sub];
+        if(Object.keys(quickNotesData[cat]).length===0) delete quickNotesData[cat];
+        localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+        renderQuickCategories();
+    }
+});
 
 // Edit Quick Note
 document.getElementById('editQuickBtn').addEventListener('click', ()=>{
-  let val = document.getElementById('mqDeleteSelect').value;
-  if(!val) return alert('Selecciona una nota para editar.');
-  let [cat, sub] = val.split('|||');
-  if(!quickNotesData[cat] || !quickNotesData[cat][sub]) return alert('Nota no encontrada.');
-  
-  document.getElementById('mqCategory').value = cat;
-  document.getElementById('mqTitle').value = sub;
-  document.getElementById('mqInquiry').value = quickNotesData[cat][sub].inquiry;
-  document.getElementById('mqAction').value = quickNotesData[cat][sub].action;
+    let val = document.getElementById('mqDeleteSelect').value;
+    if(!val) return alert('Selecciona una nota para editar.');
+    let [cat, sub] = val.split('|||');
+    if(!quickNotesData[cat] || !quickNotesData[cat][sub]) return alert('Nota no encontrada.');
+    document.getElementById('mqCategory').value = cat;
+    document.getElementById('mqTitle').value = sub;
+    document.getElementById('mqInquiry').value = quickNotesData[cat][sub].inquiry;
+    document.getElementById('mqAction').value = quickNotesData[cat][sub].action;
 });
 
 // Quick notes toggles
@@ -451,17 +495,17 @@ let isQuickOpen=false;
 toggleBtn.addEventListener('click', ()=>{ isQuickOpen = !isQuickOpen; quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; subOptions.style.display='none'; toggleBtn.innerText = isQuickOpen ? '-' : '+'; });
 manageToggle.addEventListener('click', ()=>{ managePanel.style.display = managePanel.style.display==='none' ? 'block' : 'none'; });
 
-// Event binding to inputs to mark typing and support updateNotes
-document.querySelectorAll('#macroForm input, #macroForm textarea, #macroForm select').forEach(el=>{ el.addEventListener('input', ()=>{ if(el.id==='contactType') updateContactLabel(); updateNotes(); }); });
+// Input event binding
+document.querySelectorAll('#macroForm input, #macroForm textarea, #macroForm select').forEach(el=>{
+    el.addEventListener('input', ()=>{ if(el.id==='contactType') updateContactLabel(); updateNotes(); });
+});
 
-// Initial CEX default
+// Inicialización
 selectCEX('Good');
-
-// Load persisted history and quick notes
 renderQuickCategories();
 renderHistory();
 applyDarkFromStorage();
-
 </script>
+
 </body>
 </html>
