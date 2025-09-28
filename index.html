@@ -62,7 +62,12 @@ input, select, textarea { width:100%; box-sizing:border-box; padding:8px 12px; m
 textarea { resize: vertical; }
 
 /* CEX buttons */
-.cex-buttons { display:flex; gap:8px; justify-content:center; margin-bottom:10px; }
+.cex-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 10px 0 12px; /* arriba 10px, lados 0, abajo 12px */
+}
 .cex-buttons button { flex:1; color:#fff; border:none; padding:6px; border-radius:6px; font-weight:bold; cursor:pointer; max-width: 120px; }
 .cex-good { background:#34c759; } .cex-neutral { background:#ff9500; } .cex-bad { background:#ff3b30; }
 
@@ -102,8 +107,8 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 @media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;}}
   #inquiry, #actionTaken {
   resize: vertical;   /* solo expandir verticalmente */
-  min-height: 80px;   /* altura mínima */
-  max-height: 400px;  /* altura máxima opcional */
+  min-height: 30px;   /* altura mínima */
+  max-height: 100px;  /* altura máxima opcional */
 }
 </style>
 </head>
