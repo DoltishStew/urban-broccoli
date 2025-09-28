@@ -163,14 +163,14 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
         <label for="actionTaken">Action Taken</label>
         <input type="text" id="actionTaken" placeholder="Action Taken" />
 
-        <label>CEX</label>
+        <label>Customer SatisfactionCEX</label>
         <div class="cex-buttons">
           <button type="button" class="cex-good" onclick="selectCEX('Good')"><i class="fas fa-thumbs-up"></i> Good</button>
           <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')"><i class="fas fa-meh"></i> Neutral</button>
           <button type="button" class="cex-bad" onclick="selectCEX('Bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
         </div>
 
-        <label for="cexReason">Reason</label>
+        <label for="cexReason">Reason(Why)</label>
         <select id="cexReason" onchange="updateNotes()"></select>
       </form>
     </div>
@@ -191,7 +191,7 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 
 <div id="historyBackdrop"></div>
 <div id="historyPanel">
-  <h3>Call History</h3>
+  <h3>History</h3>
   <input type="text" id="historySearch" placeholder="Search by name/order..." oninput="renderHistory()" style="width:100%; padding:6px; margin-bottom:10px; border-radius:6px; border:1px solid #bbb;">
   <ul id="historyList"></ul>
   <button id="clearHistoryBtn" onclick="clearHistory()">Clear History</button>
@@ -251,18 +251,23 @@ function renderSubOptions(cat){
         const btn = document.createElement('button');
         btn.className='sub-btn';
         btn.innerText=note.title;
-        btn.onclick=()=>populateForm(note);
+        btn.onclick=()=>populateForm(cat, idx);
         subOptionsDiv.appendChild(btn);
     });
 }
 
-// Populate form from quick note
-function populateForm(note){
-    document.getElementById('name').value=note.name||'';
-    document.getElementById('orderNumber').value=note.orderNumber||'';
-    document.getElementById('inquiry').value=note.inquiry||note.inquiryText||'';
-    document.getElementById('actionTaken').value=note.action||'';
-    selectCEX(note.cex||'');
+// Populate form from quick note (arreglado)
+function populateForm(cat, idx){
+    const note = quickNotes[cat][idx];
+    document.getElementById('mqCategory').value = cat;
+    document.getElementById('mqTitle').value = note.title;
+    document.getElementById('mqInquiry').value = note.inquiry || '';
+    document.getElementById('mqAction').value = note.action || '';
+    document.getElementById('name').value = note.name || '';
+    document.getElementById('orderNumber').value = note.orderNumber || '';
+    document.getElementById('inquiry').value = note.inquiry || '';
+    document.getElementById('actionTaken').value = note.action || '';
+    selectCEX(note.cex || '');
 }
 
 // Manage quick notes
@@ -297,7 +302,7 @@ document.getElementById('addQuickBtn').addEventListener('click',()=>{
 document.getElementById('editQuickBtn').addEventListener('click',()=>{
     const sel = document.getElementById('mqDeleteSelect');
     const val = sel.value;
-    if(!val)return;
+    if(!val) return alert('Select a note to edit');
     const [cat,idx]=val.split('-');
     quickNotes[cat][idx]={
         title:document.getElementById('mqTitle').value,
@@ -313,7 +318,7 @@ document.getElementById('editQuickBtn').addEventListener('click',()=>{
 document.getElementById('deleteQuickBtn').addEventListener('click',()=>{
     const sel = document.getElementById('mqDeleteSelect');
     const val = sel.value;
-    if(!val)return;
+    if(!val) return alert('Select a note to delete');
     const [cat,idx]=val.split('-');
     quickNotes[cat].splice(idx,1);
     if(quickNotes[cat].length===0) delete quickNotes[cat];
@@ -414,6 +419,7 @@ renderQuickCategories();
 refreshQuickDeleteSelect();
 updateContactLabel();
 </script>
+
 
 </body> 
 </html>
