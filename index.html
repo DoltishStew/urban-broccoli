@@ -228,31 +228,60 @@ let quickNotesData = savedQuickNotes || {
     }
 };
 let isTyping=false, lastCleared=null;
-let cexReasons = {Good:["Customer was pleased","Info clear","Issue resolved"],Neutral:["Partial help","Info unclear","Waited long"],Bad:["Not helpful","Wrong info","Issue unresolved"]};
-let cexWhy = {
-    "Customer was pleased":["Issue resolved","Provided info"],
-    "Info clear":["CX understood"],
-    "Issue resolved":["Resolved successfully"],
-    "Partial help":["Follow-up needed"],
-    "Info unclear":["CX confused"],
-    "Waited long":["CX frustrated"],
-    "Not helpful":["CX upset"],
-    "Wrong info":["Mistake corrected"],
-    "Issue unresolved":["Pending follow-up"]
+
+// =================== CEX / Reason ===================
+let cexReasons = {
+    Good: [
+        "Customer was satisfied with the solution provided.",
+        "Clear and fast resolution was achieved.",
+        "Customer fully understood the process or instructions.",
+        "Interaction was friendly and professional.",
+        "Empathy and proactive support were provided.",
+        "Customer appreciated the attention and information given.",
+        "Courtesy item or policy exception was offered.",
+        "Refund, replacement, or order was processed successfully.",
+        "Clear next steps were explained to the customer.",
+        "Customer was polite and cooperative during the interaction."
+    ],
+    Neutral: [
+        "No customer response yet, awaiting action or reply.",
+        "Outcome still pending, more information or steps required.",
+        "Clear explanation provided, but awaiting customer confirmation.",
+        "Awaiting internal confirmation such as tracking, refund, or backoffice review.",
+        "Neutral attitude displayed, no strong emotion expressed."
+    ],
+    Bad: [
+        "Customer was frustrated or dissatisfied with support.",
+        "Issue persisted even after troubleshooting efforts.",
+        "Product was defective or not working properly.",
+        "Shipping or delivery delays caused frustration.",
+        "Customer was unhappy with assessment or reluctant to troubleshoot.",
+        "Escalation requested and supervisor involvement needed.",
+        "Customer was unhappy with warranty coverage or outcome.",
+        "Customer was unhappy with refund or credit amount offered.",
+        "Long wait time or lack of promised callback caused dissatisfaction.",
+        "Filter life or product quality concerns led to frustration."
+    ]
 };
+const constantOption = "NA"; // Siempre presente
 
-// Brand init
+// Map para WHY, ahora se actualizará dinámicamente según Reason
+let cexWhyMap = {};
+
+// =================== Brand init ===================
 let brandSelect=document.getElementById("brand");
-["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);});
+["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
+    let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
+});
 
-// Contact label
+// =================== Contact label ===================
 function updateContactLabel(){
     let type=document.getElementById("contactType").value;
     document.getElementById("contactFormLabel").innerText=type;
     document.getElementById("contactForm").placeholder=type+" #";
 }
 
-// Notes generation
+// =================== Notes generation ===================
 function updateNotes(){
     let brand=document.getElementById("brand").value;
     let contactType=document.getElementById("contactType").value;
@@ -268,22 +297,40 @@ function updateNotes(){
         `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
 }
 
-// CEX selection
+// =================== CEX selection ===================
 function selectCEX(value){
-    let select=document.getElementById("cexReason"); select.innerHTML="";
-    cexReasons[value].forEach(opt=>{let o=document.createElement("option"); o.value=o.innerText=opt; select.appendChild(o);});
+    let reasonSelect=document.getElementById("cexReason");
+    reasonSelect.innerHTML="";
+    cexReasons[value].forEach(opt=>{
+        let o=document.createElement("option");
+        o.value=o.innerText=opt;
+        reasonSelect.appendChild(o);
+    });
+    // Agregar siempre NA
+    let constantEl=document.createElement("option");
+    constantEl.value=constantOption;
+    constantEl.textContent=constantOption;
+    reasonSelect.appendChild(constantEl);
     updateWhy();
 }
 
-// WHY update
+// =================== WHY update ===================
 function updateWhy(){
     let reason=document.getElementById("cexReason").value;
-    let whySelect=document.getElementById("cexWhy"); whySelect.innerHTML="";
-    if(cexWhy[reason]){ cexWhy[reason].forEach(w=>{ let o=document.createElement("option"); o.value=o.innerText=w; whySelect.appendChild(o); }); }
+    let whySelect=document.getElementById("cexWhy"); 
+    whySelect.innerHTML="";
+    // Por ahora dejamos NA fijo, pero se puede extender a listas más detalladas
+    let options = ["NA"]; 
+    if(reason !== constantOption){
+        options = [reason, constantOption]; // placeholder simple
+    }
+    options.forEach(w=>{
+        let o=document.createElement("option"); o.value=o.innerText=w; whySelect.appendChild(o);
+    });
     updateNotes();
 }
 
-// Copy Notes
+// =================== Copy / Save ===================
 function copyNotes(){
     let notesBox=document.getElementById("notes");
     if(!notesBox.value.trim() || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
@@ -292,7 +339,7 @@ function copyNotes(){
     setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
-// Save Call
+// =================== Save Call ===================
 function saveCurrentCall(){
     let noteText=document.getElementById("notes").value;
     if(noteText.trim()==="") return;
@@ -313,7 +360,7 @@ function saveCurrentCall(){
     isTyping=false;
 }
 
-// Render History with search
+// =================== Render History ===================
 function renderHistory(){
     let list=document.getElementById("historyList"); list.innerHTML="";
     let query=document.getElementById("historySearch").value.toLowerCase();
@@ -326,7 +373,7 @@ function renderHistory(){
     });
 }
 
-// Load call from history
+// =================== Load Call ===================
 function loadCall(index){
     let item=callHistory[index];
     if(!item) return;
@@ -344,7 +391,7 @@ function loadCall(index){
     toggleHistoryPanel(false);
 }
 
-// Dark Mode
+// =================== Dark Mode ===================
 let darkBtn=document.getElementById("darkModeBtn");
 function applyDarkFromStorage(){
     if(localStorage.getItem("darkMode")==="true"){ 
@@ -362,7 +409,7 @@ darkBtn.addEventListener("click", ()=>{
     else{icon.className="fas fa-moon"; localStorage.setItem("darkMode","false");}
 });
 
-// History panel toggle
+// =================== History panel toggle ===================
 let backdrop=document.getElementById('historyBackdrop');
 let panel=document.getElementById('historyPanel');
 function toggleHistoryPanel(force){
@@ -373,13 +420,7 @@ function toggleHistoryPanel(force){
 }
 backdrop.addEventListener('click', ()=>toggleHistoryPanel(false));
 
-// Clear History
-function clearHistory(){
-    if(!confirm('¿Borrar todo el historial?')) return;
-    callHistory=[]; localStorage.removeItem('callHistory'); renderHistory();
-}
-
-// Clear Form with Undo
+// =================== Clear / Undo / New Call ===================
 function clearForm(){
     if(isTyping && document.getElementById("notes").value.trim()!=""){
         lastCleared = {
@@ -403,7 +444,6 @@ function clearForm(){
     isTyping=false;
     updateContactLabel();
 }
-
 function undoClear(){
     if(!lastCleared) return alert('No hay nada que deshacer.');
     Object.keys(lastCleared).forEach(k=>{
@@ -414,8 +454,6 @@ function undoClear(){
     document.getElementById('undoBtn').style.display='none';
     lastCleared=null;
 }
-
-// New Call
 function newCall(){
     if(isTyping && document.getElementById("notes").value.trim()!=""){
         if(confirm("¿Guardar nota actual antes de limpiar?")) saveCurrentCall();
@@ -505,17 +543,18 @@ let isQuickOpen=false;
 toggleBtn.addEventListener('click', ()=>{ isQuickOpen = !isQuickOpen; quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; subOptions.style.display='none'; toggleBtn.innerText = isQuickOpen ? '-' : '+'; });
 manageToggle.addEventListener('click', ()=>{ managePanel.style.display = managePanel.style.display==='none' ? 'block' : 'none'; });
 
-// Input event binding
+// =================== Input bindings ===================
 document.querySelectorAll('#macroForm input, #macroForm textarea, #macroForm select').forEach(el=>{
     el.addEventListener('input', ()=>{ if(el.id==='contactType') updateContactLabel(); updateNotes(); });
 });
 
-// Inicialización
+// =================== Inicialización ===================
 selectCEX('Good');
 renderQuickCategories();
 renderHistory();
 applyDarkFromStorage();
 </script>
+
 
 </body>
 </html>
