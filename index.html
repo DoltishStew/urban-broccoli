@@ -234,25 +234,67 @@ let quickNotesData = savedQuickNotes || {
 };
 let isTyping=false, lastCleared=null;
 
-// --- CEX razones ---
-let cexReasons = {
-  Good:["Customer was pleased","Info clear","Issue resolved"],
-  Neutral:["Partial help","Info unclear","Waited long"],
-  Bad:["Not helpful","Wrong info","Issue unresolved"]
-};
+// --- Quick Notes Toggle ---
+const toggleBtn = document.getElementById("toggleQuickNotes");
+const quickCategories = document.getElementById("quickCategories");
+const subOptions = document.getElementById("subOptions");
+const manageToggle = document.getElementById('manageQuickToggle');
+const managePanel = document.getElementById('manageQuick');
 
-// --- Inicialización Brand ---
+toggleBtn.addEventListener('click', () => {
+  quickCategories.style.display = quickCategories.style.display === 'flex' ? 'none' : 'flex';
+  subOptions.style.display = 'none';
+});
+
+manageToggle.addEventListener('click', () => {
+  managePanel.style.display = managePanel.style.display === 'block' ? 'none' : 'block';
+});
+
+// --- Render Quick Categories ---
+function renderQuickCategories(){
+  quickCategories.innerHTML=''; subOptions.innerHTML='';
+  for(let cat in quickNotesData){
+    let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
+    btn.onclick=()=> {
+      subOptions.innerHTML=''; subOptions.style.display='flex';
+      for(let sub in quickNotesData[cat]){
+        let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
+        subBtn.onclick=()=>{ 
+          document.getElementById('inquiry').value=quickNotesData[cat][sub].inquiry; 
+          document.getElementById('actionTaken').value=quickNotesData[cat][sub].action; 
+          updateNotes(); 
+        };
+        subOptions.appendChild(subBtn);
+      }
+    };
+    quickCategories.appendChild(btn);
+  }
+  let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
+  for(let cat in quickNotesData){ 
+    for(let sub in quickNotesData[cat]){ 
+      let opt=document.createElement("option"); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt); 
+    } 
+  }
+}
+
+// --- Brand & Contact ---
 let brandSelect=document.getElementById("brand");
 ["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
   let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
 });
 
-// --- Funciones UI ---
 function updateContactLabel(){
   let type=document.getElementById("contactType").value;
   document.getElementById("contactFormLabel").innerText=type;
   document.getElementById("contactForm").placeholder=type+" #";
 }
+
+// --- Notas y CEX ---
+let cexReasons = {
+  Good:["Customer was pleased","Info clear","Issue resolved"],
+  Neutral:["Partial help","Info unclear","Waited long"],
+  Bad:["Not helpful","Wrong info","Issue unresolved"]
+};
 
 function updateNotes(){
   let brand = document.getElementById("brand").value;
@@ -279,7 +321,7 @@ function selectCEX(value){
   updateNotes();
 }
 
-// --- Copiar y guardar ---
+// --- Copy, Save, History ---
 function copyNotes(){
   let notesBox=document.getElementById("notes");
   if(!notesBox.value || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
@@ -309,7 +351,6 @@ function saveCurrentCall(){
   isTyping=false;
 }
 
-// --- Historial ---
 function renderHistory(){
   let list=document.getElementById("historyList"); list.innerHTML="";
   let query=document.getElementById("historySearch").value.toLowerCase();
@@ -333,7 +374,6 @@ function loadCall(index){
   document.getElementById("inquiry").value=item.inquiry;
   document.getElementById("actionTaken").value=item.actionTaken;
 
-  // Seleccionar CEX
   let firstWord = ["Good","Neutral","Bad"].includes(item.cex.split(" ")[0]) ? item.cex.split(" ")[0] : "Good";
   document.querySelectorAll('.cex-buttons button').forEach(b=>b.classList.remove('active'));
   document.querySelector(`.cex-buttons button[class*="${firstWord.toLowerCase()}"]`)?.classList.add('active');
@@ -378,46 +418,12 @@ function undoClear(){
 
 // --- New Call + History toggle ---
 function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!="") saveCurrentCall(); clearForm(); }
-
 function toggleHistoryPanel(show){
   const backdrop = document.getElementById('historyBackdrop');
   const panel = document.getElementById('historyPanel');
   const active = show !== undefined ? show : !panel.classList.contains('active');
   panel.classList.toggle('active', active);
   backdrop.classList.toggle('active', active);
-}
-
-// --- Quick Notes ---
-let toggleBtn=document.getElementById("toggleQuickNotes");
-let quickCategories=document.getElementById("quickCategories");
-let subOptions=document.getElementById("subOptions");
-let manageToggle=document.getElementById('manageQuickToggle');
-let managePanel=document.getElementById('manageQuick');
-
-function renderQuickCategories(){
-  quickCategories.innerHTML=''; subOptions.innerHTML='';
-  for(let cat in quickNotesData){
-    let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
-    btn.onclick=()=> {
-      subOptions.innerHTML=''; subOptions.style.display='flex';
-      for(let sub in quickNotesData[cat]){
-        let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
-        subBtn.onclick=()=>{ 
-          document.getElementById('inquiry').value=quickNotesData[cat][sub].inquiry; 
-          document.getElementById('actionTaken').value=quickNotesData[cat][sub].action; 
-          updateNotes(); 
-        };
-        subOptions.appendChild(subBtn);
-      }
-    };
-    quickCategories.appendChild(btn);
-  }
-  let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
-  for(let cat in quickNotesData){ 
-    for(let sub in quickNotesData[cat]){ 
-      let opt=document.createElement("option"); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt); 
-    } 
-  }
 }
 
 // --- CEX buttons ---
@@ -434,7 +440,6 @@ renderQuickCategories();
 renderHistory();
 selectCEX('Good');
 updateContactLabel();
-  
 </script>
 </body>
 </html>
