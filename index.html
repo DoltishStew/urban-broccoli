@@ -201,18 +201,24 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 </div>
 
 <script>
-// Dark Mode toggle
+// --- Dark Mode con persistencia ---
 const darkModeBtn = document.getElementById('darkModeBtn');
 
-darkModeBtn.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  if(document.body.classList.contains('dark')){
-    darkModeBtn.innerHTML = '<i class="fas fa-sun"></i> Sun Mode';
-  } else {
-    darkModeBtn.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
-  }
+function applyDarkMode(isDark){
+  document.body.classList.toggle('dark', isDark);
+  darkModeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i> Sun Mode' : '<i class="fas fa-moon"></i> Dark Mode';
+}
+
+let savedDarkMode = localStorage.getItem('darkMode') === 'true';
+applyDarkMode(savedDarkMode);
+
+darkModeBtn.addEventListener('click', ()=>{
+  let isDark = !document.body.classList.contains('dark');
+  applyDarkMode(isDark);
+  localStorage.setItem('darkMode', isDark);
 });
-// Variables y persistencia
+
+// --- Variables y persistencia ---
 let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
 let savedQuickNotes = JSON.parse(localStorage.getItem("quickNotesData") || "null");
 let quickNotesData = savedQuickNotes || {
@@ -228,27 +234,26 @@ let quickNotesData = savedQuickNotes || {
 };
 let isTyping=false, lastCleared=null;
 
-// CEX razones
+// --- CEX razones ---
 let cexReasons = {
   Good:["Customer was pleased","Info clear","Issue resolved"],
   Neutral:["Partial help","Info unclear","Waited long"],
   Bad:["Not helpful","Wrong info","Issue unresolved"]
 };
 
-// Inicialización Brand
+// --- Inicialización Brand ---
 let brandSelect=document.getElementById("brand");
 ["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
   let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
 });
 
-// Actualiza label Contact
+// --- Funciones UI ---
 function updateContactLabel(){
   let type=document.getElementById("contactType").value;
   document.getElementById("contactFormLabel").innerText=type;
   document.getElementById("contactForm").placeholder=type+" #";
 }
 
-// Generar notas
 function updateNotes(){
   let brand = document.getElementById("brand").value;
   let contactType = document.getElementById("contactType").value;
@@ -265,7 +270,6 @@ function updateNotes(){
     `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | Reason: ${reason} | Details: ${details}`;
 }
 
-// Seleccionar CEX y llenar Reason
 function selectCEX(value){
   let select = document.getElementById("cexReason");
   select.innerHTML="";
@@ -275,7 +279,7 @@ function selectCEX(value){
   updateNotes();
 }
 
-// Copiar notas
+// --- Copiar y guardar ---
 function copyNotes(){
   let notesBox=document.getElementById("notes");
   if(!notesBox.value || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
@@ -284,7 +288,6 @@ function copyNotes(){
   setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
-// Guardar llamada
 function saveCurrentCall(){
   let noteText=document.getElementById("notes").value;
   if(noteText.trim()==="") return;
@@ -306,7 +309,7 @@ function saveCurrentCall(){
   isTyping=false;
 }
 
-// Renderizar historial
+// --- Historial ---
 function renderHistory(){
   let list=document.getElementById("historyList"); list.innerHTML="";
   let query=document.getElementById("historySearch").value.toLowerCase();
@@ -319,10 +322,8 @@ function renderHistory(){
   });
 }
 
-// Cargar llamada del historial
 function loadCall(index){
-  let item=callHistory[index];
-  if(!item) return;
+  let item=callHistory[index]; if(!item) return;
   document.getElementById("brand").value=item.brand;
   document.getElementById("contactType").value=item.contactType;
   updateContactLabel();
@@ -342,7 +343,7 @@ function loadCall(index){
   toggleHistoryPanel(false);
 }
 
-// Clear form + undo
+// --- Clear + Undo ---
 function clearForm(){
   lastCleared = {
     brand: document.getElementById('brand').value,
@@ -367,25 +368,26 @@ function clearForm(){
 
 function undoClear(){
   if(!lastCleared) return alert('No hay nada que deshacer.');
-  document.getElementById('brand').value=lastCleared.brand;
-  document.getElementById('contactType').value=lastCleared.contactType;
-  updateContactLabel();
-  document.getElementById('contactForm').value=lastCleared.contactForm;
-  document.getElementById('name').value=lastCleared.name;
-  document.getElementById('orderNumber').value=lastCleared.orderNumber;
-  document.getElementById('inquiry').value=lastCleared.inquiry;
-  document.getElementById('actionTaken').value=lastCleared.actionTaken;
-  document.getElementById('cexReason').value=lastCleared.cexReason;
-  document.getElementById('cexDetails').value=lastCleared.cexDetails;
-  document.getElementById('notes').value=lastCleared.notes;
+  Object.keys(lastCleared).forEach(k=>{
+    if(document.getElementById(k)) document.getElementById(k).value = lastCleared[k];
+  });
+  selectCEX(lastCleared.cexReason || 'Good');
   document.getElementById('undoBtn').style.display='none';
   lastCleared=null;
 }
 
-// New Call
+// --- New Call + History toggle ---
 function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!="") saveCurrentCall(); clearForm(); }
 
-// Quick Notes UI (sin cambios)
+function toggleHistoryPanel(show){
+  const backdrop = document.getElementById('historyBackdrop');
+  const panel = document.getElementById('historyPanel');
+  const active = show !== undefined ? show : !panel.classList.contains('active');
+  panel.classList.toggle('active', active);
+  backdrop.classList.toggle('active', active);
+}
+
+// --- Quick Notes ---
 let toggleBtn=document.getElementById("toggleQuickNotes");
 let quickCategories=document.getElementById("quickCategories");
 let subOptions=document.getElementById("subOptions");
@@ -396,21 +398,29 @@ function renderQuickCategories(){
   quickCategories.innerHTML=''; subOptions.innerHTML='';
   for(let cat in quickNotesData){
     let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
-    btn.onclick=()=>{
+    btn.onclick=()=> {
       subOptions.innerHTML=''; subOptions.style.display='flex';
       for(let sub in quickNotesData[cat]){
         let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
-        subBtn.onclick=()=>{ document.getElementById('inquiry').value=quickNotesData[cat][sub].inquiry; document.getElementById('actionTaken').value=quickNotesData[cat][sub].action; updateNotes(); };
+        subBtn.onclick=()=>{ 
+          document.getElementById('inquiry').value=quickNotesData[cat][sub].inquiry; 
+          document.getElementById('actionTaken').value=quickNotesData[cat][sub].action; 
+          updateNotes(); 
+        };
         subOptions.appendChild(subBtn);
       }
     };
     quickCategories.appendChild(btn);
   }
   let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
-  for(let cat in quickNotesData){ for(let sub in quickNotesData[cat]){ let opt=document.createElement("option"); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt); } }
+  for(let cat in quickNotesData){ 
+    for(let sub in quickNotesData[cat]){ 
+      let opt=document.createElement("option"); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt); 
+    } 
+  }
 }
 
-// CEX buttons
+// --- CEX buttons ---
 document.querySelectorAll('.cex-buttons button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.cex-buttons button').forEach(b=>b.classList.remove('active'));
@@ -419,11 +429,12 @@ document.querySelectorAll('.cex-buttons button').forEach(btn=>{
   });
 });
 
-// Inicializar
+// --- Inicialización ---
 renderQuickCategories();
 renderHistory();
 selectCEX('Good');
-
+updateContactLabel();
+  
 </script>
 </body>
 </html>
