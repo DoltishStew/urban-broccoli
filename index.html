@@ -168,6 +168,7 @@ body.dark .cex-buttons button { color:#fff; }
 </div>
 
 <script>
+<script>
 // ======== Dark Mode con persistencia ========
 const darkModeBtn = document.getElementById('darkModeBtn');
 if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
@@ -192,13 +193,12 @@ let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
 let savedQuickNotes = JSON.parse(localStorage.getItem("quickNotesData") || "null");
 let quickNotesData = savedQuickNotes || {
   "Order Status": {
-    "Processing": { inquiry: "CCI because he wanted to check the status of his order", action: "Informed cx that the order was still processing, provided estimated delivery timeframe." },
-    "Shipped": { inquiry: "CCI because he wanted to check the status of his order", action: "Informed cx that the order has been shipped, provided tracking information." }
+    "Processing": { inquiry: "CCI to check status", action: "Informed cx processing" },
+    "Shipped": { inquiry: "CCI to check status", action: "Informed cx shipped" }
   },
   "New Order": {
-    "Filters": { inquiry: "CCI to create new order", action: "Processed new order for filters." },
-    "Main Unit": { inquiry: "CCI to create new order", action: "Processed new order for main unit." },
-    "Accessories": { inquiry: "CCI to create new order", action: "Processed new order for accessories." }
+    "Filters": { inquiry: "CCI new order", action: "Processed new filters order" },
+    "Main Unit": { inquiry: "CCI new order", action: "Processed new main unit order" }
   }
 };
 let isTyping=false, lastCleared=null;
@@ -237,9 +237,7 @@ function updateNotes(){
   let details = document.getElementById("cexDetails").value.trim();
 
   let notes = `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | Reason: ${reason}`;
-  
   if(details) notes += ` | Details: ${details}`;
-
   document.getElementById("notes").value = notes;
 }
 
@@ -400,17 +398,6 @@ const editQuickBtn = document.getElementById('editQuickBtn');
 const deleteQuickBtn = document.getElementById('deleteQuickBtn');
 const mqDeleteSelect = document.getElementById('mqDeleteSelect');
 
-let quickNotesData = JSON.parse(localStorage.getItem("quickNotesData") || "null") || {
-  "Order Status": {
-    "Processing": { inquiry: "CCI to check status", action: "Informed cx processing" },
-    "Shipped": { inquiry: "CCI to check status", action: "Informed cx shipped" }
-  },
-  "New Order": {
-    "Filters": { inquiry: "CCI new order", action: "Processed new filters order" },
-    "Main Unit": { inquiry: "CCI new order", action: "Processed new main unit order" }
-  }
-};
-
 // ==== Render Categories ====
 function renderQuickCategories(){
   quickCategoriesDiv.innerHTML="";
@@ -509,8 +496,7 @@ function renderMQDelete(){
 // ==== Init ====
 renderQuickCategories();
 renderMQDelete();
-
-
 </script>
+
 </body>
 </html>
