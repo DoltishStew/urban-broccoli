@@ -20,8 +20,8 @@ main {
 }
 
 .left-column, .right-column {
-  flex: 1;                /* ambas columnas ocupan igual espacio */
-  min-width: 350px;       /* puedes ajustar según tu preferencia */
+  flex: 1 1 45%;
+  min-width: 350px;
 }
 
 @media (max-width: 900px){
@@ -218,13 +218,11 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 const darkModeBtn = document.getElementById('darkModeBtn');
 if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
 updateDarkButton();
-
 darkModeBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark');
   localStorage.setItem('darkMode', document.body.classList.contains('dark'));
   updateDarkButton();
 });
-
 function updateDarkButton() {
   if(document.body.classList.contains('dark')){
     darkModeBtn.innerHTML = '<i class="fas fa-moon"></i> Sun Mode';
@@ -289,7 +287,6 @@ function updateNotes(){
   document.getElementById("notes").value = notes;
 }
 
-
 // ======== CEX ========
 function selectCEX(value){
   let select = document.getElementById("cexReason");
@@ -299,7 +296,6 @@ function selectCEX(value){
   });
   updateNotes();
 }
-
 document.querySelectorAll('.cex-buttons button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.cex-buttons button').forEach(b=>b.classList.remove('active'));
@@ -354,8 +350,7 @@ function renderHistory(){
 
 // ======== Cargar llamada ========
 function loadCall(index){
-  let item=callHistory[index];
-  if(!item) return;
+  let item=callHistory[index]; if(!item) return;
   document.getElementById("brand").value=item.brand;
   document.getElementById("contactType").value=item.contactType;
   updateContactLabel();
@@ -370,7 +365,11 @@ function loadCall(index){
   document.querySelector(`.cex-buttons button[class*="${firstWord.toLowerCase()}"]`)?.classList.add('active');
   selectCEX(firstWord);
 
-  setTimeout(()=>{document.getElementById("cexReason").value=item.reason; document.getElementById("cexDetails").value=item.details; updateNotes();},10);
+  setTimeout(()=>{
+    document.getElementById("cexReason").value=item.reason;
+    document.getElementById("cexDetails").value=item.details;
+    updateNotes();
+  },10);
   toggleHistoryPanel(false);
 }
 
@@ -396,7 +395,6 @@ function clearForm(){
   updateContactLabel();
   document.getElementById('undoBtn').style.display='inline-block';
 }
-
 function undoClear(){
   if(!lastCleared) return alert('No hay nada que deshacer.');
   Object.keys(lastCleared).forEach(key=>{
@@ -419,6 +417,7 @@ let managePanel=document.getElementById('manageQuick');
 
 toggleBtn.addEventListener('click',()=>{
   quickCategories.style.display = quickCategories.style.display==='flex'?'none':'flex';
+  subOptions.style.display='none';
 });
 
 manageToggle.addEventListener('click',()=>{
@@ -426,7 +425,7 @@ manageToggle.addEventListener('click',()=>{
 });
 
 function renderQuickCategories(){
-  quickCategories.innerHTML=''; subOptions.innerHTML='';
+  quickCategories.innerHTML=''; subOptions.innerHTML=''; 
   for(let cat in quickNotesData){
     let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
     btn.onclick=()=> {
@@ -462,7 +461,6 @@ document.getElementById('addQuickBtn').addEventListener('click', ()=>{
   renderQuickCategories();
   document.getElementById('mqCategory').value=''; document.getElementById('mqTitle').value=''; document.getElementById('mqInquiry').value=''; document.getElementById('mqAction').value='';
 });
-
 document.getElementById('editQuickBtn').addEventListener('click', ()=>{
   let selected=document.getElementById('mqDeleteSelect').value;
   if(!selected) return;
@@ -472,7 +470,6 @@ document.getElementById('editQuickBtn').addEventListener('click', ()=>{
   localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
   renderQuickCategories();
 });
-
 document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
   let selected=document.getElementById('mqDeleteSelect').value;
   if(!selected) return;
@@ -489,5 +486,6 @@ renderHistory();
 selectCEX('Good');
 updateContactLabel();
 </script>
+
 </body>
 </html>
