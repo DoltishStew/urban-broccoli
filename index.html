@@ -48,6 +48,11 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .manage-quick { margin-top:12px; border-top:1px solid #eee; padding-top:10px; }
 .manage-quick input, .manage-quick textarea { padding:6px; margin-bottom:6px; }
 .manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
+.manage-quick .button-row {
+  display: flex;
+  gap: 8px;      /* espacio entre botones */
+  align-items: center; /* alineación vertical */
+}
 
 /* Form Card */
 .card { background:#fff; padding:20px; border-radius:8px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
@@ -123,11 +128,12 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
         <input id="mqTitle" placeholder="Title (e.g. Delayed)" />
         <textarea id="mqInquiry" placeholder="Inquiry text"></textarea>
         <textarea id="mqAction" placeholder="Action taken text"></textarea>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button id="addQuickBtn">Add</button>
-          <select id="mqDeleteSelect" style="flex:1;"></select>
-          <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
-        </div>
+        <div class="button-row">
+  <button id="addQuickBtn">Add</button>
+  <select id="mqDeleteSelect" style="flex:1;"></select>
+  <button id="editQuickBtn" style="background:#ff9500;">Edit</button>
+  <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
+</div>
       </div>
     </div>
 
@@ -422,6 +428,17 @@ document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
     localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
     renderQuickCategories();
   }
+// Funcion Editar
+document.getElementById('editQuickBtn').addEventListener('click', ()=>{
+  let val = document.getElementById('mqDeleteSelect').value;
+  if(!val) return alert('Selecciona una nota para editar.');
+  let [cat, sub] = val.split('|||');
+  if(!quickNotesData[cat] || !quickNotesData[cat][sub]) return alert('Nota no encontrada.');
+  
+  document.getElementById('mqCategory').value = cat;
+  document.getElementById('mqTitle').value = sub;
+  document.getElementById('mqInquiry').value = quickNotesData[cat][sub].inquiry;
+  document.getElementById('mqAction').value = quickNotesData[cat][sub].action;
 });
 
 // Quick notes toggles
