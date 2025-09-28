@@ -13,9 +13,22 @@ header { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom:
 .top-buttons button:hover { background: #e08b00; }
 
 /* Layout dos columnas */
-main { display: flex; gap: 20px; flex-wrap: wrap; }
-.left-column { flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: 15px; }
-.right-column { flex: 1; min-width: 350px; }
+main { 
+  display: flex; 
+  gap: 20px; 
+  flex-wrap: nowrap;      /* NO colapsar por default */
+}
+
+.left-column, .right-column {
+  flex: 1;                /* ambas columnas ocupan igual espacio */
+  min-width: 350px;       /* puedes ajustar según tu preferencia */
+}
+
+@media (max-width: 900px){
+  main {
+    flex-direction: column;  /* sí colapsa a una columna en móviles */
+  }
+}
 
 /* Quick Notes Card */
   .quick-card {
@@ -201,24 +214,26 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 </div>
 
 <script>
-// --- Dark Mode con persistencia ---
+// ======== Dark Mode con persistencia ========
 const darkModeBtn = document.getElementById('darkModeBtn');
+if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+updateDarkButton();
 
-function applyDarkMode(isDark){
-  document.body.classList.toggle('dark', isDark);
-  darkModeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i> Sun Mode' : '<i class="fas fa-moon"></i> Dark Mode';
-}
-
-let savedDarkMode = localStorage.getItem('darkMode') === 'true';
-applyDarkMode(savedDarkMode);
-
-darkModeBtn.addEventListener('click', ()=>{
-  let isDark = !document.body.classList.contains('dark');
-  applyDarkMode(isDark);
-  localStorage.setItem('darkMode', isDark);
+darkModeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+  updateDarkButton();
 });
 
-// --- Variables y persistencia ---
+function updateDarkButton() {
+  if(document.body.classList.contains('dark')){
+    darkModeBtn.innerHTML = '<i class="fas fa-moon"></i> Sun Mode';
+  } else {
+    darkModeBtn.innerHTML = '<i class="fas fa-sun"></i> Dark Mode';
+  }
+}
+
+// ======== Variables ========
 let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
 let savedQuickNotes = JSON.parse(localStorage.getItem("quickNotesData") || "null");
 let quickNotesData = savedQuickNotes || {
@@ -234,68 +249,27 @@ let quickNotesData = savedQuickNotes || {
 };
 let isTyping=false, lastCleared=null;
 
-// --- Quick Notes Toggle ---
-const toggleBtn = document.getElementById("toggleQuickNotes");
-const quickCategories = document.getElementById("quickCategories");
-const subOptions = document.getElementById("subOptions");
-const manageToggle = document.getElementById('manageQuickToggle');
-const managePanel = document.getElementById('manageQuick');
-
-toggleBtn.addEventListener('click', () => {
-  quickCategories.style.display = quickCategories.style.display === 'flex' ? 'none' : 'flex';
-  subOptions.style.display = 'none';
-});
-
-manageToggle.addEventListener('click', () => {
-  managePanel.style.display = managePanel.style.display === 'block' ? 'none' : 'block';
-});
-
-// --- Render Quick Categories ---
-function renderQuickCategories(){
-  quickCategories.innerHTML=''; subOptions.innerHTML='';
-  for(let cat in quickNotesData){
-    let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
-    btn.onclick=()=> {
-      subOptions.innerHTML=''; subOptions.style.display='flex';
-      for(let sub in quickNotesData[cat]){
-        let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
-        subBtn.onclick=()=>{ 
-          document.getElementById('inquiry').value=quickNotesData[cat][sub].inquiry; 
-          document.getElementById('actionTaken').value=quickNotesData[cat][sub].action; 
-          updateNotes(); 
-        };
-        subOptions.appendChild(subBtn);
-      }
-    };
-    quickCategories.appendChild(btn);
-  }
-  let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
-  for(let cat in quickNotesData){ 
-    for(let sub in quickNotesData[cat]){ 
-      let opt=document.createElement("option"); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt); 
-    } 
-  }
-}
-
-// --- Brand & Contact ---
-let brandSelect=document.getElementById("brand");
-["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
-  let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
-});
-
-function updateContactLabel(){
-  let type=document.getElementById("contactType").value;
-  document.getElementById("contactFormLabel").innerText=type;
-  document.getElementById("contactForm").placeholder=type+" #";
-}
-
-// --- Notas y CEX ---
+// ======== CEX razones ========
 let cexReasons = {
   Good:["Customer was pleased","Info clear","Issue resolved"],
   Neutral:["Partial help","Info unclear","Waited long"],
   Bad:["Not helpful","Wrong info","Issue unresolved"]
 };
 
+// ======== Inicializar Brands ========
+let brandSelect=document.getElementById("brand");
+["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
+  let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
+});
+
+// ======== Contact label ========
+function updateContactLabel(){
+  let type=document.getElementById("contactType").value;
+  document.getElementById("contactFormLabel").innerText=type;
+  document.getElementById("contactForm").placeholder=type+" #";
+}
+
+// ======== Generar notas ========
 function updateNotes(){
   let brand = document.getElementById("brand").value;
   let contactType = document.getElementById("contactType").value;
@@ -306,12 +280,17 @@ function updateNotes(){
   let actionTaken = document.getElementById("actionTaken").value;
   let cex = document.querySelector(".cex-buttons button.active")?.innerText || '';
   let reason = document.getElementById("cexReason").value;
-  let details = document.getElementById("cexDetails").value;
+  let details = document.getElementById("cexDetails").value.trim();
 
-  document.getElementById("notes").value =
-    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | Reason: ${reason} | Details: ${details}`;
+  let notes = `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | Reason: ${reason}`;
+  
+  if(details) notes += ` | Details: ${details}`;
+
+  document.getElementById("notes").value = notes;
 }
 
+
+// ======== CEX ========
 function selectCEX(value){
   let select = document.getElementById("cexReason");
   select.innerHTML="";
@@ -321,7 +300,15 @@ function selectCEX(value){
   updateNotes();
 }
 
-// --- Copy, Save, History ---
+document.querySelectorAll('.cex-buttons button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.cex-buttons button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectCEX(btn.className.includes('good')?'Good':btn.className.includes('neutral')?'Neutral':'Bad');
+  });
+});
+
+// ======== Copiar y guardar ========
 function copyNotes(){
   let notesBox=document.getElementById("notes");
   if(!notesBox.value || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
@@ -330,6 +317,7 @@ function copyNotes(){
   setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
+// ======== Guardar llamada ========
 function saveCurrentCall(){
   let noteText=document.getElementById("notes").value;
   if(noteText.trim()==="") return;
@@ -351,6 +339,7 @@ function saveCurrentCall(){
   isTyping=false;
 }
 
+// ======== Renderizar historial ========
 function renderHistory(){
   let list=document.getElementById("historyList"); list.innerHTML="";
   let query=document.getElementById("historySearch").value.toLowerCase();
@@ -363,8 +352,10 @@ function renderHistory(){
   });
 }
 
+// ======== Cargar llamada ========
 function loadCall(index){
-  let item=callHistory[index]; if(!item) return;
+  let item=callHistory[index];
+  if(!item) return;
   document.getElementById("brand").value=item.brand;
   document.getElementById("contactType").value=item.contactType;
   updateContactLabel();
@@ -383,7 +374,7 @@ function loadCall(index){
   toggleHistoryPanel(false);
 }
 
-// --- Clear + Undo ---
+// ======== Clear + undo ========
 function clearForm(){
   lastCleared = {
     brand: document.getElementById('brand').value,
@@ -408,34 +399,91 @@ function clearForm(){
 
 function undoClear(){
   if(!lastCleared) return alert('No hay nada que deshacer.');
-  Object.keys(lastCleared).forEach(k=>{
-    if(document.getElementById(k)) document.getElementById(k).value = lastCleared[k];
+  Object.keys(lastCleared).forEach(key=>{
+    if(document.getElementById(key)) document.getElementById(key).value = lastCleared[key];
   });
-  selectCEX(lastCleared.cexReason || 'Good');
   document.getElementById('undoBtn').style.display='none';
   lastCleared=null;
+  updateNotes();
 }
 
-// --- New Call + History toggle ---
+// ======== New Call ========
 function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!="") saveCurrentCall(); clearForm(); }
-function toggleHistoryPanel(show){
-  const backdrop = document.getElementById('historyBackdrop');
-  const panel = document.getElementById('historyPanel');
-  const active = show !== undefined ? show : !panel.classList.contains('active');
-  panel.classList.toggle('active', active);
-  backdrop.classList.toggle('active', active);
-}
 
-// --- CEX buttons ---
-document.querySelectorAll('.cex-buttons button').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.cex-buttons button').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    selectCEX(btn.className.includes('good')?'Good':btn.className.includes('neutral')?'Neutral':'Bad');
-  });
+// ======== Quick Notes Render ========
+let toggleBtn=document.getElementById("toggleQuickNotes");
+let quickCategories=document.getElementById("quickCategories");
+let subOptions=document.getElementById("subOptions");
+let manageToggle=document.getElementById('manageQuickToggle');
+let managePanel=document.getElementById('manageQuick');
+
+toggleBtn.addEventListener('click',()=>{
+  quickCategories.style.display = quickCategories.style.display==='flex'?'none':'flex';
 });
 
-// --- Inicialización ---
+manageToggle.addEventListener('click',()=>{
+  managePanel.style.display = managePanel.style.display==='flex'?'none':'flex';
+});
+
+function renderQuickCategories(){
+  quickCategories.innerHTML=''; subOptions.innerHTML='';
+  for(let cat in quickNotesData){
+    let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
+    btn.onclick=()=> {
+      subOptions.innerHTML=''; subOptions.style.display='flex';
+      for(let sub in quickNotesData[cat]){
+        let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
+        subBtn.onclick=()=>{ 
+          document.getElementById('inquiry').value=quickNotesData[cat][sub].inquiry;
+          document.getElementById('actionTaken').value=quickNotesData[cat][sub].action;
+          updateNotes();
+        };
+        subOptions.appendChild(subBtn);
+      }
+    };
+    quickCategories.appendChild(btn);
+  }
+  let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
+  for(let cat in quickNotesData){ for(let sub in quickNotesData[cat]){
+    let opt=document.createElement("option"); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt);
+  }}
+}
+
+// ======== Quick Notes CRUD ========
+document.getElementById('addQuickBtn').addEventListener('click', ()=>{
+  let cat=document.getElementById('mqCategory').value.trim();
+  let title=document.getElementById('mqTitle').value.trim();
+  let inquiry=document.getElementById('mqInquiry').value.trim();
+  let action=document.getElementById('mqAction').value.trim();
+  if(!cat || !title) return alert('Category y Title son obligatorios');
+  if(!quickNotesData[cat]) quickNotesData[cat]={};
+  quickNotesData[cat][title]={ inquiry, action };
+  localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+  renderQuickCategories();
+  document.getElementById('mqCategory').value=''; document.getElementById('mqTitle').value=''; document.getElementById('mqInquiry').value=''; document.getElementById('mqAction').value='';
+});
+
+document.getElementById('editQuickBtn').addEventListener('click', ()=>{
+  let selected=document.getElementById('mqDeleteSelect').value;
+  if(!selected) return;
+  let [cat,sub]=selected.split('|||');
+  quickNotesData[cat][sub].inquiry=document.getElementById('mqInquiry').value;
+  quickNotesData[cat][sub].action=document.getElementById('mqAction').value;
+  localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+  renderQuickCategories();
+});
+
+document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
+  let selected=document.getElementById('mqDeleteSelect').value;
+  if(!selected) return;
+  let [cat,sub]=selected.split('|||');
+  delete quickNotesData[cat][sub];
+  if(Object.keys(quickNotesData[cat]).length===0) delete quickNotesData[cat];
+  localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+  renderQuickCategories();
+});
+
+// ======== Inicializar ========
 renderQuickCategories();
 renderHistory();
 selectCEX('Good');
