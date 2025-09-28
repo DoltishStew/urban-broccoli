@@ -1,3 +1,4 @@
+MACROSv2.0-Pre-Alpha
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,486 +7,534 @@
 <title>MacrOS</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* ========================= GENERAL ========================= */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #f5f5f7;
-  color: #000;
-  margin: 20px;
-  transition: all 0.3s;
-}
-header {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: #000;
-}
-.top-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 25px;
-}
-.top-buttons button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border-radius: 8px;
-  transition: 0.2s;
-}
-.top-buttons button:hover {
-  background: #0056d6;
-}
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; color: #000; margin: 20px; transition: all 0.3s; }
+header { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: #000; }
+.top-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+.top-buttons button { background: #f39c12; color: black; border: none; padding: 8px 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; border-radius: 8px; transition: 0.2s; }
+.top-buttons button:hover { background: #e08b00; }
 
-/* ========================= LAYOUT ========================= */
-main {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.left-column {
-  flex: 1;
-  min-width: 350px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-.right-column {
-  flex: 1;
-  min-width: 350px;
-}
+/* Layout dos columnas */
+main { display: flex; gap: 20px; flex-wrap: wrap; }
+.left-column { flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: 15px; }
+.right-column { flex: 1; min-width: 350px; }
 
-/* ========================= QUICK NOTES ========================= */
-.quick-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+/* Quick Notes Card */
+  .quick-card {
+  background: #fff;                  /* fondo blanco */
+  border-radius: 8px;                /* esquinas redondeadas */
+  padding: 10px;                     /* espacio interno */
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* sombra suave */
   transition: all 0.3s ease;
-  display: flex;
+  display: flex;                     /* organiza contenido verticalmente */
   flex-direction: column;
 }
 .quick-card-header {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
+  align-items: center;       /* centra verticalmente */
+  justify-content: flex-start; /* botones al lado del título */
+  gap: 8px;                  /* espacio entre título y botones */
 }
-.quick-card-header h3 { margin: 0; margin-right: 10px; }
-.quick-toggle-btn {
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  font-weight: bold;
+.quick-card-header h3 {
+  margin: 0;
+  margin-right: 10px;        /* separa del primer botón */
 }
-.quick-toggle-btn:hover { background: #0056d6; }
-.quick-buttons, .sub-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 8px;
-  justify-content: center;
-}
-.quick-btn, .sub-btn {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
-  cursor: pointer;
-  font-weight: bold;
-}
-.quick-btn:hover, .sub-btn:hover { background: #0056d6; }
 
-/* ========================= MANAGE QUICK NOTES ========================= */
-.manage-quick {
-  margin-top: 12px;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
-}
-.manage-quick input, .manage-quick textarea {
-  padding: 6px;
-  margin-bottom: 6px;
-}
-.manage-quick button {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+.quick-toggle-btn { background:#f39c12; color:#000; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; }
+.quick-toggle-btn:hover { background:#e08b00; }
+.quick-buttons, .sub-buttons { display:flex; flex-wrap: wrap; gap:5px; margin-top:8px; justify-content: center; }
+.quick-btn, .sub-btn { background:#007bff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-weight:bold; }
+.quick-btn:hover, .sub-btn:hover { background:#0056d6; }
+
+/* Manage quick notes */
+.manage-quick { margin-top:12px; border-top:1px solid #eee; padding-top:10px; }
+.manage-quick input, .manage-quick textarea { padding:6px; margin-bottom:6px; }
+.manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
 .manage-quick .button-row {
   display: flex;
-  gap: 8px;
-  align-items: center;
+  gap: 8px;      /* espacio entre botones */
+  align-items: center; /* alineación vertical */
 }
 
-/* ========================= FORM CARD ========================= */
-.card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-}
-label {
-  font-weight: 600;
-  margin: 10px 0 5px;
-  text-transform: uppercase;
-}
-input, select, textarea {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 8px 12px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #f2f2f7;
-  font-size: 0.95rem;
-  color: #000;
-}
+/* Form Card */
+.card { background:#fff; padding:20px; border-radius:8px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+label { font-weight:600; margin:10px 0 5px; text-transform: uppercase; }
+input, select, textarea { width:100%; box-sizing:border-box; padding:8px 12px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; background:#f2f2f7; font-size:0.95rem; color: #000; }
 textarea { resize: vertical; }
 
-/* Cambios solicitados */
-#inquiry, #actionTaken {
-  resize: vertical;
-  min-height: 30px;
-  max-height: 100px;
-}
-
-/* ========================= CEX ========================= */
+/* CEX buttons */
 .cex-buttons {
   display: flex;
   gap: 8px;
   justify-content: center;
-  margin: 10px 0 12px;
+  margin: 10px 0 12px; /* arriba 10px, lados 0, abajo 12px */
 }
-.cex-buttons button {
-  flex: 1;
-  color: #fff;
-  border: none;
-  padding: 6px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  max-width: 120px;
-}
-.cex-good { background: #34c759; }
-.cex-neutral { background: #ff9500; }
-.cex-bad { background: #ff3b30; }
+.cex-buttons button { flex:1; color:#fff; border:none; padding:6px; border-radius:6px; font-weight:bold; cursor:pointer; max-width: 120px; }
+.cex-good { background:#34c759; } .cex-neutral { background:#ff9500; } .cex-bad { background:#ff3b30; }
 
-/* ========================= OUTPUT ========================= */
-.output { display: flex; flex-direction: column; }
-.output textarea {
-  width: 100%;
-  min-height: 150px;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 5px;
-  background: #f2f2f7;
-  font-family: monospace;
-  font-size: 0.95rem;
-  color: #000;
-}
-.copy-container { display: flex; justify-content: flex-end; gap: 5px; }
-.copy-container button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border-radius: 6px;
-}
-.copy-container button:hover { background: #0056d6; }
+/* Output */
+.output { display:flex; flex-direction:column; }
+.output textarea { width:100%; min-height:150px; border-radius:6px; padding:12px; margin-bottom:5px; background:#f2f2f7; font-family:monospace; font-size:0.95rem; color: #000; }
+.copy-container { display:flex; justify-content:flex-end; gap:5px; }
+.copy-container button { background:#f39c12; color:black; border:none; padding:6px 12px; cursor:pointer; display:flex; align-items:center; gap:5px; border-radius:6px; }
+.copy-container button:hover { background:#e08b00; }
 
-/* ========================= DARK MODE ========================= */
-body.dark { background: #121212; color: white; }
-body.dark header { color: #fff; }
-body.dark .card, body.dark .quick-card {
-  background: #1e1e1e;
-  border: 1px solid #444;
-  box-shadow: none;
-  color: #fff;
-}
-body.dark input, body.dark select, body.dark textarea {
-  background: #2a2a2a;
-  color: white;
-  border: 1px solid #555;
-}
-body.dark .copy-container button, body.dark .top-buttons button {
-  border: 1px solid #fff;
-  background: none;
-  color: white;
-}
-body.dark .cex-buttons button { color: #fff; }
-body.dark .quick-card-header h3 { color: #fff; }
-body.dark #historyPanel { background: #2c2c2c; color: white; }
+/* Dark mode */
+body.dark { background:#121212; color:white; }
+body.dark header { color:#fff; }
+body.dark .card, body.dark .quick-card { background:#1e1e1e; border:1px solid #444; box-shadow:none; color:#fff; }
+body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; color:white; border:1px solid #555; }
+body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
+body.dark .cex-buttons button { color:#fff; }
+body.dark .quick-card-header h3 { color:#fff; }
+body.dark #historyPanel { background:#2c2c2c; color:white; }
 
-/* ========================= HISTORY ========================= */
-#historyBackdrop {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  z-index: 999;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-#historyBackdrop.active { display: block; opacity: 1; }
-#historyPanel {
-  display: none;
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%) scale(0.9);
-  width: 420px;
-  max-height: 75%;
-  overflow-y: auto;
-  z-index: 1000;
-  background: #e0e0e0;
-  border-radius: 6px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  padding: 20px;
-  opacity: 0;
-  transition: all 0.25s ease;
-}
-#historyPanel.active { display: block; opacity: 1; transform: translate(-50%,-50%) scale(1); }
-#historyPanel h3 { margin-top: 0; text-align: center; }
-#historyPanel ul { list-style: none; padding: 0; margin: 0; }
-#historyPanel li {
-  padding: 8px 10px;
-  margin-bottom: 6px;
-  background: #f5f5f5;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-#historyPanel li:hover { background: #ccc; }
-#clearHistoryBtn {
-  width: 100%; padding: 6px;
-  border: none; border-radius: 6px;
-  cursor: pointer; font-weight: bold;
-  margin-top: 10px;
-  background: #ff3b30; color: white;
-}
-#closeHistoryBtn {
-  width: 100%; padding: 6px;
-  border: none; border-radius: 6px;
-  cursor: pointer; font-weight: bold;
-  margin-top: 10px;
-  background: #007bff; color: white;
-}
+/* History Panel + Backdrop */
+#historyBackdrop { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; opacity:0; transition:opacity 0.3s; }
+#historyBackdrop.active { display:block; opacity:1; }
+#historyPanel { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.9); width:420px; max-height:75%; overflow-y:auto; z-index:1000; background:#e0e0e0; border-radius:6px; box-shadow:0 0 20px rgba(0,0,0,0.4); padding:20px; opacity:0; transition:all 0.25s ease; }
+#historyPanel.active { display:block; opacity:1; transform:translate(-50%,-50%) scale(1); }
+#historyPanel h3 { margin-top:0; text-align:center; }
+#historyPanel ul { list-style:none; padding:0; margin:0; }
+#historyPanel li { padding:8px 10px; margin-bottom:6px; background:#f5f5f5; border-radius:4px; cursor:pointer; transition: background 0.2s; }
+#historyPanel li:hover { background:#ccc; }
+#clearHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#ff3b30; color:white; }
+#closeHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#007bff; color:white; }
 
-/* ========================= UNDO ========================= */
-#undoBtn {
-  background: #34c759;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  cursor: pointer;
-  border-radius: 6px;
-  display: none;
-}
+/* Undo */
+#undoBtn { background:#34c759; color:white; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; display:none; }
 
-/* ========================= RESPONSIVE ========================= */
+/* responsive tweaks */
 @media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;}}
+  #inquiry, #actionTaken {
+  resize: vertical;   /* solo expandir verticalmente */
+  min-height: 30px;   /* altura mínima */
+  max-height: 100px;  /* altura máxima opcional */
+}
 </style>
 </head>
 <body>
 <header>MacrOS</header>
 
 <div class="top-buttons">
-  <button id="newCallBtn"><i class="fa fa-plus"></i> New Call</button>
-  <button id="historyBtn"><i class="fa fa-clock"></i> History</button>
-  <button id="darkModeBtn"><i class="fa fa-moon"></i> Dark Mode</button>
+  <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
+  <button onclick="toggleHistoryPanel()"><i class="fas fa-history"></i> History</button>
+  <button id="darkModeBtn"><i class="fas fa-moon"></i> Dark Mode</button>
 </div>
 
 <main>
-  <!-- LEFT -->
   <div class="left-column">
-    <div class="quick-card">
+    <div class="quick-card" id="quickNotesCard">
       <div class="quick-card-header">
-        <h3>Quick Notes</h3>
-        <button class="quick-toggle-btn">+</button>
-      </div>
-      <div class="quick-buttons" id="quickNotes"></div>
-      <div class="sub-buttons" id="subNotes"></div>
-      <div class="manage-quick">
-        <input type="text" id="quickName" placeholder="Category name">
-        <textarea id="quickContent" placeholder="Quick note text"></textarea>
+  <h3>Quick Notes</h3>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
+    <button id="manageQuickToggle" class="quick-toggle-btn" title="Manage Quick Notes">⚙</button>
+  </div>
+</div>
+      <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
+      <div class="sub-buttons" id="subOptions" style="display:none;"></div>
+      <div class="manage-quick" id="manageQuick" style="display:none;">
+        <label>Add Quick Note</label>
+        <input id="mqCategory" placeholder="Category (e.g. Shipping)" />
+        <input id="mqTitle" placeholder="Title (e.g. Delayed)" />
+        <textarea id="mqInquiry" placeholder="Inquiry text"></textarea>
+        <textarea id="mqAction" placeholder="Action taken text"></textarea>
         <div class="button-row">
-          <button id="addQuickBtn"><i class="fa fa-plus"></i> Add</button>
-          <button id="deleteQuickBtn"><i class="fa fa-trash"></i> Delete</button>
-          <button id="editQuickBtn"><i class="fa fa-edit"></i> Edit</button>
-        </div>
+  <button id="addQuickBtn">Add</button>
+  <select id="mqDeleteSelect" style="flex:1;"></select>
+  <button id="editQuickBtn" style="background:#ff9500;">Edit</button>
+  <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
+</div>
       </div>
+    </div>
+
+    <div class="card" id="formCard">
+      <form id="macroForm">
+        <label for="brand">Brand</label>
+        <select id="brand" onchange="updateNotes()"></select>
+
+        <label for="contactType">Contact Type</label>
+        <select id="contactType" onchange="updateContactLabel(); updateNotes()">
+          <option value="Phone">Phone</option>
+          <option value="Ticket">Ticket</option>
+        </select>
+
+        <label id="contactFormLabel" for="contactForm">Phone</label>
+        <input type="text" id="contactForm" placeholder="Phone #" />
+
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Customer Name" />
+
+        <label for="orderNumber">Order Number</label>
+        <input type="text" id="orderNumber" placeholder="Order Number" />
+
+       <label for="inquiry">Inquiry</label>
+<textarea id="inquiry" placeholder="Inquiry"></textarea>
+
+<label for="actionTaken">Action Taken</label>
+<textarea id="actionTaken" placeholder="Action Taken"></textarea>
+
+        <label>Customer Satisfaction(CEX)</label>
+        <div class="cex-buttons">
+          <button type="button" class="cex-good" onclick="selectCEX('Good')"><i class="fas fa-thumbs-up"></i> Good</button>
+          <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')"><i class="fas fa-meh"></i> Neutral</button>
+          <button type="button" class="cex-bad" onclick="selectCEX('Bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
+        </div>
+
+        <label for="cexReason">Reason(Why)</label>
+        <select id="cexReason" onchange="updateWhy()"></select>
+      </form>
     </div>
   </div>
 
-  <!-- RIGHT -->
   <div class="right-column">
-    <div class="card">
-      <label>Account</label>
-      <input type="text" id="account" placeholder="Account">
-
-      <label>Inquiry</label>
-      <textarea id="inquiry" placeholder="Inquiry"></textarea>
-
-      <label>Action Taken</label>
-      <textarea id="actionTaken" placeholder="Action Taken"></textarea>
-
-      <label>CEX</label>
-      <div class="cex-buttons">
-        <button class="cex-good">Good</button>
-        <button class="cex-neutral">Neutral</button>
-        <button class="cex-bad">Bad</button>
-      </div>
-
-      <label>Additional Notes</label>
-      <textarea id="notes" placeholder="Additional notes"></textarea>
-
-      <div class="output">
-        <textarea id="outputText" readonly></textarea>
-        <div class="copy-container">
-          <button id="copyBtn"><i class="fa fa-copy"></i> Copy</button>
-          <button id="undoBtn"><i class="fa fa-undo"></i> Undo</button>
-        </div>
+    <div class="card output">
+      <label for="notes">Generated Notes</label>
+      <textarea id="notes" readonly></textarea>
+      <div class="copy-container">
+        <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
+        <button onclick="clearForm()">Clear</button>
+        <button id="undoBtn" onclick="undoClear()">Undo</button>
       </div>
     </div>
   </div>
 </main>
 
-<!-- History -->
 <div id="historyBackdrop"></div>
 <div id="historyPanel">
-  <h3>History</h3>
+  <h3>Call History</h3>
+  <input type="text" id="historySearch" placeholder="Search by name/order..." oninput="renderHistory()" style="width:100%; padding:6px; margin-bottom:10px; border-radius:6px; border:1px solid #bbb;">
   <ul id="historyList"></ul>
-  <button id="clearHistoryBtn"><i class="fa fa-trash"></i> Clear History</button>
-  <button id="closeHistoryBtn"><i class="fa fa-times"></i> Close</button>
+  <button id="clearHistoryBtn" onclick="clearHistory()">Clear History</button>
+  <button id="closeHistoryBtn" onclick="toggleHistoryPanel(false)">Close</button>
 </div>
 
 <script>
-/* ========================= STATE ========================= */
-const account=document.getElementById("account"),
-inquiry=document.getElementById("inquiry"),
-actionTaken=document.getElementById("actionTaken"),
-notes=document.getElementById("notes"),
-outputText=document.getElementById("outputText"),
-copyBtn=document.getElementById("copyBtn"),
-undoBtn=document.getElementById("undoBtn"),
-newCallBtn=document.getElementById("newCallBtn"),
-historyBtn=document.getElementById("historyBtn"),
-darkModeBtn=document.getElementById("darkModeBtn"),
-quickNotes=document.getElementById("quickNotes"),
-subNotes=document.getElementById("subNotes"),
-quickName=document.getElementById("quickName"),
-quickContent=document.getElementById("quickContent"),
-addQuickBtn=document.getElementById("addQuickBtn"),
-deleteQuickBtn=document.getElementById("deleteQuickBtn"),
-editQuickBtn=document.getElementById("editQuickBtn"),
-historyList=document.getElementById("historyList"),
-historyPanel=document.getElementById("historyPanel"),
-historyBackdrop=document.getElementById("historyBackdrop"),
-clearHistoryBtn=document.getElementById("clearHistoryBtn"),
-closeHistoryBtn=document.getElementById("closeHistoryBtn");
+// Variables y persistencia
+let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
+let savedQuickNotes = JSON.parse(localStorage.getItem("quickNotesData") || "null");
+let quickNotesData = savedQuickNotes || {
+    "Order Status":{
+        "Processing":{inquiry:"CCI porque quería verificar el estado de su orden",action:"Informé que la orden aún estaba procesándose y di tiempo estimado de entrega."},
+        "Shipped":{inquiry:"CCI porque quería verificar el estado de su orden",action:"Informé que la orden había sido enviada y proporcioné el rastreo."}
+    },
+    "New Order":{
+        "Filters":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de filtros."},
+        "Main Unit":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de unidad principal."},
+        "Accessories":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de accesorios."}
+    }
+};
+let isTyping=false, lastCleared=null;
+let cexReasons = {
+    Good:[
+        "Customer was satisfied with the solution provided.",
+        "Clear and fast resolution was achieved.",
+        "Customer fully understood the process or instructions.",
+        "Interaction was friendly and professional.",
+        "Empathy and proactive support were provided.",
+        "Customer appreciated the attention and information given.",
+        "Courtesy item or policy exception was offered.",
+        "Refund, replacement, or order was processed successfully.",
+        "Clear next steps were explained to the customer.",
+        "Customer was polite and cooperative during the interaction.",
+        "NA"
+    ],
+    Neutral:[
+        "No customer response yet, awaiting action or reply.",
+        "Outcome still pending, more information or steps required.",
+        "Clear explanation provided, but awaiting customer confirmation.",
+        "Awaiting internal confirmation such as tracking, refund, or backoffice review.",
+        "Neutral attitude displayed, no strong emotion expressed.",
+        "NA"
+    ],
+    Bad:[
+        "Customer was frustrated or dissatisfied with support.",
+        "Issue persisted even after troubleshooting efforts.",
+        "Product was defective or not working properly.",
+        "Shipping or delivery delays caused frustration.",
+        "Customer was unhappy with assessment or reluctant to troubleshoot.",
+        "Escalation requested and supervisor involvement needed.",
+        "Customer was unhappy with warranty coverage or outcome.",
+        "Customer was unhappy with refund or credit amount offered.",
+        "Long wait time or lack of promised callback caused dissatisfaction.",
+        "Filter life or product quality concerns led to frustration.",
+        "NA"
+    ]
+};
 
-let lastOutput="",history=[],
-quickData=JSON.parse(localStorage.getItem("quickData")||"{}"),
-darkMode=localStorage.getItem("darkMode")==="true";
+// Brand init
+let brandSelect=document.getElementById("brand");
+["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
+    let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
+});
 
-/* ========================= FUNCTIONS ========================= */
-function updateOutput(){
-  const acc=account.value.trim(),
-  inq=inquiry.value.trim(),
-  act=actionTaken.value.trim(),
-  nts=notes.value.trim(),
-  cex=document.querySelector(".cex-buttons button.active");
-  let text="";
-  if(acc) text+="Account: "+acc+"\\n";
-  if(inq) text+="Inquiry: "+inq+"\\n";
-  if(act) text+="Action Taken: "+act+"\\n";
-  if(cex) text+="CEX: "+cex.textContent+"\\n";
-  if(nts) text+="Notes: "+nts+"\\n";
-  outputText.value=text;
+// Contact label
+function updateContactLabel(){
+    let type=document.getElementById("contactType").value;
+    document.getElementById("contactFormLabel").innerText=type;
+    document.getElementById("contactForm").placeholder=type+" #";
 }
-function saveHistory(){
-  if(outputText.value.trim()){
-    history.unshift(outputText.value.trim());
-    localStorage.setItem("history",JSON.stringify(history));
+
+// Notes generation
+function updateNotes(){
+    let brand=document.getElementById("brand").value;
+    let contactType=document.getElementById("contactType").value;
+    let contactForm=document.getElementById("contactForm").value;
+    let name=document.getElementById("name").value;
+    let orderNumber=document.getElementById("orderNumber").value;
+    let inquiry=document.getElementById("inquiry").value;
+    let actionTaken=document.getElementById("actionTaken").value;
+    let cex=document.getElementById("cexReason").value;
+    let extra=document.getElementById("extraDetails")?.value.trim() || "";
+    isTyping = inquiry.trim()!=="" || actionTaken.trim()!=="" || name.trim()!=="" || orderNumber.trim()!=="" || contactForm.trim()!=="" || extra!=="";
+
+    document.getElementById("notes").value=
+        `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex}` +
+        (extra ? ` | EXTRA DETAILS: ${extra}` : "");
+}
+
+// CEX selection
+function selectCEX(value){
+    let select=document.getElementById("cexReason"); select.innerHTML="";
+    cexReasons[value].forEach(opt=>{
+        let o=document.createElement("option"); o.value=o.innerText=opt; select.appendChild(o);
+    });
+    updateNotes();
+}
+
+// Copy Notes
+function copyNotes(){
+    let notesBox=document.getElementById("notes");
+    if(!notesBox.value.trim() || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
+    notesBox.select(); document.execCommand("copy"); saveCurrentCall();
+    let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
+    setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
+}
+
+// Save Call
+function saveCurrentCall(){
+    let noteText=document.getElementById("notes").value;
+    if(noteText.trim()==="") return;
+    callHistory.push({
+        orderNumber:document.getElementById("orderNumber").value,
+        name:document.getElementById("name").value,
+        brand:document.getElementById("brand").value,
+        contactType:document.getElementById("contactType").value,
+        contactForm:document.getElementById("contactForm").value,
+        inquiry:document.getElementById("inquiry").value,
+        actionTaken:document.getElementById("actionTaken").value,
+        cex:document.getElementById("cexReason").value,
+        extra:document.getElementById("extraDetails")?.value.trim() || "",
+        date:new Date().toLocaleString()
+    });
+    localStorage.setItem("callHistory",JSON.stringify(callHistory));
     renderHistory();
-  }
+    isTyping=false;
 }
+
+// Render History with search
 function renderHistory(){
-  historyList.innerHTML="";
-  history.forEach((item,i)=>{
-    const li=document.createElement("li");
-    li.textContent=item.split("\\n")[0]+"...";
-    li.onclick=()=>{outputText.value=item;};
-    historyList.appendChild(li);
-  });
+    let list=document.getElementById("historyList"); list.innerHTML="";
+    let query=document.getElementById("historySearch").value.toLowerCase();
+    callHistory.slice().reverse().forEach((item,index)=>{
+        if(query && !(`${item.orderNumber} ${item.name}`.toLowerCase().includes(query))) return;
+        let li=document.createElement("li");
+        li.innerText=`${item.orderNumber} - ${item.name} (${item.date})`;
+        li.onclick=()=> loadCall(callHistory.length-1-index);
+        list.appendChild(li);
+    });
 }
-function renderQuickNotes(){
-  quickNotes.innerHTML="";
-  Object.keys(quickData).forEach(cat=>{
-    const btn=document.createElement("button");
-    btn.textContent=cat;
-    btn.className="quick-btn";
-    btn.onclick=()=>showSubNotes(cat);
-    quickNotes.appendChild(btn);
-  });
-}
-function showSubNotes(cat){
-  subNotes.innerHTML="";
-  quickData[cat].forEach(txt=>{
-    const btn=document.createElement("button");
-    btn.textContent=txt.substring(0,20);
-    btn.className="sub-btn";
-    btn.onclick=()=>{notes.value+=" "+txt;updateOutput();};
-    subNotes.appendChild(btn);
-  });
-}
-function toggleDark(){document.body.classList.toggle("dark");darkMode=!darkMode;localStorage.setItem("darkMode",darkMode);}
-function newCall(){account.value="";inquiry.value="";actionTaken.value="";notes.value="";document.querySelectorAll(".cex-buttons button").forEach(b=>b.classList.remove("active"));updateOutput();}
-function copyOutput(){if(outputText.value){navigator.clipboard.writeText(outputText.value);undoBtn.style.display="inline-block";lastOutput=outputText.value;saveHistory();}}
-function undo(){outputText.value=lastOutput;undoBtn.style.display="none";}
-function addQuick(){const cat=quickName.value.trim(),txt=quickContent.value.trim();if(!cat||!txt)return;if(!quickData[cat])quickData[cat]=[];quickData[cat].push(txt);localStorage.setItem("quickData",JSON.stringify(quickData));renderQuickNotes();}
-function deleteQuick(){const cat=quickName.value.trim();if(cat&&quickData[cat]){delete quickData[cat];localStorage.setItem("quickData",JSON.stringify(quickData));renderQuickNotes();}}
-function editQuick(){const cat=quickName.value.trim(),txt=quickContent.value.trim();if(cat&&txt&&quickData[cat]){quickData[cat]=[txt];localStorage.setItem("quickData",JSON.stringify(quickData));renderQuickNotes();}}
 
-/* ========================= EVENTS ========================= */
-[account,inquiry,actionTaken,notes].forEach(el=>el.addEventListener("input",updateOutput));
-document.querySelectorAll(".cex-buttons button").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".cex-buttons button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");updateOutput();}));
-copyBtn.onclick=copyOutput;
-undoBtn.onclick=undo;
-newCallBtn.onclick=newCall;
-darkModeBtn.onclick=toggleDark;
-addQuickBtn.onclick=addQuick;
-deleteQuickBtn.onclick=deleteQuick;
-editQuickBtn.onclick=editQuick;
-historyBtn.onclick=()=>{historyPanel.classList.add("active");historyBackdrop.classList.add("active");};
-closeHistoryBtn.onclick=()=>{historyPanel.classList.remove("active");historyBackdrop.classList.remove("active");};
-clearHistoryBtn.onclick=()=>{history=[];localStorage.removeItem("history");renderHistory();};
+// Load call from history
+function loadCall(index){
+    let item=callHistory[index];
+    if(!item) return;
+    document.getElementById("brand").value=item.brand;
+    document.getElementById("contactType").value=item.contactType;
+    updateContactLabel();
+    document.getElementById("contactForm").value=item.contactForm;
+    document.getElementById("name").value=item.name;
+    document.getElementById("orderNumber").value=item.orderNumber;
+    document.getElementById("inquiry").value=item.inquiry;
+    document.getElementById("actionTaken").value=item.actionTaken;
+    selectCEX(item.cex.split(" ")[0] || "Good");
+    setTimeout(()=>{ document.getElementById("extraDetails").value=item.extra || ""; updateNotes(); },10);
+    toggleHistoryPanel(false);
+}
 
-/* ========================= INIT ========================= */
-history=JSON.parse(localStorage.getItem("history")||"[]");
+// Dark Mode
+let darkBtn=document.getElementById("darkModeBtn");
+function applyDarkFromStorage(){
+    if(localStorage.getItem("darkMode")==="true"){ 
+        document.body.classList.add("dark"); 
+        darkBtn.querySelector('i').className='fas fa-sun'; 
+    } else { 
+        document.body.classList.remove("dark"); 
+        darkBtn.querySelector('i').className='fas fa-moon'; 
+    }
+}
+darkBtn.addEventListener("click", ()=>{
+    document.body.classList.toggle("dark");
+    let icon=document.querySelector("#darkModeBtn i");
+    if(document.body.classList.contains("dark")){icon.className="fas fa-sun"; localStorage.setItem("darkMode","true");}
+    else{icon.className="fas fa-moon"; localStorage.setItem("darkMode","false");}
+});
+
+// History panel toggle
+let backdrop=document.getElementById('historyBackdrop');
+let panel=document.getElementById('historyPanel');
+function toggleHistoryPanel(force){
+    if(force===false){ panel.classList.remove('active'); backdrop.classList.remove('active'); return; }
+    panel.classList.toggle('active');
+    backdrop.classList.toggle('active');
+    renderHistory();
+}
+backdrop.addEventListener('click', ()=>toggleHistoryPanel(false));
+
+// Clear History
+function clearHistory(){
+    if(!confirm('¿Borrar todo el historial?')) return;
+    callHistory=[]; localStorage.removeItem('callHistory'); renderHistory();
+}
+
+// Clear Form with Undo
+function clearForm(){
+    let inquiry=document.getElementById("inquiry").value.trim();
+    let action=document.getElementById("actionTaken").value.trim();
+    let extra=document.getElementById("extraDetails")?.value.trim() || "";
+
+    // Solo guardar lastCleared si hay algo escrito
+    if((inquiry || action || extra)){
+        lastCleared = {
+            brand: document.getElementById('brand').value,
+            contactType: document.getElementById('contactType').value,
+            contactForm: document.getElementById('contactForm').value,
+            name: document.getElementById('name').value,
+            orderNumber: document.getElementById('orderNumber').value,
+            inquiry: inquiry,
+            actionTaken: action,
+            cexReason: document.getElementById('cexReason').value,
+            extraDetails: extra,
+            notes: document.getElementById('notes').value
+        };
+        document.getElementById('undoBtn').style.display='inline-block';
+    } else {
+        lastCleared = null;
+        document.getElementById('undoBtn').style.display='none';
+    }
+
+    document.getElementById('macroForm').reset();
+    document.getElementById('cexReason').innerHTML='';
+    if(document.getElementById('extraDetails')) document.getElementById('extraDetails').value='';
+    document.getElementById('notes').value='';
+    isTyping=false;
+    updateContactLabel();
+}
+
+// New Call
+function newCall(){
+    if(isTyping && document.getElementById("notes").value.trim()!=""){
+        if(confirm("¿Guardar nota actual antes de limpiar?")) saveCurrentCall();
+    }
+    clearForm();
+}
+
+// Quick Notes UI
+let toggleBtn=document.getElementById("toggleQuickNotes");
+let quickCategories=document.getElementById("quickCategories");
+let subOptions=document.getElementById("subOptions");
+let manageToggle=document.getElementById('manageQuickToggle');
+let managePanel=document.getElementById('manageQuick');
+
+function renderQuickCategories(){
+    quickCategories.innerHTML=''; subOptions.innerHTML='';
+    for(let cat in quickNotesData){
+        let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
+        btn.onclick=()=>{
+            subOptions.innerHTML=''; subOptions.style.display='flex';
+            for(let sub in quickNotesData[cat]){
+                let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
+                subBtn.onclick=()=>{
+                    let inquiryField=document.getElementById('inquiry');
+                    let actionField=document.getElementById('actionTaken');
+                    inquiryField.value = inquiryField.value ? inquiryField.value + " | " + quickNotesData[cat][sub].inquiry : quickNotesData[cat][sub].inquiry;
+                    actionField.value = actionField.value ? actionField.value + " | " + quickNotesData[cat][sub].action : quickNotesData[cat][sub].action;
+                    updateNotes();
+                };
+                subOptions.appendChild(subBtn);
+            }
+        };
+        quickCategories.appendChild(btn);
+    }
+    let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
+    for(let cat in quickNotesData){ 
+        for(let sub in quickNotesData[cat]){
+            let opt=document.createElement('option'); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt);
+        }
+    }
+}
+
+// Manage Quick Notes Actions
+document.getElementById('addQuickBtn').addEventListener('click', ()=>{
+    let cat=document.getElementById('mqCategory').value.trim();
+    let title=document.getElementById('mqTitle').value.trim();
+    let inquiry=document.getElementById('mqInquiry').value.trim();
+    let action=document.getElementById('mqAction').value.trim();
+    if(!cat || !title) return alert('Category y Title son obligatorios');
+    if(!quickNotesData[cat]) quickNotesData[cat] = {};
+    quickNotesData[cat][title] = {inquiry: inquiry || '', action: action || ''};
+    localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+    document.getElementById('mqCategory').value=''; document.getElementById('mqTitle').value=''; document.getElementById('mqInquiry').value=''; document.getElementById('mqAction').value='';
+    renderQuickCategories();
+    alert('Quick note añadida');
+});
+
+// Delete Quick Note
+document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
+    let val=document.getElementById('mqDeleteSelect').value;
+    if(!val) return; 
+    let [cat,sub]=val.split('|||');
+    if(confirm(`Eliminar '${sub}' de '${cat}'?`)){
+        delete quickNotesData[cat][sub];
+        if(Object.keys(quickNotesData[cat]).length===0) delete quickNotesData[cat];
+        localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+        renderQuickCategories();
+    }
+});
+
+// Edit Quick Note
+document.getElementById('editQuickBtn').addEventListener('click', ()=>{
+    let val = document.getElementById('mqDeleteSelect').value;
+    if(!val) return alert('Selecciona una nota para editar.');
+    let [cat, sub] = val.split('|||');
+    if(!quickNotesData[cat] || !quickNotesData[cat][sub]) return alert('Nota no encontrada.');
+    document.getElementById('mqCategory').value = cat;
+    document.getElementById('mqTitle').value = sub;
+    document.getElementById('mqInquiry').value = quickNotesData[cat][sub].inquiry;
+    document.getElementById('mqAction').value = quickNotesData[cat][sub].action;
+});
+
+// Quick notes toggles
+let isQuickOpen=false;
+toggleBtn.addEventListener('click', ()=>{ isQuickOpen = !isQuickOpen; quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; subOptions.style.display='none'; toggleBtn.innerText = isQuickOpen ? '-' : '+'; });
+manageToggle.addEventListener('click', ()=>{ managePanel.style.display = managePanel.style.display==='none' ? 'block' : 'none'; });
+
+// Input event binding
+document.querySelectorAll('#macroForm input, #macroForm textarea, #macroForm select').forEach(el=>{
+    el.addEventListener('input', ()=>{ 
+        if(el.id==='contactType') updateContactLabel(); 
+        updateNotes(); 
+    });
+});
+
+// Extra Details input binding
+document.getElementById("extraDetails")?.addEventListener("input", updateNotes);
+
+// Inicialización
+selectCEX('Good');
+renderQuickCategories();
 renderHistory();
-renderQuickNotes();
-if(darkMode)document.body.classList.add("dark");
-updateOutput();
+applyDarkFromStorage();
 </script>
 </body>
 </html>
