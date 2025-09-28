@@ -228,10 +228,8 @@ let quickNotesData = savedQuickNotes || {
     }
 };
 let isTyping=false, lastCleared=null;
-
-// =================== CEX / Reason ===================
 let cexReasons = {
-    Good: [
+    Good:[
         "Customer was satisfied with the solution provided.",
         "Clear and fast resolution was achieved.",
         "Customer fully understood the process or instructions.",
@@ -241,16 +239,18 @@ let cexReasons = {
         "Courtesy item or policy exception was offered.",
         "Refund, replacement, or order was processed successfully.",
         "Clear next steps were explained to the customer.",
-        "Customer was polite and cooperative during the interaction."
+        "Customer was polite and cooperative during the interaction.",
+        "NA"
     ],
-    Neutral: [
+    Neutral:[
         "No customer response yet, awaiting action or reply.",
         "Outcome still pending, more information or steps required.",
         "Clear explanation provided, but awaiting customer confirmation.",
         "Awaiting internal confirmation such as tracking, refund, or backoffice review.",
-        "Neutral attitude displayed, no strong emotion expressed."
+        "Neutral attitude displayed, no strong emotion expressed.",
+        "NA"
     ],
-    Bad: [
+    Bad:[
         "Customer was frustrated or dissatisfied with support.",
         "Issue persisted even after troubleshooting efforts.",
         "Product was defective or not working properly.",
@@ -260,28 +260,25 @@ let cexReasons = {
         "Customer was unhappy with warranty coverage or outcome.",
         "Customer was unhappy with refund or credit amount offered.",
         "Long wait time or lack of promised callback caused dissatisfaction.",
-        "Filter life or product quality concerns led to frustration."
+        "Filter life or product quality concerns led to frustration.",
+        "NA"
     ]
 };
-const constantOption = "NA"; // Siempre presente
 
-// Map para WHY, ahora se actualizará dinámicamente según Reason
-let cexWhyMap = {};
-
-// =================== Brand init ===================
+// Brand init
 let brandSelect=document.getElementById("brand");
 ["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
     let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
 });
 
-// =================== Contact label ===================
+// Contact label
 function updateContactLabel(){
     let type=document.getElementById("contactType").value;
     document.getElementById("contactFormLabel").innerText=type;
     document.getElementById("contactForm").placeholder=type+" #";
 }
 
-// =================== Notes generation ===================
+// Notes generation
 function updateNotes(){
     let brand=document.getElementById("brand").value;
     let contactType=document.getElementById("contactType").value;
@@ -291,46 +288,24 @@ function updateNotes(){
     let inquiry=document.getElementById("inquiry").value;
     let actionTaken=document.getElementById("actionTaken").value;
     let cex=document.getElementById("cexReason").value;
-    let why=document.getElementById("cexWhy").value;
-    isTyping = inquiry.trim()!=="" || actionTaken.trim()!=="" || name.trim()!=="" || orderNumber.trim()!=="" || contactForm.trim()!=="";
+    let extra=document.getElementById("extraDetails")?.value.trim() || "";
+    isTyping = inquiry.trim()!=="" || actionTaken.trim()!=="" || name.trim()!=="" || orderNumber.trim()!=="" || contactForm.trim()!=="" || extra!=="";
+
     document.getElementById("notes").value=
-        `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
+        `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex}` +
+        (extra ? ` | EXTRA DETAILS: ${extra}` : "");
 }
 
-// =================== CEX selection ===================
+// CEX selection
 function selectCEX(value){
-    let reasonSelect=document.getElementById("cexReason");
-    reasonSelect.innerHTML="";
+    let select=document.getElementById("cexReason"); select.innerHTML="";
     cexReasons[value].forEach(opt=>{
-        let o=document.createElement("option");
-        o.value=o.innerText=opt;
-        reasonSelect.appendChild(o);
-    });
-    // Agregar siempre NA
-    let constantEl=document.createElement("option");
-    constantEl.value=constantOption;
-    constantEl.textContent=constantOption;
-    reasonSelect.appendChild(constantEl);
-    updateWhy();
-}
-
-// =================== WHY update ===================
-function updateWhy(){
-    let reason=document.getElementById("cexReason").value;
-    let whySelect=document.getElementById("cexWhy"); 
-    whySelect.innerHTML="";
-    // Por ahora dejamos NA fijo, pero se puede extender a listas más detalladas
-    let options = ["NA"]; 
-    if(reason !== constantOption){
-        options = [reason, constantOption]; // placeholder simple
-    }
-    options.forEach(w=>{
-        let o=document.createElement("option"); o.value=o.innerText=w; whySelect.appendChild(o);
+        let o=document.createElement("option"); o.value=o.innerText=opt; select.appendChild(o);
     });
     updateNotes();
 }
 
-// =================== Copy / Save ===================
+// Copy Notes
 function copyNotes(){
     let notesBox=document.getElementById("notes");
     if(!notesBox.value.trim() || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
@@ -339,7 +314,7 @@ function copyNotes(){
     setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
 }
 
-// =================== Save Call ===================
+// Save Call
 function saveCurrentCall(){
     let noteText=document.getElementById("notes").value;
     if(noteText.trim()==="") return;
@@ -352,7 +327,7 @@ function saveCurrentCall(){
         inquiry:document.getElementById("inquiry").value,
         actionTaken:document.getElementById("actionTaken").value,
         cex:document.getElementById("cexReason").value,
-        why:document.getElementById("cexWhy").value,
+        extra:document.getElementById("extraDetails")?.value.trim() || "",
         date:new Date().toLocaleString()
     });
     localStorage.setItem("callHistory",JSON.stringify(callHistory));
@@ -360,7 +335,7 @@ function saveCurrentCall(){
     isTyping=false;
 }
 
-// =================== Render History ===================
+// Render History with search
 function renderHistory(){
     let list=document.getElementById("historyList"); list.innerHTML="";
     let query=document.getElementById("historySearch").value.toLowerCase();
@@ -373,7 +348,7 @@ function renderHistory(){
     });
 }
 
-// =================== Load Call ===================
+// Load call from history
 function loadCall(index){
     let item=callHistory[index];
     if(!item) return;
@@ -385,13 +360,12 @@ function loadCall(index){
     document.getElementById("orderNumber").value=item.orderNumber;
     document.getElementById("inquiry").value=item.inquiry;
     document.getElementById("actionTaken").value=item.actionTaken;
-    let firstWord = item.cex ? item.cex.split(" ")[0] : "Good";
-    selectCEX(["Good","Neutral","Bad"].includes(firstWord)?firstWord:"Good");
-    setTimeout(()=>{document.getElementById("cexWhy").value=item.why; updateNotes();},10);
+    selectCEX(item.cex.split(" ")[0] || "Good");
+    setTimeout(()=>{ document.getElementById("extraDetails").value=item.extra || ""; updateNotes(); },10);
     toggleHistoryPanel(false);
 }
 
-// =================== Dark Mode ===================
+// Dark Mode
 let darkBtn=document.getElementById("darkModeBtn");
 function applyDarkFromStorage(){
     if(localStorage.getItem("darkMode")==="true"){ 
@@ -409,7 +383,7 @@ darkBtn.addEventListener("click", ()=>{
     else{icon.className="fas fa-moon"; localStorage.setItem("darkMode","false");}
 });
 
-// =================== History panel toggle ===================
+// History panel toggle
 let backdrop=document.getElementById('historyBackdrop');
 let panel=document.getElementById('historyPanel');
 function toggleHistoryPanel(force){
@@ -420,7 +394,13 @@ function toggleHistoryPanel(force){
 }
 backdrop.addEventListener('click', ()=>toggleHistoryPanel(false));
 
-// =================== Clear / Undo / New Call ===================
+// Clear History
+function clearHistory(){
+    if(!confirm('¿Borrar todo el historial?')) return;
+    callHistory=[]; localStorage.removeItem('callHistory'); renderHistory();
+}
+
+// Clear Form with Undo
 function clearForm(){
     if(isTyping && document.getElementById("notes").value.trim()!=""){
         lastCleared = {
@@ -432,28 +412,31 @@ function clearForm(){
             inquiry: document.getElementById('inquiry').value,
             actionTaken: document.getElementById('actionTaken').value,
             cexReason: document.getElementById('cexReason').value,
-            cexWhy: document.getElementById('cexWhy').value,
+            extraDetails: document.getElementById('extraDetails')?.value || "",
             notes: document.getElementById('notes').value
         };
         document.getElementById('undoBtn').style.display='inline-block';
     }
     document.getElementById('macroForm').reset();
     document.getElementById('cexReason').innerHTML='';
-    document.getElementById('cexWhy').innerHTML='';
+    document.getElementById('extraDetails').value='';
     document.getElementById('notes').value='';
     isTyping=false;
     updateContactLabel();
 }
+
 function undoClear(){
     if(!lastCleared) return alert('No hay nada que deshacer.');
     Object.keys(lastCleared).forEach(k=>{
         if(document.getElementById(k)) document.getElementById(k).value=lastCleared[k];
     });
     selectCEX(lastCleared.cexReason ? lastCleared.cexReason.split(' ')[0] : 'Good');
-    setTimeout(()=>{document.getElementById('cexWhy').value=lastCleared.cexWhy; document.getElementById('notes').value=lastCleared.notes;},10);
+    setTimeout(()=>{document.getElementById('extraDetails').value=lastCleared.extraDetails; document.getElementById('notes').value=lastCleared.notes;},10);
     document.getElementById('undoBtn').style.display='none';
     lastCleared=null;
 }
+
+// New Call
 function newCall(){
     if(isTyping && document.getElementById("notes").value.trim()!=""){
         if(confirm("¿Guardar nota actual antes de limpiar?")) saveCurrentCall();
@@ -477,7 +460,6 @@ function renderQuickCategories(){
             for(let sub in quickNotesData[cat]){
                 let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
                 subBtn.onclick=()=>{
-                    // Append instead of replace
                     let inquiryField=document.getElementById('inquiry');
                     let actionField=document.getElementById('actionTaken');
                     inquiryField.value = inquiryField.value ? inquiryField.value + " | " + quickNotesData[cat][sub].inquiry : quickNotesData[cat][sub].inquiry;
@@ -489,7 +471,6 @@ function renderQuickCategories(){
         };
         quickCategories.appendChild(btn);
     }
-    // populate delete select
     let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
     for(let cat in quickNotesData){ 
         for(let sub in quickNotesData[cat]){
@@ -543,18 +524,22 @@ let isQuickOpen=false;
 toggleBtn.addEventListener('click', ()=>{ isQuickOpen = !isQuickOpen; quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; subOptions.style.display='none'; toggleBtn.innerText = isQuickOpen ? '-' : '+'; });
 manageToggle.addEventListener('click', ()=>{ managePanel.style.display = managePanel.style.display==='none' ? 'block' : 'none'; });
 
-// =================== Input bindings ===================
+// Input event binding
 document.querySelectorAll('#macroForm input, #macroForm textarea, #macroForm select').forEach(el=>{
-    el.addEventListener('input', ()=>{ if(el.id==='contactType') updateContactLabel(); updateNotes(); });
+    el.addEventListener('input', ()=>{ 
+        if(el.id==='contactType') updateContactLabel(); 
+        updateNotes(); 
+    });
 });
 
-// =================== Inicialización ===================
+// Extra Details input binding
+document.getElementById("extraDetails")?.addEventListener("input", updateNotes);
+
+// Inicialización
 selectCEX('Good');
 renderQuickCategories();
 renderHistory();
 applyDarkFromStorage();
 </script>
-
-
 </body>
 </html>
