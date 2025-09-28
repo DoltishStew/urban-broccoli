@@ -73,7 +73,7 @@ textarea { resize: vertical; }
 
 /* Output */
 .output { display:flex; flex-direction:column; }
-.output textarea { width:100%; min-height:400px; border-radius:6px; padding:12px; margin-bottom:5px; background:#f2f2f7; font-family:monospace; font-size:0.95rem; color: #000; }
+.output textarea { width:100%; min-height:250px; border-radius:6px; padding:12px; margin-bottom:5px; background:#f2f2f7; font-family:monospace; font-size:0.95rem; color: #000; }
 .copy-container { display:flex; justify-content:flex-end; gap:5px; }
 .copy-container button { background:#f39c12; color:black; border:none; padding:6px 12px; cursor:pointer; display:flex; align-items:center; gap:5px; border-radius:6px; }
 .copy-container button:hover { background:#e08b00; }
@@ -402,38 +402,36 @@ function clearHistory(){
 
 // Clear Form with Undo
 function clearForm(){
-    if(isTyping && document.getElementById("notes").value.trim()!=""){
+    let inquiry=document.getElementById("inquiry").value.trim();
+    let action=document.getElementById("actionTaken").value.trim();
+    let extra=document.getElementById("extraDetails")?.value.trim() || "";
+
+    // Solo guardar lastCleared si hay algo escrito
+    if((inquiry || action || extra)){
         lastCleared = {
             brand: document.getElementById('brand').value,
             contactType: document.getElementById('contactType').value,
             contactForm: document.getElementById('contactForm').value,
             name: document.getElementById('name').value,
             orderNumber: document.getElementById('orderNumber').value,
-            inquiry: document.getElementById('inquiry').value,
-            actionTaken: document.getElementById('actionTaken').value,
+            inquiry: inquiry,
+            actionTaken: action,
             cexReason: document.getElementById('cexReason').value,
-            extraDetails: document.getElementById('extraDetails')?.value || "",
+            extraDetails: extra,
             notes: document.getElementById('notes').value
         };
         document.getElementById('undoBtn').style.display='inline-block';
+    } else {
+        lastCleared = null;
+        document.getElementById('undoBtn').style.display='none';
     }
+
     document.getElementById('macroForm').reset();
     document.getElementById('cexReason').innerHTML='';
-    document.getElementById('extraDetails').value='';
+    if(document.getElementById('extraDetails')) document.getElementById('extraDetails').value='';
     document.getElementById('notes').value='';
     isTyping=false;
     updateContactLabel();
-}
-
-function undoClear(){
-    if(!lastCleared) return alert('No hay nada que deshacer.');
-    Object.keys(lastCleared).forEach(k=>{
-        if(document.getElementById(k)) document.getElementById(k).value=lastCleared[k];
-    });
-    selectCEX(lastCleared.cexReason ? lastCleared.cexReason.split(' ')[0] : 'Good');
-    setTimeout(()=>{document.getElementById('extraDetails').value=lastCleared.extraDetails; document.getElementById('notes').value=lastCleared.notes;},10);
-    document.getElementById('undoBtn').style.display='none';
-    lastCleared=null;
 }
 
 // New Call
