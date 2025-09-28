@@ -27,6 +27,11 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .quick-btn, .sub-btn { background:#007bff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-weight:bold; }
 .quick-btn:hover, .sub-btn:hover { background:#0056d6; }
 
+/* Manage quick notes */
+.manage-quick { margin-top:12px; border-top:1px solid #eee; padding-top:10px; }
+.manage-quick input, .manage-quick textarea { padding:6px; margin-bottom:6px; }
+.manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
+
 /* Form Card */
 .card { background:#fff; padding:20px; border-radius:8px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
 label { font-weight:600; margin:10px 0 5px; text-transform: uppercase; }
@@ -53,18 +58,25 @@ body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; colo
 body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
 body.dark .cex-buttons button { color:#fff; }
 body.dark .quick-card-header h3 { color:#fff; }
-body.dark #historyPanel { background:#d3d3d3; color:white; }
-body.dark #historyPanel li { background:#ccc; color:#000; }
-body.dark #clearHistoryBtn { background:#ff3b30; color:white; }
+body.dark #historyPanel { background:#2c2c2c; color:white; }
 
-/* History Panel */
-#historyPanel { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:400px; max-height:70%; overflow-y:auto; z-index:1000; background:#ddd; border-radius:8px; box-shadow:0 6px 25px rgba(0,0,0,0.3); padding:20px; }
-#historyPanel.active { background:#007bff; color:#fff; }
+/* History Panel + Backdrop */
+#historyBackdrop { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; opacity:0; transition:opacity 0.3s; }
+#historyBackdrop.active { display:block; opacity:1; }
+#historyPanel { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.9); width:420px; max-height:75%; overflow-y:auto; z-index:1000; background:#e0e0e0; border-radius:6px; box-shadow:0 0 20px rgba(0,0,0,0.4); padding:20px; opacity:0; transition:all 0.25s ease; }
+#historyPanel.active { display:block; opacity:1; transform:translate(-50%,-50%) scale(1); }
 #historyPanel h3 { margin-top:0; text-align:center; }
 #historyPanel ul { list-style:none; padding:0; margin:0; }
 #historyPanel li { padding:8px 10px; margin-bottom:6px; background:#f5f5f5; border-radius:4px; cursor:pointer; transition: background 0.2s; }
 #historyPanel li:hover { background:#ccc; }
 #clearHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#ff3b30; color:white; }
+#closeHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#007bff; color:white; }
+
+/* Undo */
+#undoBtn { background:#34c759; color:white; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; display:none; }
+
+/* responsive tweaks */
+@media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;}}
 </style>
 </head>
 <body>
@@ -81,10 +93,25 @@ body.dark #clearHistoryBtn { background:#ff3b30; color:white; }
     <div class="quick-card" id="quickNotesCard">
       <div class="quick-card-header">
         <h3>Quick Notes</h3>
-        <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button id="manageQuickToggle" class="quick-toggle-btn" title="Manage Quick Notes">⚙</button>
+          <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
+        </div>
       </div>
       <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
       <div class="sub-buttons" id="subOptions" style="display:none;"></div>
+      <div class="manage-quick" id="manageQuick" style="display:none;">
+        <label>Add Quick Note</label>
+        <input id="mqCategory" placeholder="Category (e.g. Shipping)" />
+        <input id="mqTitle" placeholder="Title (e.g. Delayed)" />
+        <textarea id="mqInquiry" placeholder="Inquiry text"></textarea>
+        <textarea id="mqAction" placeholder="Action taken text"></textarea>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button id="addQuickBtn">Add</button>
+          <select id="mqDeleteSelect" style="flex:1;"></select>
+          <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
+        </div>
+      </div>
     </div>
 
     <div class="card" id="formCard">
@@ -99,25 +126,25 @@ body.dark #clearHistoryBtn { background:#ff3b30; color:white; }
         </select>
 
         <label id="contactFormLabel" for="contactForm">Phone</label>
-        <input type="text" id="contactForm" placeholder="Phone #" oninput="updateNotes()" />
+        <input type="text" id="contactForm" placeholder="Phone #" />
 
         <label for="name">Name</label>
-        <input type="text" id="name" placeholder="Customer Name" oninput="updateNotes()" />
+        <input type="text" id="name" placeholder="Customer Name" />
 
         <label for="orderNumber">Order Number</label>
-        <input type="text" id="orderNumber" placeholder="Order Number" oninput="updateNotes()" />
+        <input type="text" id="orderNumber" placeholder="Order Number" />
 
         <label for="inquiry">Inquiry</label>
-        <input type="text" id="inquiry" placeholder="Inquiry" oninput="updateNotes()" />
+        <input type="text" id="inquiry" placeholder="Inquiry" />
 
         <label for="actionTaken">Action Taken</label>
-        <input type="text" id="actionTaken" placeholder="Action Taken" oninput="updateNotes()" />
+        <input type="text" id="actionTaken" placeholder="Action Taken" />
 
         <label>CEX</label>
         <div class="cex-buttons">
-          <button type="button" class="cex-good" onclick="selectCEX('Good')">Good</button>
-          <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')">Neutral</button>
-          <button type="button" class="cex-bad" onclick="selectCEX('Bad')">Bad</button>
+          <button type="button" class="cex-good" onclick="selectCEX('Good')"><i class="fas fa-thumbs-up"></i> Good</button>
+          <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')"><i class="fas fa-meh"></i> Neutral</button>
+          <button type="button" class="cex-bad" onclick="selectCEX('Bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
         </div>
 
         <label for="cexReason">Reason</label>
@@ -136,54 +163,33 @@ body.dark #clearHistoryBtn { background:#ff3b30; color:white; }
       <div class="copy-container">
         <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
         <button onclick="clearForm()">Clear</button>
+        <button id="undoBtn" onclick="undoClear()">Undo</button>
       </div>
     </div>
   </div>
 </main>
 
+<div id="historyBackdrop"></div>
 <div id="historyPanel">
   <h3>Call History</h3>
+  <input type="text" id="historySearch" placeholder="Search by name/order..." oninput="renderHistory()" style="width:100%; padding:6px; margin-bottom:10px; border-radius:6px; border:1px solid #bbb;">
   <ul id="historyList"></ul>
   <button id="clearHistoryBtn" onclick="clearHistory()">Clear History</button>
+  <button id="closeHistoryBtn" onclick="toggleHistoryPanel(false)">Close</button>
 </div>
 
 <script>
-// Variables
-let callHistory=[], isTyping=false;
-let cexReasons = {
-  Good:["Customer was pleased","Info clear","Issue resolved"],
-  Neutral:["Partial help","Info unclear","Waited long"],
-  Bad:["Not helpful","Wrong info","Issue unresolved"]
-};
-let cexWhy = {
-  "Customer was pleased":["Issue resolved","Provided info"], 
-  "Info clear":["CX understood"], 
-  "Issue resolved":["Resolved successfully"],
-  "Partial help":["Follow-up needed"],
-  "Info unclear":["CX confused"], 
-  "Waited long":["CX frustrated"],
-  "Not helpful":["CX upset"], 
-  "Wrong info":["Mistake corrected"], 
-  "Issue unresolved":["Pending follow-up"]
-};
+// Variables and persistence
+let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
+let savedQuickNotes = JSON.parse(localStorage.getItem("quickNotesData") || "null");
+let quickNotesData = savedQuickNotes || {"Order Status":{"Processing":{inquiry:"CCI because he wanted to check the status of his order",action:"Informed cx that the order was still processing, provided estimated delivery timeframe."},"Shipped":{inquiry:"CCI because he wanted to check the status of his order",action:"Informed cx that the order has been shipped, provided tracking information."}},"New Order":{"Filters":{inquiry:"CCI to create new order",action:"Processed new order for filters."},"Main Unit":{inquiry:"CCI to create new order",action:"Processed new order for main unit."},"Accessories":{inquiry:"CCI to create new order",action:"Processed new order for accessories."}}};
+let isTyping=false, lastCleared=null;
+let cexReasons = {Good:["Customer was pleased","Info clear","Issue resolved"],Neutral:["Partial help","Info unclear","Waited long"],Bad:["Not helpful","Wrong info","Issue unresolved"]};
+let cexWhy = {"Customer was pleased":["Issue resolved","Provided info"],"Info clear":["CX understood"],"Issue resolved":["Resolved successfully"],"Partial help":["Follow-up needed"],"Info unclear":["CX confused"],"Waited long":["CX frustrated"],"Not helpful":["CX upset"],"Wrong info":["Mistake corrected"],"Issue unresolved":["Pending follow-up"]};
 
-let quickNotesData={
-  "Order Status":{
-    "Processing": {inquiry:"CCI because he wanted to check the status of his order", action:"Informed cx that the order was still processing, provided estimated delivery timeframe."},
-    "Shipped": {inquiry:"CCI because he wanted to check the status of his order", action:"Informed cx that the order has been shipped, provided tracking information."}
-  },
-  "New Order":{
-    "Filters": {inquiry:"CCI to create new order", action:"Processed new order for filters."},
-    "Main Unit": {inquiry:"CCI to create new order", action:"Processed new order for main unit."},
-    "Accessories": {inquiry:"CCI to create new order", action:"Processed new order for accessories."}
-  }
-};
-
-// Initialize Brand
+// Brand init
 let brandSelect=document.getElementById("brand");
-["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{
-  let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);
-});
+["Air Doctor","AquaTru","Better Bladder","Prosvent","IdealProstate","Walkfit","Superthotics","Rotorazer","Miracle Blade"].forEach(b=>{let opt=document.createElement("option"); opt.value=b; opt.innerText=b; brandSelect.appendChild(opt);});
 
 // Contact label
 function updateContactLabel(){
@@ -192,7 +198,7 @@ function updateContactLabel(){
   document.getElementById("contactForm").placeholder=type+" #";
 }
 
-// Notes
+// Notes generation
 function updateNotes(){
   let brand=document.getElementById("brand").value;
   let contactType=document.getElementById("contactType").value;
@@ -203,7 +209,7 @@ function updateNotes(){
   let actionTaken=document.getElementById("actionTaken").value;
   let cex=document.getElementById("cexReason").value;
   let why=document.getElementById("cexWhy").value;
-
+  isTyping=true;
   document.getElementById("notes").value=
   `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cex} | WHY: ${why}`;
 }
@@ -211,10 +217,7 @@ function updateNotes(){
 // CEX selection
 function selectCEX(value){
   let select=document.getElementById("cexReason"); select.innerHTML="";
-  cexReasons[value].forEach(opt=>{
-    let o=document.createElement("option"); o.value=o.innerText=opt;
-    select.appendChild(o);
-  });
+  cexReasons[value].forEach(opt=>{let o=document.createElement("option"); o.value=o.innerText=opt; select.appendChild(o);});
   updateWhy();
 }
 
@@ -222,20 +225,14 @@ function selectCEX(value){
 function updateWhy(){
   let reason=document.getElementById("cexReason").value;
   let whySelect=document.getElementById("cexWhy"); whySelect.innerHTML="";
-  if(cexWhy[reason]){
-    cexWhy[reason].forEach(w=>{
-      let o=document.createElement("option"); o.value=o.innerText=w;
-      whySelect.appendChild(o);
-    });
-  }
+  if(cexWhy[reason]){ cexWhy[reason].forEach(w=>{ let o=document.createElement("option"); o.value=o.innerText=w; whySelect.appendChild(o); }); }
   updateNotes();
 }
 
 // Copy Notes
 function copyNotes(){
   let notesBox=document.getElementById("notes");
-  if(!notesBox.value || !document.getElementById("brand").value || !document.getElementById("contactForm").value) 
-    return alert("Complete todos los campos antes de guardar.");
+  if(!notesBox.value || !document.getElementById("brand").value || !document.getElementById("contactForm").value) return alert("Complete todos los campos antes de guardar.");
   notesBox.select(); document.execCommand("copy"); saveCurrentCall();
   let btn=document.getElementById("copy-btn"); btn.innerText="Copied!";
   setTimeout(()=>btn.innerHTML='<i class="far fa-copy"></i> Copy and Save',1000);
@@ -245,27 +242,21 @@ function copyNotes(){
 function saveCurrentCall(){
   let noteText=document.getElementById("notes").value;
   if(noteText.trim()==="") return;
-  callHistory.push({
-    orderNumber: document.getElementById("orderNumber").value,
-    name: document.getElementById("name").value,
-    brand: document.getElementById("brand").value,
-    contactType: document.getElementById("contactType").value,
-    contactForm: document.getElementById("contactForm").value,
-    inquiry: document.getElementById("inquiry").value,
-    actionTaken: document.getElementById("actionTaken").value,
-    cex: document.getElementById("cexReason").value,
-    why: document.getElementById("cexWhy").value
-  });
+  callHistory.push({orderNumber:document.getElementById("orderNumber").value,name:document.getElementById("name").value,brand:document.getElementById("brand").value,contactType:document.getElementById("contactType").value,contactForm:document.getElementById("contactForm").value,inquiry:document.getElementById("inquiry").value,actionTaken:document.getElementById("actionTaken").value,cex:document.getElementById("cexReason").value,why:document.getElementById("cexWhy").value,date:new Date().toLocaleString()});
+  localStorage.setItem("callHistory",JSON.stringify(callHistory));
   renderHistory();
+  isTyping=false;
 }
 
-// Render History
+// Render History with search
 function renderHistory(){
   let list=document.getElementById("historyList"); list.innerHTML="";
+  let query=document.getElementById("historySearch").value.toLowerCase();
   callHistory.slice().reverse().forEach((item,index)=>{
-    let li=document.createElement("li"); 
-    li.innerText=`${item.orderNumber} - ${item.name}`;
-    li.onclick=()=> loadCall(index);
+    if(query && !(`${item.orderNumber} ${item.name}`.toLowerCase().includes(query))) return;
+    let li=document.createElement("li");
+    li.innerText=`${item.orderNumber} - ${item.name} (${item.date})`;
+    li.onclick=()=> loadCall(callHistory.length-1-index);
     list.appendChild(li);
   });
 }
@@ -273,81 +264,165 @@ function renderHistory(){
 // Load call from history
 function loadCall(index){
   let item=callHistory[index];
+  if(!item) return;
   document.getElementById("brand").value=item.brand;
-  updateContactLabel();
   document.getElementById("contactType").value=item.contactType;
+  updateContactLabel();
   document.getElementById("contactForm").value=item.contactForm;
   document.getElementById("name").value=item.name;
   document.getElementById("orderNumber").value=item.orderNumber;
   document.getElementById("inquiry").value=item.inquiry;
   document.getElementById("actionTaken").value=item.actionTaken;
-  selectCEX(item.cex.split(" ")[0]);
+  // select CEX from reason first word fallback
+  let firstWord = item.cex ? item.cex.split(" ")[0] : "Good";
+  selectCEX(["Good","Neutral","Bad"].includes(firstWord)?firstWord:"Good");
   setTimeout(()=>{document.getElementById("cexWhy").value=item.why; updateNotes();},10);
   toggleHistoryPanel(false);
 }
 
-// Toggle Dark Mode
-document.getElementById("darkModeBtn").addEventListener("click", ()=>document.body.classList.toggle("dark"));
-
-// History panel toggle
-function toggleHistoryPanel(force){
-  let panel=document.getElementById("historyPanel");
-  if(force===false){ panel.style.display="none"; panel.classList.remove("active"); return; }
-  panel.classList.toggle("active");
-  panel.style.display=(panel.style.display==="block")?"none":"block";
+// Toggle Dark Mode with icon + localStorage
+let darkBtn=document.getElementById("darkModeBtn");
+function applyDarkFromStorage(){
+  if(localStorage.getItem("darkMode")==="true"){ document.body.classList.add("dark"); darkBtn.querySelector('i').className='fas fa-sun'; darkBtn.childNodes[1] && (darkBtn.childNodes[1].nodeValue = ' Sun Mode'); }
+  else{ document.body.classList.remove("dark"); darkBtn.querySelector('i').className='fas fa-moon'; darkBtn.childNodes[1] && (darkBtn.childNodes[1].nodeValue = ' Dark Mode'); }
 }
-document.addEventListener("click", (e)=>{
-  let panel=document.getElementById("historyPanel");
-  if(panel.style.display==="block" && !panel.contains(e.target) && !e.target.matches('.top-buttons button:nth-child(2)')){
-    panel.style.display="none"; panel.classList.remove("active");
-  }
+darkBtn.addEventListener("click", ()=>{
+  document.body.classList.toggle("dark");
+  let icon=document.querySelector("#darkModeBtn i");
+  if(document.body.classList.contains("dark")){icon.className="fas fa-sun"; localStorage.setItem("darkMode","true");}
+  else{icon.className="fas fa-moon"; localStorage.setItem("darkMode","false");}
 });
 
-// Clear History
-function clearHistory(){ callHistory=[]; renderHistory(); }
+// History panel toggle with backdrop and animation
+let backdrop=document.getElementById('historyBackdrop');
+let panel=document.getElementById('historyPanel');
+function toggleHistoryPanel(force){
+  let isOpen = panel.classList.contains('active');
+  if(force===false || (typeof force==='boolean' && force===false)) { panel.classList.remove('active'); backdrop.classList.remove('active'); return; }
+  if(isOpen){ panel.classList.remove('active'); backdrop.classList.remove('active'); }
+  else{ panel.classList.add('active'); backdrop.classList.add('active'); renderHistory(); }
+}
+backdrop.addEventListener('click', ()=>toggleHistoryPanel(false));
 
-// Clear Form
+// Clear History
+function clearHistory(){
+  if(!confirm('¿Borrar todo el historial? Esta acción no se puede deshacer.')) return;
+  callHistory = [];
+  localStorage.removeItem('callHistory');
+  renderHistory();
+}
+
+// Clear Form with undo
 function clearForm(){
-  document.getElementById("macroForm").reset();
-  document.getElementById("cexReason").innerHTML="";
-  document.getElementById("cexWhy").innerHTML="";
-  document.getElementById("notes").value="";
+  // store current state for undo
+  lastCleared = {
+    brand: document.getElementById('brand').value,
+    contactType: document.getElementById('contactType').value,
+    contactForm: document.getElementById('contactForm').value,
+    name: document.getElementById('name').value,
+    orderNumber: document.getElementById('orderNumber').value,
+    inquiry: document.getElementById('inquiry').value,
+    actionTaken: document.getElementById('actionTaken').value,
+    cexReason: document.getElementById('cexReason').value,
+    cexWhy: document.getElementById('cexWhy').value,
+    notes: document.getElementById('notes').value
+  };
+  document.getElementById('macroForm').reset();
+  document.getElementById('cexReason').innerHTML='';
+  document.getElementById('cexWhy').innerHTML='';
+  document.getElementById('notes').value='';
   isTyping=false;
   updateContactLabel();
+  document.getElementById('undoBtn').style.display='inline-block';
+}
+
+function undoClear(){
+  if(!lastCleared) return alert('No hay nada que deshacer.');
+  document.getElementById('brand').value=lastCleared.brand;
+  document.getElementById('contactType').value=lastCleared.contactType;
+  updateContactLabel();
+  document.getElementById('contactForm').value=lastCleared.contactForm;
+  document.getElementById('name').value=lastCleared.name;
+  document.getElementById('orderNumber').value=lastCleared.orderNumber;
+  document.getElementById('inquiry').value=lastCleared.inquiry;
+  document.getElementById('actionTaken').value=lastCleared.actionTaken;
+  selectCEX(lastCleared.cexReason ? lastCleared.cexReason.split(' ')[0] : 'Good');
+  setTimeout(()=>{ document.getElementById('cexWhy').value=lastCleared.cexWhy; document.getElementById('notes').value=lastCleared.notes; },10);
+  document.getElementById('undoBtn').style.display='none';
+  lastCleared=null;
 }
 
 // New Call
-function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!=="") saveCurrentCall(); clearForm(); }
+function newCall(){ if(isTyping && document.getElementById("notes").value.trim()!="") saveCurrentCall(); clearForm(); }
 
-// Quick Notes
+// Quick Notes UI
 let toggleBtn=document.getElementById("toggleQuickNotes");
 let quickCategories=document.getElementById("quickCategories");
 let subOptions=document.getElementById("subOptions");
-toggleBtn.addEventListener("click",()=>{
-  let isOpen=quickCategories.style.display!=="none";
-  quickCategories.style.display=isOpen?"none":"flex";
-  subOptions.style.display="none";
-  toggleBtn.innerText=isOpen?"+":"-";
-});
-for(let cat in quickNotesData){
-  let btn=document.createElement("button"); btn.innerText=cat; btn.className="quick-btn";
-  btn.onclick=()=>{
-    subOptions.innerHTML=""; subOptions.style.display="flex";
-    for(let sub in quickNotesData[cat]){
-      let subBtn=document.createElement("button"); subBtn.innerText=sub; subBtn.className="sub-btn";
-      subBtn.onclick=()=>{
-        document.getElementById("inquiry").value=quickNotesData[cat][sub].inquiry;
-        document.getElementById("actionTaken").value=quickNotesData[cat][sub].action;
-        updateNotes();
-      };
-      subOptions.appendChild(subBtn);
-    }
-  };
-  quickCategories.appendChild(btn);
+let manageToggle=document.getElementById('manageQuickToggle');
+let managePanel=document.getElementById('manageQuick');
+
+function renderQuickCategories(){
+  quickCategories.innerHTML=''; subOptions.innerHTML='';
+  for(let cat in quickNotesData){
+    let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
+    btn.onclick=()=>{
+      subOptions.innerHTML=''; subOptions.style.display='flex';
+      for(let sub in quickNotesData[cat]){
+        let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
+        subBtn.onclick=()=>{ document.getElementById('inquiry').value=quickNotesData[cat][sub].inquiry; document.getElementById('actionTaken').value=quickNotesData[cat][sub].action; updateNotes(); };
+        subOptions.appendChild(subBtn);
+      }
+    };
+    quickCategories.appendChild(btn);
+  }
+  // populate delete select
+  let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
+  for(let cat in quickNotesData){ for(let sub in quickNotesData[cat]){ let opt=document.createElement('option'); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt);} }
 }
 
-updateContactLabel();
-updateNotes();
+// manage quick notes actions
+document.getElementById('addQuickBtn').addEventListener('click', ()=>{
+  let cat=document.getElementById('mqCategory').value.trim();
+  let title=document.getElementById('mqTitle').value.trim();
+  let inquiry=document.getElementById('mqInquiry').value.trim();
+  let action=document.getElementById('mqAction').value.trim();
+  if(!cat || !title) return alert('Category y Title son obligatorios');
+  if(!quickNotesData[cat]) quickNotesData[cat] = {};
+  quickNotesData[cat][title] = {inquiry: inquiry || '', action: action || ''};
+  localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+  document.getElementById('mqCategory').value=''; document.getElementById('mqTitle').value=''; document.getElementById('mqInquiry').value=''; document.getElementById('mqAction').value='';
+  renderQuickCategories();
+  alert('Quick note añadida');
+});
+
+document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
+  let val=document.getElementById('mqDeleteSelect').value;
+  if(!val) return; let [cat,sub]=val.split('|||');
+  if(confirm(`Eliminar '${sub}' de '${cat}'?`)){
+    delete quickNotesData[cat][sub];
+    if(Object.keys(quickNotesData[cat]).length===0) delete quickNotesData[cat];
+    localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
+    renderQuickCategories();
+  }
+});
+
+// Quick notes toggles
+let isQuickOpen=false;
+toggleBtn.addEventListener('click', ()=>{ isQuickOpen = !isQuickOpen; quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; subOptions.style.display='none'; toggleBtn.innerText = isQuickOpen ? '-' : '+'; });
+manageToggle.addEventListener('click', ()=>{ managePanel.style.display = managePanel.style.display==='none' ? 'block' : 'none'; });
+
+// Event binding to inputs to mark typing and support updateNotes
+document.querySelectorAll('#macroForm input, #macroForm textarea, #macroForm select').forEach(el=>{ el.addEventListener('input', ()=>{ if(el.id==='contactType') updateContactLabel(); updateNotes(); }); });
+
+// Initial CEX default
+selectCEX('Good');
+
+// Load persisted history and quick notes
+renderQuickCategories();
+renderHistory();
+applyDarkFromStorage();
+
 </script>
 </body>
 </html>
