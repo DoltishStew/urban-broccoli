@@ -454,6 +454,131 @@ deleteQuickBtn.onclick=()=>{
   saveQuickNotes(); renderQuickCategories(); updateMQDelete();
 };
 
+  // ======== Quick Notes v2 ========
+const toggleQuickBtn = document.getElementById('toggleQuickNotes');
+const manageQuickBtn = document.getElementById('manageQuickToggle');
+const quickCategoriesDiv = document.getElementById('quickCategories');
+const subOptionsDiv = document.getElementById('subOptions');
+const manageQuickDiv = document.getElementById('manageQuick');
+
+const mqCategory = document.getElementById('mqCategory');
+const mqTitle = document.getElementById('mqTitle');
+const mqInquiry = document.getElementById('mqInquiry');
+const mqAction = document.getElementById('mqAction');
+const addQuickBtn = document.getElementById('addQuickBtn');
+const editQuickBtn = document.getElementById('editQuickBtn');
+const deleteQuickBtn = document.getElementById('deleteQuickBtn');
+const mqDeleteSelect = document.getElementById('mqDeleteSelect');
+
+let quickNotesData = JSON.parse(localStorage.getItem("quickNotesData") || "null") || {
+  "Order Status": {
+    "Processing": { inquiry: "CCI to check status", action: "Informed cx processing" },
+    "Shipped": { inquiry: "CCI to check status", action: "Informed cx shipped" }
+  },
+  "New Order": {
+    "Filters": { inquiry: "CCI new order", action: "Processed new filters order" },
+    "Main Unit": { inquiry: "CCI new order", action: "Processed new main unit order" }
+  }
+};
+
+// ======== Renderizar categorías ========
+function renderQuickCategories(){
+  quickCategoriesDiv.innerHTML="";
+  Object.keys(quickNotesData).forEach(cat=>{
+    let btn=document.createElement("button");
+    btn.className='quick-btn';
+    btn.innerText=cat;
+    btn.onclick=()=> renderSubOptions(cat);
+    quickCategoriesDiv.appendChild(btn);
+  });
+}
+
+// ======== Renderizar sub-opciones ========
+function renderSubOptions(cat){
+  subOptionsDiv.style.display='flex';
+  subOptionsDiv.innerHTML="";
+  Object.keys(quickNotesData[cat]).forEach(title=>{
+    let btn=document.createElement("button");
+    btn.className='sub-btn';
+    btn.innerText=title;
+    btn.onclick=()=> applyQuickNote(cat,title);
+    subOptionsDiv.appendChild(btn);
+  });
+}
+
+// ======== Aplicar Quick Note ========
+function applyQuickNote(cat,title){
+  let data = quickNotesData[cat][title];
+  document.getElementById('inquiry').value = data.inquiry;
+  document.getElementById('actionTaken').value = data.action;
+  updateNotes();
+}
+
+// ======== Mostrar/ocultar Quick Notes ========
+toggleQuickBtn.onclick = () => {
+  quickCategoriesDiv.style.display = quickCategoriesDiv.style.display==='none'?'flex':'none';
+};
+
+manageQuickBtn.onclick = () => {
+  manageQuickDiv.style.display = manageQuickDiv.style.display==='none'?'flex':'none';
+  renderMQDelete();
+};
+
+// ======== Guardar en localStorage ========
+function saveQuickNotes(){
+  localStorage.setItem("quickNotesData", JSON.stringify(quickNotesData));
+}
+
+// ======== Agregar nueva Quick Note ========
+addQuickBtn.onclick = ()=>{
+  let cat = mqCategory.value.trim();
+  let title = mqTitle.value.trim();
+  if(!cat || !title) return alert("Category y Title son obligatorios");
+  if(!quickNotesData[cat]) quickNotesData[cat] = {};
+  quickNotesData[cat][title] = { inquiry: mqInquiry.value, action: mqAction.value };
+  saveQuickNotes();
+  renderQuickCategories();
+  renderMQDelete();
+  mqCategory.value=''; mqTitle.value=''; mqInquiry.value=''; mqAction.value='';
+};
+
+// ======== Editar Quick Note ========
+editQuickBtn.onclick = ()=>{
+  let val = mqDeleteSelect.value;
+  if(!val) return alert("Seleccione una nota para editar");
+  let [cat,title] = val.split('|');
+  quickNotesData[cat][title] = { inquiry: mqInquiry.value, action: mqAction.value };
+  saveQuickNotes();
+  renderQuickCategories();
+  renderMQDelete();
+};
+
+// ======== Borrar Quick Note ========
+deleteQuickBtn.onclick = ()=>{
+  let val = mqDeleteSelect.value;
+  if(!val) return alert("Seleccione una nota para borrar");
+  let [cat,title] = val.split('|');
+  delete quickNotesData[cat][title];
+  if(Object.keys(quickNotesData[cat]).length===0) delete quickNotesData[cat];
+  saveQuickNotes();
+  renderQuickCategories();
+  renderMQDelete();
+};
+
+// ======== Actualizar lista para borrar/editar ========
+function renderMQDelete(){
+  mqDeleteSelect.innerHTML = '';
+  Object.keys(quickNotesData).forEach(cat=>{
+    Object.keys(quickNotesData[cat]).forEach(title=>{
+      let opt=document.createElement('option');
+      opt.value=`${cat}|${title}`;
+      opt.innerText=`${cat} - ${title}`;
+      mqDeleteSelect.appendChild(opt);
+    });
+  });
+}
+
+// ======== Inicialización ========
 renderQuickCategories(); updateMQDelete();
 updateContactLabel();
 updateNotes();
