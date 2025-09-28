@@ -100,6 +100,11 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 
 /* responsive tweaks */
 @media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;}}
+  #inquiry, #actionTaken {
+  resize: vertical;   /* solo expandir verticalmente */
+  min-height: 80px;   /* altura mínima */
+  max-height: 400px;  /* altura máxima opcional */
+}
 </style>
 </head>
 <body>
@@ -158,20 +163,20 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
         <label for="orderNumber">Order Number</label>
         <input type="text" id="orderNumber" placeholder="Order Number" />
 
-        <label for="inquiry">Inquiry</label>
-        <input type="text" id="inquiry" placeholder="Inquiry" />
+       <label for="inquiry">Inquiry</label>
+<textarea id="inquiry" placeholder="Inquiry"></textarea>
 
-        <label for="actionTaken">Action Taken</label>
-        <input type="text" id="actionTaken" placeholder="Action Taken" />
+<label for="actionTaken">Action Taken</label>
+<textarea id="actionTaken" placeholder="Action Taken"></textarea>
 
-        <label>CEX</label>
+        <label>Customer Satisfaction(CEX)</label>
         <div class="cex-buttons">
           <button type="button" class="cex-good" onclick="selectCEX('Good')"><i class="fas fa-thumbs-up"></i> Good</button>
           <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')"><i class="fas fa-meh"></i> Neutral</button>
           <button type="button" class="cex-bad" onclick="selectCEX('Bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
         </div>
 
-        <label for="cexReason">Reason</label>
+        <label for="cexReason">Reason(Why)</label>
         <select id="cexReason" onchange="updateWhy()"></select>
 
         <label for="cexWhy">WHY</label>
