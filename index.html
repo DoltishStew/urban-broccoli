@@ -1,5 +1,3 @@
-Puedes darme el codigo actualizado divido en html y luego css con los cambios aplicados y sin borrar lo anterior?
-
 MACROSv2.0-Pre-Alpha
 <!DOCTYPE html>
 <html lang="es">
@@ -21,26 +19,25 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .right-column { flex: 1; min-width: 350px; }
 
 /* Quick Notes Card */
-  .quick-card {
-  background: #fff;                  /* fondo blanco */
-  border-radius: 8px;                /* esquinas redondeadas */
-  padding: 10px;                     /* espacio interno */
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* sombra suave */
+.quick-card {
+  background: #fff;                  
+  border-radius: 8px;                
+  padding: 10px;                     
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08); 
   transition: all 0.3s ease;
-  display: flex;                     /* organiza contenido verticalmente */
+  display: flex;                     
   flex-direction: column;
 }
 .quick-card-header {
   display: flex;
-  align-items: center;       /* centra verticalmente */
-  justify-content: flex-start; /* botones al lado del título */
-  gap: 8px;                  /* espacio entre título y botones */
+  align-items: center;       
+  justify-content: flex-start; 
+  gap: 8px;                  
 }
 .quick-card-header h3 {
   margin: 0;
-  margin-right: 10px;        /* separa del primer botón */
+  margin-right: 10px;        
 }
-
 .quick-toggle-btn { background:#f39c12; color:#000; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; }
 .quick-toggle-btn:hover { background:#e08b00; }
 .quick-buttons, .sub-buttons { display:flex; flex-wrap: wrap; gap:5px; margin-top:8px; justify-content: center; }
@@ -53,8 +50,8 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
 .manage-quick .button-row {
   display: flex;
-  gap: 8px;      /* espacio entre botones */
-  align-items: center; /* alineación vertical */
+  gap: 8px;      
+  align-items: center; 
 }
 
 /* Form Card */
@@ -117,12 +114,12 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
   <div class="left-column">
     <div class="quick-card" id="quickNotesCard">
       <div class="quick-card-header">
-  <h3>Quick Notes</h3>
-  <div style="display:flex;gap:8px;align-items:center;">
-    <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
-    <button id="manageQuickToggle" class="quick-toggle-btn" title="Manage Quick Notes">⚙</button>
-  </div>
-</div>
+        <h3>Quick Notes</h3>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
+          <button id="manageQuickToggle" class="quick-toggle-btn" title="Manage Quick Notes">⚙</button>
+        </div>
+      </div>
       <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
       <div class="sub-buttons" id="subOptions" style="display:none;"></div>
       <div class="manage-quick" id="manageQuick" style="display:none;">
@@ -132,11 +129,11 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
         <textarea id="mqInquiry" placeholder="Inquiry text"></textarea>
         <textarea id="mqAction" placeholder="Action taken text"></textarea>
         <div class="button-row">
-  <button id="addQuickBtn">Add</button>
-  <select id="mqDeleteSelect" style="flex:1;"></select>
-  <button id="editQuickBtn" style="background:#ff9500;">Edit</button>
-  <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
-</div>
+          <button id="addQuickBtn">Add</button>
+          <select id="mqDeleteSelect" style="flex:1;"></select>
+          <button id="editQuickBtn" style="background:#ff9500;">Edit</button>
+          <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
+        </div>
       </div>
     </div>
 
@@ -174,10 +171,7 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
         </div>
 
         <label for="cexReason">Reason</label>
-        <select id="cexReason" onchange="updateWhy()"></select>
-
-        <label for="cexWhy">WHY</label>
-        <select id="cexWhy" onchange="updateNotes()"></select>
+        <select id="cexReason" onchange="updateNotes()"></select>
       </form>
     </div>
   </div>
