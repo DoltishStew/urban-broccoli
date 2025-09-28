@@ -419,16 +419,20 @@ document.getElementById('addQuickBtn').addEventListener('click', ()=>{
   alert('Quick note añadida');
 });
 
+// Delete Quick Note
 document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
   let val=document.getElementById('mqDeleteSelect').value;
-  if(!val) return; let [cat,sub]=val.split('|||');
+  if(!val) return; 
+  let [cat,sub]=val.split('|||');
   if(confirm(`Eliminar '${sub}' de '${cat}'?`)){
     delete quickNotesData[cat][sub];
     if(Object.keys(quickNotesData[cat]).length===0) delete quickNotesData[cat];
     localStorage.setItem('quickNotesData', JSON.stringify(quickNotesData));
     renderQuickCategories();
   }
-// Funcion Editar
+}); // <-- cerrar aquí la función delete
+
+// Edit Quick Note
 document.getElementById('editQuickBtn').addEventListener('click', ()=>{
   let val = document.getElementById('mqDeleteSelect').value;
   if(!val) return alert('Selecciona una nota para editar.');
