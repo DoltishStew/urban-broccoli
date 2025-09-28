@@ -18,9 +18,16 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .right-column { flex: 1; min-width: 350px; }
 
 /* Quick Notes Card */
-.quick-card { background:#fff; border-radius:8px; padding:10px; max-width:100%; box-shadow: 0 6px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; flex:1; }
-.quick-card-header { display:flex; justify-content:space-between; align-items:center; }
-.quick-card-header h3 { margin:0; }
+.quick-card-header {
+  display: flex;
+  align-items: center;       /* centra verticalmente */
+  justify-content: flex-start; /* botones junto al título */
+  gap: 8px;                  /* espacio entre título y botones */
+}
+.quick-card-header h3 {
+  margin: 0;
+  margin-right: 10px;        /* separa un poco del primer botón */
+}
 .quick-toggle-btn { background:#f39c12; color:#000; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; }
 .quick-toggle-btn:hover { background:#e08b00; }
 .quick-buttons, .sub-buttons { display:flex; flex-wrap: wrap; gap:5px; margin-top:5px; justify-content: center; }
