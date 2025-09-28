@@ -1,367 +1,213 @@
-macrosV2.2-Alpha
+MACROSv2.0-Pre-Alpha
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MacrOS</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary-color: #4a90e2;
-      --secondary-color: #50c878;
-      --background-color: #f0f2f5;
-      --text-color: #333;
-      --card-background: #fff;
-      --border-radius: 8px;
-      --shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MacrOS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; color: #000; margin: 20px; transition: all 0.3s; }
+header { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: #000; }
+.top-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+.top-buttons button { background: #f39c12; color: black; border: none; padding: 8px 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; border-radius: 8px; transition: 0.2s; }
+.top-buttons button:hover { background: #e08b00; }
 
-    body.dark-mode {
-      --background-color: #18191a;
-      --text-color: #e4e6eb;
-      --card-background: #242526;
-      --shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
+/* Layout dos columnas */
+main { display: flex; gap: 20px; flex-wrap: wrap; }
+.left-column { flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: 15px; }
+.right-column { flex: 1; min-width: 350px; }
 
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: var(--background-color);
-      color: var(--text-color);
-      transition: background-color 0.3s, color 0.3s;
-    }
+/* Quick Notes Card */
+  .quick-card {
+  background: #fff;                  /* fondo blanco */
+  border-radius: 8px;                /* esquinas redondeadas */
+  padding: 10px;                     /* espacio interno */
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* sombra suave */
+  transition: all 0.3s ease;
+  display: flex;                     /* organiza contenido verticalmente */
+  flex-direction: column;
+}
+.quick-card-header {
+  display: flex;
+  align-items: center;       /* centra verticalmente */
+  justify-content: flex-start; /* botones al lado del título */
+  gap: 8px;                  /* espacio entre título y botones */
+}
+.quick-card-header h3 {
+  margin: 0;
+  margin-right: 10px;        /* separa del primer botón */
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+.quick-toggle-btn { background:#f39c12; color:#000; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; }
+.quick-toggle-btn:hover { background:#e08b00; }
+.quick-buttons, .sub-buttons { display:flex; flex-wrap: wrap; gap:5px; margin-top:8px; justify-content: center; }
+.quick-btn, .sub-btn { background:#007bff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-weight:bold; }
+.quick-btn:hover, .sub-btn:hover { background:#0056d6; }
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
-    }
+/* Manage quick notes */
+.manage-quick { margin-top:12px; border-top:1px solid #eee; padding-top:10px; }
+.manage-quick input, .manage-quick textarea { padding:6px; margin-bottom:6px; }
+.manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
+.manage-quick .button-row {
+  display: flex;
+  gap: 8px;      /* espacio entre botones */
+  align-items: center; /* alineación vertical */
+}
 
-    .card {
-      background-color: var(--card-background);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      margin-bottom: 20px;
-      transition: background-color 0.3s, box-shadow 0.3s;
-    }
+/* Form Card */
+.card { background:#fff; padding:20px; border-radius:8px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+label { font-weight:600; margin:10px 0 5px; text-transform: uppercase; }
+input, select, textarea { width:100%; box-sizing:border-box; padding:8px 12px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; background:#f2f2f7; font-size:0.95rem; color: #000; }
+textarea { resize: vertical; }
 
-    .form-group {
-      margin-bottom: 15px;
-    }
+/* CEX buttons */
+.cex-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 10px 0 12px; /* arriba 10px, lados 0, abajo 12px */
+}
+.cex-buttons button { flex:1; color:#fff; border:none; padding:6px; border-radius:6px; font-weight:bold; cursor:pointer; max-width: 120px; }
+.cex-good { background:#34c759; } .cex-neutral { background:#ff9500; } .cex-bad { background:#ff3b30; }
 
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+/* Output */
+.output { display:flex; flex-direction:column; }
+.output textarea { width:100%; min-height:150px; border-radius:6px; padding:12px; margin-bottom:5px; background:#f2f2f7; font-family:monospace; font-size:0.95rem; color: #000; }
+.copy-container { display:flex; justify-content:flex-end; gap:5px; }
+.copy-container button { background:#f39c12; color:black; border:none; padding:6px 12px; cursor:pointer; display:flex; align-items:center; gap:5px; border-radius:6px; }
+.copy-container button:hover { background:#e08b00; }
 
-    input[type="text"], select, textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: var(--border-radius);
-      box-sizing: border-box;
-      background-color: inherit;
-      color: inherit;
-    }
+/* Dark mode */
+body.dark { background:#121212; color:white; }
+body.dark header { color:#fff; }
+body.dark .card, body.dark .quick-card { background:#1e1e1e; border:1px solid #444; box-shadow:none; color:#fff; }
+body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; color:white; border:1px solid #555; }
+body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
+body.dark .cex-buttons button { color:#fff; }
+body.dark .quick-card-header h3 { color:#fff; }
+body.dark #historyPanel { background:#2c2c2c; color:white; }
 
-    textarea {
-      resize: vertical;
-    }
+/* History Panel + Backdrop */
+#historyBackdrop { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; opacity:0; transition:opacity 0.3s; }
+#historyBackdrop.active { display:block; opacity:1; }
+#historyPanel { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.9); width:420px; max-height:75%; overflow-y:auto; z-index:1000; background:#e0e0e0; border-radius:6px; box-shadow:0 0 20px rgba(0,0,0,0.4); padding:20px; opacity:0; transition:all 0.25s ease; }
+#historyPanel.active { display:block; opacity:1; transform:translate(-50%,-50%) scale(1); }
+#historyPanel h3 { margin-top:0; text-align:center; }
+#historyPanel ul { list-style:none; padding:0; margin:0; }
+#historyPanel li { padding:8px 10px; margin-bottom:6px; background:#f5f5f5; border-radius:4px; cursor:pointer; transition: background 0.2s; }
+#historyPanel li:hover { background:#ccc; }
+#clearHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#ff3b30; color:white; }
+#closeHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#007bff; color:white; }
 
-    .btn {
-      padding: 10px 15px;
-      border: none;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      margin-right: 10px;
-      transition: background-color 0.3s;
-    }
+/* Undo */
+#undoBtn { background:#34c759; color:white; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; display:none; }
 
-    /* Nuevos estilos */
-    .btn-primary {
-      background-color: #007bff;
-      color: #fff;
-    }
-    .btn-primary:hover {
-      background-color: #0056b3;
-    }
-
-    .btn-secondary {
-      background-color: #28a745;
-      color: #fff;
-    }
-    .btn-secondary:hover {
-      background-color: #1e7e34;
-    }
-
-    .btn-cex-good {
-      background-color: #28a745;
-      color: white;
-    }
-
-    .btn-cex-bad {
-      background-color: #dc3545;
-      color: white;
-    }
-
-    .btn-cex-none {
-      background-color: #6c757d;
-      color: white;
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
-
-    .quick-notes, .history {
-      margin-top: 20px;
-    }
-
-    .quick-note-item, .history-item {
-      border-bottom: 1px solid #ccc;
-      padding: 10px 0;
-    }
-
-    .quick-note-item:last-child, .history-item:last-child {
-      border-bottom: none;
-    }
-
-    .note-actions button {
-      margin-left: 5px;
-    }
-
-    .undo-container {
-      margin-top: 15px;
-    }
-
-    .cex-options button {
-      margin-right: 10px;
-      margin-bottom: 10px;
-    }
-
-    .reasons {
-      margin-top: 10px;
-    }
-
-    .reason-btn {
-      background-color: #17a2b8;
-      color: white;
-      margin-right: 5px;
-      margin-bottom: 5px;
-    }
-
-    .dark-mode-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: #343a40;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: background-color 0.3s;
-    }
-
-    .dark-mode-toggle:hover {
-      background-color: #495057;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: var(--card-background);
-      padding: 20px;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      z-index: 1000;
-      max-height: 80vh;
-      overflow-y: auto;
-      width: 90%;
-      max-width: 600px;
-    }
-
-    .modal.active {
-      display: block;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .modal-header h3 {
-      margin: 0;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5em;
-      cursor: pointer;
-      color: var(--text-color);
-    }
-
-    .backdrop {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      z-index: 999;
-    }
-
-    .backdrop.active {
-      display: block;
-    }
-
-    @media (max-width: 768px) {
-      .form-group {
-        margin-bottom: 10px;
-      }
-
-      .btn {
-        margin-bottom: 10px;
-        width: 100%;
-      }
-
-      .modal {
-        width: 95%;
-      }
-    }
-  </style>
+/* responsive tweaks */
+@media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;}}
+  #inquiry, #actionTaken {
+  resize: vertical;   /* solo expandir verticalmente */
+  min-height: 30px;   /* altura mínima */
+  max-height: 100px;  /* altura máxima opcional */
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h2>MACROSv2.0-Pre-Alpha</h2>
+<header>MacrOS</header>
 
-    <div class="card">
-      <form id="macroForm">
-        <div class="form-group">
-          <label for="brand">Marca:</label>
-          <select id="brand" required>
-            <option value="">Selecciona una marca</option>
-            <option value="KOHLER">KOHLER</option>
-            <option value="HWM">HWM</option>
-            <option value="Sterling">Sterling</option>
-            <option value="Robern">Robern</option>
-            <option value="Kallista">Kallista</option>
-            <option value="Novita">Novita</option>
-            <option value="Mira">Mira</option>
-            <option value="DECO">DECO</option>
-            <option value="Clarity">Clarity</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
+<div class="top-buttons">
+  <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
+  <button onclick="toggleHistoryPanel()"><i class="fas fa-history"></i> History</button>
+  <button id="darkModeBtn"><i class="fas fa-moon"></i> Dark Mode</button>
+</div>
 
-        <div class="form-group">
-          <label for="contactType">Tipo de Contacto:</label>
-          <select id="contactType" required>
-            <option value="">Selecciona un tipo</option>
-            <option value="Call">Call</option>
-            <option value="Chat">Chat</option>
-            <option value="Case">Case</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="name">Nombre:</label>
-          <input type="text" id="name" required>
-        </div>
-
-        <div class="form-group">
-          <label for="order">Orden #:</label>
-          <input type="text" id="order">
-        </div>
-
-        <div class="form-group">
-          <label for="inquiry">Inquiry:</label>
-          <textarea id="inquiry" rows="3" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="action">Action Taken:</label>
-          <textarea id="action" rows="3" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>CEX:</label>
-          <div class="cex-options">
-            <button type="button" class="btn btn-cex-good" data-cex="Good">Good</button>
-            <button type="button" class="btn btn-cex-bad" data-cex="Bad">Bad</button>
-            <button type="button" class="btn btn-cex-none" data-cex="None">None</button>
-          </div>
-          <div class="reasons" id="reasonsContainer"></div>
-        </div>
-
-        <div class="form-group">
-          <button type="button" id="copySaveBtn" class="btn btn-primary">Copiar y Guardar</button>
-          <button type="button" id="openHistoryBtn" class="btn btn-primary">Abrir Historial</button>
-        </div>
-      </form>
-
-      <div class="undo-container">
-        <button id="undoBtn" class="btn btn-secondary" disabled>Deshacer Borrado</button>
+<main>
+  <div class="left-column">
+    <div class="quick-card" id="quickNotesCard">
+      <div class="quick-card-header">
+  <h3>Quick Notes</h3>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button id="toggleQuickNotes" class="quick-toggle-btn">+</button>
+    <button id="manageQuickToggle" class="quick-toggle-btn" title="Manage Quick Notes">⚙</button>
+  </div>
+</div>
+      <div class="quick-buttons" id="quickCategories" style="display:none;"></div>
+      <div class="sub-buttons" id="subOptions" style="display:none;"></div>
+      <div class="manage-quick" id="manageQuick" style="display:none;">
+        <label>Add Quick Note</label>
+        <input id="mqCategory" placeholder="Category (e.g. Shipping)" />
+        <input id="mqTitle" placeholder="Title (e.g. Delayed)" />
+        <textarea id="mqInquiry" placeholder="Inquiry text"></textarea>
+        <textarea id="mqAction" placeholder="Action taken text"></textarea>
+        <div class="button-row">
+  <button id="addQuickBtn">Add</button>
+  <select id="mqDeleteSelect" style="flex:1;"></select>
+  <button id="editQuickBtn" style="background:#ff9500;">Edit</button>
+  <button id="deleteQuickBtn" style="background:#ff3b30;">Delete</button>
+</div>
       </div>
     </div>
 
-    <div class="card quick-notes">
-      <h3>Quick Notes</h3>
-      <form id="quickNoteForm">
-        <div class="form-group">
-          <label for="qnCategory">Categoría:</label>
-          <input type="text" id="qnCategory" required>
+    <div class="card" id="formCard">
+      <form id="macroForm">
+        <label for="brand">Brand</label>
+        <select id="brand" onchange="updateNotes()"></select>
+
+        <label for="contactType">Contact Type</label>
+        <select id="contactType" onchange="updateContactLabel(); updateNotes()">
+          <option value="Phone">Phone</option>
+          <option value="Ticket">Ticket</option>
+        </select>
+
+        <label id="contactFormLabel" for="contactForm">Phone</label>
+        <input type="text" id="contactForm" placeholder="Phone #" />
+
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Customer Name" />
+
+        <label for="orderNumber">Order Number</label>
+        <input type="text" id="orderNumber" placeholder="Order Number" />
+
+       <label for="inquiry">Inquiry</label>
+<textarea id="inquiry" placeholder="Inquiry"></textarea>
+
+<label for="actionTaken">Action Taken</label>
+<textarea id="actionTaken" placeholder="Action Taken"></textarea>
+
+        <label>Customer Satisfaction(CEX)</label>
+        <div class="cex-buttons">
+          <button type="button" class="cex-good" onclick="selectCEX('Good')"><i class="fas fa-thumbs-up"></i> Good</button>
+          <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')"><i class="fas fa-meh"></i> Neutral</button>
+          <button type="button" class="cex-bad" onclick="selectCEX('Bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
         </div>
-        <div class="form-group">
-          <label for="qnTitle">Título:</label>
-          <input type="text" id="qnTitle" required>
-        </div>
-        <div class="form-group">
-          <label for="qnInquiry">Inquiry:</label>
-          <textarea id="qnInquiry" rows="2" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="qnAction">Action Taken:</label>
-          <textarea id="qnAction" rows="2" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Agregar Quick Note</button>
+
+        <label for="cexReason">Reason(Why)</label>
+        <select id="cexReason" onchange="updateWhy()"></select>
       </form>
-      <div id="quickNotesList"></div>
     </div>
   </div>
 
-  <!-- Historial Modal -->
-  <div class="modal" id="historyModal">
-    <div class="modal-header">
-      <h3>Historial</h3>
-      <button class="close-btn" id="closeHistoryBtn">&times;</button>
+  <div class="right-column">
+    <div class="card output">
+      <label for="notes">Generated Notes</label>
+      <textarea id="notes" readonly></textarea>
+      <div class="copy-container">
+        <button id="copy-btn" onclick="copyNotes()"><i class="far fa-copy"></i> Copy and Save</button>
+        <button onclick="clearForm()">Clear</button>
+        <button id="undoBtn" onclick="undoClear()">Undo</button>
+      </div>
     </div>
-    <input type="text" id="historySearch" placeholder="Buscar en historial..." style="width:100%; padding:8px; margin-bottom:10px;">
-    <div id="historyList"></div>
   </div>
+</main>
 
-  <div class="backdrop" id="backdrop"></div>
-
-  <!-- Dark Mode Toggle -->
-  <button class="dark-mode-toggle" id="darkModeToggle">
-    <i class="fas fa-moon"></i>
-  </button>
+<div id="historyBackdrop"></div>
+<div id="historyPanel">
+  <h3>Call History</h3>
+  <input type="text" id="historySearch" placeholder="Search by name/order..." oninput="renderHistory()" style="width:100%; padding:6px; margin-bottom:10px; border-radius:6px; border:1px solid #bbb;">
+  <ul id="historyList"></ul>
+  <button id="clearHistoryBtn" onclick="clearHistory()">Clear History</button>
+  <button id="closeHistoryBtn" onclick="toggleHistoryPanel(false)">Close</button>
+</div>
 
 <script>
 // Variables y persistencia
