@@ -1,4 +1,4 @@
-MACROSv2.82-Beta
+MACROSv2.109-Beta
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -157,7 +157,13 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 .cex-buttons button.active {
     box-shadow: 0 0 0 2px #000 inset;
 }
- 
+  
+body.dark #historyPanel input,
+body.dark #historyPanel textarea {
+    background: #2a2a2a;  /* fondo oscuro */
+    color: #fff;           /* texto blanco */
+    border: 1px solid #555;
+}
 
 </style>
 </head>
@@ -391,22 +397,32 @@ function copyNotes(){
 
 // Save Call
 function saveCurrentCall(){
-    let noteText=document.getElementById("notes").value;
-    if(noteText.trim()==="") return;
-    callHistory.push({
-        orderNumber:document.getElementById("orderNumber").value,
-        name:document.getElementById("name").value,
-        brand:document.getElementById("brand").value,
-        contactType:document.getElementById("contactType").value,
-        contactForm:document.getElementById("contactForm").value,
-        inquiry:document.getElementById("inquiry").value,
-        actionTaken:document.getElementById("actionTaken").value,
-        cex:document.getElementById("cexReason").value,
-        date:new Date().toLocaleString()
-    });
-    localStorage.setItem("callHistory",JSON.stringify(callHistory));
+    let noteText = document.getElementById("notes").value;
+    if(noteText.trim() === "") return;
+
+    const newEntry = {
+        orderNumber: document.getElementById("orderNumber").value,
+        name: document.getElementById("name").value,
+        brand: document.getElementById("brand").value,
+        contactType: document.getElementById("contactType").value,
+        contactForm: document.getElementById("contactForm").value,
+        inquiry: document.getElementById("inquiry").value,
+        actionTaken: document.getElementById("actionTaken").value,
+        cex: document.getElementById("cexReason").value,
+        date: new Date().toLocaleString(),
+        notes: noteText
+    };
+
+    if(typeof lastEditedIndex === "number"){  // si está editando, sobrescribe
+        callHistory[lastEditedIndex] = newEntry;
+        lastEditedIndex = null;
+    } else {
+        callHistory.push(newEntry);
+    }
+
+    localStorage.setItem("callHistory", JSON.stringify(callHistory));
     renderHistory();
-    isTyping=false;
+    isTyping = false;
 }
 
 // Render History with search
@@ -424,18 +440,24 @@ function renderHistory(){
 
 // Load call from history
 function loadCall(index){
-    let item=callHistory[index];
+    let item = callHistory[index];
     if(!item) return;
-    document.getElementById("brand").value=item.brand;
-    document.getElementById("contactType").value=item.contactType;
+
+    document.getElementById('brand').value = item.brand;
+    document.getElementById('contactType').value = item.contactType;
     updateContactLabel();
-    document.getElementById("contactForm").value=item.contactForm;
-    document.getElementById("name").value=item.name;
-    document.getElementById("orderNumber").value=item.orderNumber;
-    document.getElementById("inquiry").value=item.inquiry;
-    document.getElementById("actionTaken").value=item.actionTaken;
-    selectCEX(item.cex.split(" ")[0] || "Good");
-    setTimeout(()=>{ document.getElementById("extraDetails").value=item.extra || ""; updateNotes(); },10);
+    document.getElementById('contactForm').value = item.contactForm;
+    document.getElementById('name').value = item.name;
+    document.getElementById('orderNumber').value = item.orderNumber;
+    document.getElementById('inquiry').value = item.inquiry;
+    document.getElementById('actionTaken').value = item.actionTaken;
+    selectCEXType(item.cex.split(" ")[0] || "Good");
+
+    document.getElementById('notes').value = item.notes || updateNotes();
+
+    // Guardar índice actual para saber si se edita
+    lastEditedIndex = index;
+
     toggleHistoryPanel(false);
 }
 
