@@ -86,14 +86,25 @@ textarea { resize: vertical; }
 .copy-container button:hover { background:#e08b00; }
 
 /* Dark mode - full patch */
-body.dark button:focus,
-body.dark .quick-toggle-btn:focus,
-body.dark .quick-btn:focus,
-body.dark .sub-btn:focus,
-body.dark .cex-buttons button:focus {
-    outline: none;
-    box-shadow: none;
+/* Botones en Dark Mode */
+body.dark .quick-toggle-btn,
+body.dark .quick-btn,
+body.dark .sub-btn,
+body.dark .cex-buttons button {
+    background-color: #333 !important; /* fondo oscuro */
+    color: #fff !important;            /* texto blanco */
+    box-shadow: none !important;       /* elimina sombra negra */
+    border: 1px solid #555 !important; /* borde sutil */
 }
+
+/* Hover opcional */
+body.dark .quick-toggle-btn:hover,
+body.dark .quick-btn:hover,
+body.dark .sub-btn:hover,
+body.dark .cex-buttons button:hover {
+    background-color: #444 !important;
+}
+
 
 body.dark header,
 body.dark .quick-card-header h3,
