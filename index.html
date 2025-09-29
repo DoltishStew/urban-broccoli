@@ -1,4 +1,4 @@
-MACROSv2.112-Beta
+MACROSv2.113-Beta
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -85,69 +85,55 @@ textarea { resize: vertical; }
 .copy-container button { background:#f39c12; color:black; border:none; padding:6px 12px; cursor:pointer; display:flex; align-items:center; gap:5px; border-radius:6px; }
 .copy-container button:hover { background:#e08b00; }
 
-/* Dark mode */
-body.dark {
-  background:#121212;
-  color:#fff;
+/* Dark mode - full patch */
+body.dark { 
+  background:#121212 !important; 
+  color:#fff !important; 
 }
 
-/* Header */
-body.dark header {
-  color:#fff;
+body.dark header,
+body.dark .quick-card-header h3,
+body.dark label,
+body.dark h1, 
+body.dark h2, 
+body.dark h3,
+body.dark h4, 
+body.dark h5, 
+body.dark h6 { 
+  color:#fff !important; 
 }
 
-/* Tarjetas */
-body.dark .card,
-body.dark .quick-card {
-  background:#1e1e1e;
-  border:1px solid #444;
-  box-shadow:none;
-  color:#fff;
+body.dark .card, 
+body.dark .quick-card,
+body.dark .copy-container,
+body.dark .top-buttons,
+body.dark .cex-buttons,
+body.dark .note,
+body.dark .overlay-content { 
+  background:#1e1e1e !important; 
+  border:1px solid #444 !important; 
+  color:#fff !important;
 }
 
-/* Campos generales */
-body.dark input,
-body.dark select,
-body.dark textarea {
+body.dark input, 
+body.dark select, 
+body.dark textarea { 
+  background:#2a2a2a !important; 
+  color:#fff !important; 
+  border:1px solid #555 !important; 
+}
+
+body.dark #historyPanel { 
+  background:#1a1a1a !important; 
+  color:#fff !important; 
+}
+
+body.dark #historyPanel input,
+body.dark #historyPanel textarea {
   background:#2a2a2a !important;
   color:#fff !important;
   border:1px solid #555 !important;
 }
-
-/* Botones superiores y copiar */
-body.dark .copy-container button,
-body.dark .top-buttons button {
-  border:1px solid #fff;
-  background:none;
-  color:#fff;
-}
-
-/* Botones CEX */
-body.dark .cex-buttons button {
-  color:#fff;
-}
-
-/* Quick Notes */
-body.dark .quick-card-header h3 {
-  color:#fff;
-}
-
-/* Panel de historial */
-body.dark #historyPanel {
-  background:#2c2c2c;
-  color:#fff;
-}
-
-/* Forzar inputs específicos dentro del historial */
-body.dark #historyPanel input,
-body.dark #historyPanel select,
-body.dark #historyPanel textarea {
-  background-color:#2a2a2a !important;
-  color:#fff !important;
-  border:1px solid #555 !important;
-}
-
-
 
 /* History Panel + Backdrop */
 #historyBackdrop { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; opacity:0; transition:opacity 0.3s; }
@@ -445,11 +431,15 @@ function copyNotes(){
 // Save Call
 function saveCurrentCall(){
     let noteText = document.getElementById("notes").value;
-    if(noteText.trim() === "") return;
+    let name = document.getElementById("name").value.trim();
+    let orderNumber = document.getElementById("orderNumber").value.trim();
+
+    // 🚫 Evitar guardar si está vacío o sin datos clave
+    if(noteText.trim() === "" || (!name && !orderNumber)) return;
 
     const newEntry = {
-        orderNumber: document.getElementById("orderNumber").value,
-        name: document.getElementById("name").value,
+        orderNumber: orderNumber,
+        name: name,
         brand: document.getElementById("brand").value,
         contactType: document.getElementById("contactType").value,
         contactForm: document.getElementById("contactForm").value,
@@ -460,7 +450,7 @@ function saveCurrentCall(){
         notes: noteText
     };
 
-    if(typeof lastEditedIndex === "number"){  // si está editando, sobrescribe
+    if(typeof lastEditedIndex === "number"){  
         callHistory[lastEditedIndex] = newEntry;
         lastEditedIndex = null;
     } else {
@@ -472,18 +462,22 @@ function saveCurrentCall(){
     isTyping = false;
 }
 
+
 // Render History with search
 function renderHistory(){
-    let list=document.getElementById("historyList"); list.innerHTML="";
+    let list=document.getElementById("historyList"); 
+    list.innerHTML="";
     let query=document.getElementById("historySearch").value.toLowerCase();
     callHistory.slice().reverse().forEach((item,index)=>{
-        if(query && !(`${item.orderNumber} ${item.name}`.toLowerCase().includes(query))) return;
+        // Buscar por brand, nombre o orderNumber
+        if(query && !(`${item.brand} ${item.orderNumber} ${item.name}`.toLowerCase().includes(query))) return;
         let li=document.createElement("li");
-        li.innerText=`${item.orderNumber} - ${item.name} (${item.date})`;
+        li.innerText=`${item.orderNumber} - ${item.name} (${item.brand}) - ${item.date}`;
         li.onclick=()=> loadCall(callHistory.length-1-index);
         list.appendChild(li);
     });
 }
+
 // Load call from history
 function loadCall(index){
     let item = callHistory[index];
@@ -501,9 +495,10 @@ function loadCall(index){
     // Guardar índice actual para edición
     lastEditedIndex = index;
     // 🔴 Forzar cierre del panel de historial
-    const panel = document.getElementById("historyPanel");
-    if(panel){
-        panel.style.display = "none";
+const panel = document.getElementById("historyPanel");
+const backdrop = document.getElementById("historyBackdrop");
+panel.classList.remove("active");
+backdrop.classList.remove("active");
     }
 }
 // Dark Mode
