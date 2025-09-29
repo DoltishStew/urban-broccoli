@@ -1,4 +1,4 @@
-MACROSv2.114-Beta
+MACROSv2.115-Beta
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -86,9 +86,13 @@ textarea { resize: vertical; }
 .copy-container button:hover { background:#e08b00; }
 
 /* Dark mode - full patch */
-body.dark { 
-  background:#121212 !important; 
-  color:#fff !important; 
+body.dark button:focus,
+body.dark .quick-toggle-btn:focus,
+body.dark .quick-btn:focus,
+body.dark .sub-btn:focus,
+body.dark .cex-buttons button:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 body.dark header,
