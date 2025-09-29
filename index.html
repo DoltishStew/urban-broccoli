@@ -147,6 +147,10 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
   background-color: #007bff;
   color: #fff;
 }
+.cex-buttons button.active {
+    box-shadow: 0 0 0 2px #000 inset;
+}
+ 
 
 </style>
 </head>
@@ -218,9 +222,9 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 
         <label>Customer Satisfaction(CEX)</label>
         <div class="cex-buttons">
-          <button type="button" class="cex-good" onclick="selectCEX('Good')"><i class="fas fa-thumbs-up"></i> Good</button>
-          <button type="button" class="cex-neutral" onclick="selectCEX('Neutral')"><i class="fas fa-meh"></i> Neutral</button>
-          <button type="button" class="cex-bad" onclick="selectCEX('Bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
+          <button type="button" class="cex-good" onclick="selectCEXType('Good')"><i class="fas fa-thumbs-up"></i> Good</button>
+<button type="button" class="cex-neutral" onclick="selectCEXType('Neutral')"><i class="fas fa-meh"></i> Neutral</button>
+<button type="button" class="cex-bad" onclick="selectCEXType('Bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
         </div>
 
         <label for="cexReason">Reason(Why)</label>
@@ -342,27 +346,32 @@ function updateNotes(){
     let orderNumber=document.getElementById("orderNumber").value || "N/A";
     let inquiry=document.getElementById("inquiry").value || "N/A";
     let actionTaken=document.getElementById("actionTaken").value || "N/A";
-    let cex=document.getElementById("cexReason").selectedIndex >=0 ? 
-            document.getElementById("cexReason").options[document.getElementById("cexReason").selectedIndex].text : "N/A";
-    let cexType=document.querySelector(".cex-buttons button.active")?.innerText.trim() || "N/A";
-    let extra=document.getElementById("extraDetails")?.value.trim() || "";
+  let cexType = document.querySelector(".cex-buttons button.active")?.innerText.trim() || "N/A";
+let reason = document.getElementById("cexReason").selectedIndex >=0 ? 
+             document.getElementById("cexReason").options[document.getElementById("cexReason").selectedIndex].text : "N/A";
 
-    isTyping = inquiry.trim()!=="" || actionTaken.trim()!=="" || name.trim()!=="" || orderNumber.trim()!=="" || contactForm.trim()!=="" || extra!=="";
+document.getElementById("notes").value=
+    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cexType} | REASON: ${reason}` +
+    (extra ? ` | EXTRA DETAILS: ${extra}` : "");
 
-    document.getElementById("notes").value=
-        `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cexType} | REASON: ${cex}` +
-        (extra ? ` | EXTRA DETAILS: ${extra}` : "");
-}
 
 
 // CEX selection
-function selectCEX(value){
-    let select=document.getElementById("cexReason"); select.innerHTML="";
-    cexReasons[value].forEach(opt=>{
-        let o=document.createElement("option"); o.value=o.innerText=opt; select.appendChild(o);
+function selectCEXType(type){
+    document.querySelectorAll(".cex-buttons button").forEach(b=>b.classList.remove("active"));
+    document.querySelector(`.cex-${type.toLowerCase()}`).classList.add("active");
+    // Actualiza la lista de razones
+    let select=document.getElementById("cexReason");
+    select.innerHTML="";
+    cexReasons[type].forEach(opt=>{
+        let o=document.createElement("option");
+        o.value = o.innerText = opt;
+        select.appendChild(o);
     });
+    select.selectedIndex = 0;
     updateNotes();
 }
+
 
 // Copy Notes
 function copyNotes(){
@@ -535,20 +544,24 @@ function newCall(){
 }
 
 // Quick Notes UI
-let toggleBtn=document.getElementById("toggleQuickNotes");
-let quickCategories=document.getElementById("quickCategories");
-let subOptions=document.getElementById("subOptions");
-let manageToggle=document.getElementById('manageQuickToggle');
-let managePanel=document.getElementById('manageQuick');
+let toggleBtn = document.getElementById("toggleQuickNotes");
+let quickCategories = document.getElementById("quickCategories");
+let subOptions = document.getElementById("subOptions");
+let manageToggle = document.getElementById('manageQuickToggle');
+let managePanel = document.getElementById('manageQuick');
 
 function renderQuickCategories(){
     quickCategories.innerHTML=''; subOptions.innerHTML='';
     for(let cat in quickNotesData){
-        let btn=document.createElement('button'); btn.innerText=cat; btn.className='quick-btn';
+        let btn=document.createElement('button'); 
+        btn.innerText=cat; 
+        btn.className='quick-btn';
         btn.onclick=()=>{
             subOptions.innerHTML=''; subOptions.style.display='flex';
             for(let sub in quickNotesData[cat]){
-                let subBtn=document.createElement('button'); subBtn.innerText=sub; subBtn.className='sub-btn';
+                let subBtn=document.createElement('button'); 
+                subBtn.innerText=sub; 
+                subBtn.className='sub-btn';
                 subBtn.onclick=()=>{
                     let inquiryField=document.getElementById('inquiry');
                     let actionField=document.getElementById('actionTaken');
@@ -561,15 +574,41 @@ function renderQuickCategories(){
         };
         quickCategories.appendChild(btn);
     }
-    let deleteSelect = document.getElementById('mqDeleteSelect'); deleteSelect.innerHTML='';
+
+    // Actualiza el select de borrar
+    let deleteSelect = document.getElementById('mqDeleteSelect'); 
+    deleteSelect.innerHTML='';
     for(let cat in quickNotesData){ 
         for(let sub in quickNotesData[cat]){
-            let opt=document.createElement('option'); opt.value=`${cat}|||${sub}`; opt.textContent=`${cat} - ${sub}`; deleteSelect.appendChild(opt);
+            let opt=document.createElement('option'); 
+            opt.value=`${cat}|||${sub}`; 
+            opt.textContent=`${cat} - ${sub}`; 
+            deleteSelect.appendChild(opt);
         }
     }
 }
 
-// Manage Quick Notes Actions
+// Quick notes toggles (categorías)
+let isQuickOpen = false;
+toggleBtn.addEventListener('click', ()=>{
+    isQuickOpen = !isQuickOpen; 
+    quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; 
+    subOptions.style.display = 'none'; 
+    toggleBtn.innerHTML = isQuickOpen ? '<i class="fas fa-chevron-up"></i>' : '<i class="fas fa-chevron-down"></i>';
+});
+
+// Manage Quick Notes toggle (+)
+manageToggle.addEventListener('click', ()=>{
+    if(managePanel.style.display === 'flex'){
+        managePanel.style.display = 'none';
+        manageToggle.innerHTML = '+';
+    } else {
+        managePanel.style.display = 'flex';
+        manageToggle.innerHTML = '-';
+    }
+});
+
+// Manage Quick Notes Actions (Add/Edit/Delete) -- sin cambios, se mantienen intactos
 document.getElementById('addQuickBtn').addEventListener('click', ()=>{
     let cat=document.getElementById('mqCategory').value.trim();
     let title=document.getElementById('mqTitle').value.trim();
@@ -584,7 +623,6 @@ document.getElementById('addQuickBtn').addEventListener('click', ()=>{
     alert('Quick note añadida');
 });
 
-// Delete Quick Note
 document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
     let val=document.getElementById('mqDeleteSelect').value;
     if(!val) return; 
@@ -597,7 +635,6 @@ document.getElementById('deleteQuickBtn').addEventListener('click', ()=>{
     }
 });
 
-// Edit Quick Note
 document.getElementById('editQuickBtn').addEventListener('click', ()=>{
     let val = document.getElementById('mqDeleteSelect').value;
     if(!val) return alert('Selecciona una nota para editar.');
@@ -608,16 +645,6 @@ document.getElementById('editQuickBtn').addEventListener('click', ()=>{
     document.getElementById('mqInquiry').value = quickNotesData[cat][sub].inquiry;
     document.getElementById('mqAction').value = quickNotesData[cat][sub].action;
 });
-
-// Quick notes toggles
-let isQuickOpen=false;
-toggleBtn.addEventListener('click', ()=>{
-    isQuickOpen = !isQuickOpen; 
-    quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; 
-    subOptions.style.display = 'none'; 
-    toggleBtn.innerHTML = isQuickOpen ? '<i class="fas fa-chevron-up"></i>' : '<i class="fas fa-chevron-down"></i>';
-});
-
 
 // Input event binding
 document.querySelectorAll('#macroForm input, #macroForm textarea, #macroForm select').forEach(el=>{
