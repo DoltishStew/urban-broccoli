@@ -215,13 +215,13 @@ let callHistory = JSON.parse(localStorage.getItem("callHistory") || "[]");
 let savedQuickNotes = JSON.parse(localStorage.getItem("quickNotesData") || "null");
 let quickNotesData = savedQuickNotes || {
     "Order Status":{
-        "Processing":{inquiry:"CCI porque quería verificar el estado de su orden",action:"Informé que la orden aún estaba procesándose y di tiempo estimado de entrega."},
-        "Shipped":{inquiry:"CCI porque quería verificar el estado de su orden",action:"Informé que la orden había sido enviada y proporcioné el rastreo."}
+        "Processing":{inquiry:"CCI to know the status of the order",action:"I provided the status of the order and the ETA"},
+        "Shipped":{inquiry:"CCI to know the status of the order",action:"I provided the status of the order and the tracking information"}
     },
     "New Order":{
-        "Filters":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de filtros."},
-        "Main Unit":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de unidad principal."},
-        "Accessories":{inquiry:"CCI para crear nueva orden",action:"Procesé nueva orden de accesorios."}
+        "Filters":{inquiry:"CCI to place a new order",action:"Order created."},
+        "Main Unit":{inquiry:"CCI to place a new order",action:"Order created.."},
+        "Accessories":{inquiry:"CCI to place a new order",action:"Order created."}
     }
 };
 let isTyping=false, lastCleared=null;
