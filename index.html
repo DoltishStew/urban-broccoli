@@ -504,40 +504,68 @@ function clearHistory(){
 }
 
 // Clear Form with Undo
+// Clear Form con Undo
 function clearForm(){
-    let inquiry=document.getElementById("inquiry").value.trim();
-    let action=document.getElementById("actionTaken").value.trim();
+    // Guardar los valores actuales antes de limpiar
+    let inquiry = document.getElementById("inquiry").value.trim();
+    let action = document.getElementById("actionTaken").value.trim();
 
-
-    if((inquiry || action || extra)){
+    if(inquiry || action){
         lastCleared = {
             brand: document.getElementById('brand').value,
-            contactType: document.getElementById('contactType').value,
+            contactType: document.getElementById('contactType').value, // para mantener referencia
             contactForm: document.getElementById('contactForm').value,
             name: document.getElementById('name').value,
             orderNumber: document.getElementById('orderNumber').value,
             inquiry: inquiry,
             actionTaken: action,
             cexReason: document.getElementById('cexReason').value,
-            extraDetails: extra,
             notes: document.getElementById('notes').value
         };
-        document.getElementById('undoBtn').style.display='inline-block';
+        document.getElementById('undoBtn').style.display = 'inline-block';
     } else {
         lastCleared = null;
-        document.getElementById('undoBtn').style.display='none';
+        document.getElementById('undoBtn').style.display = 'none';
     }
 
-    let contactTypeValue = document.getElementById('contactType').value; // guarda el valor actual
+    // Guardar el valor actual de contactType
+    let contactTypeValue = document.getElementById('contactType').value;
 
+    // Reset del formulario
     document.getElementById('macroForm').reset();
 
-    document.getElementById('contactType').value = contactTypeValue; // restaurar el valor guardado
+    // Restaurar contactType
+    document.getElementById('contactType').value = contactTypeValue;
     updateContactLabel();
 
-    if(document.getElementById('extraDetails')) document.getElementById('extraDetails').value='';
-    document.getElementById('notes').value='';
-    isTyping=false;
+    // Limpiar campos de texto y notas
+    document.getElementById('contactForm').value = '';
+    document.getElementById('name').value = '';
+    document.getElementById('orderNumber').value = '';
+    document.getElementById('inquiry').value = '';
+    document.getElementById('actionTaken').value = '';
+    document.getElementById('notes').value = '';
+
+    isTyping = false;
+}
+
+// Undo Clear
+function undoClear(){
+    if(!lastCleared) return;
+
+    document.getElementById('brand').value = lastCleared.brand;
+    document.getElementById('contactType').value = lastCleared.contactType;
+    updateContactLabel();
+    document.getElementById('contactForm').value = lastCleared.contactForm;
+    document.getElementById('name').value = lastCleared.name;
+    document.getElementById('orderNumber').value = lastCleared.orderNumber;
+    document.getElementById('inquiry').value = lastCleared.inquiry;
+    document.getElementById('actionTaken').value = lastCleared.actionTaken;
+    selectCEXType(lastCleared.cexReason.split(" ")[0] || "Good");
+    document.getElementById('notes').value = lastCleared.notes;
+
+    document.getElementById('undoBtn').style.display = 'none';
+    lastCleared = null;
 }
 
 
