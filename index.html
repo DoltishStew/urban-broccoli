@@ -142,7 +142,7 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
   <button onclick="newCall()"><i class="fas fa-plus"></i> New Call</button>
   <button onclick="toggleHistoryPanel()"><i class="fas fa-history"></i> History</button>
   <button id="darkModeBtn">
-  <span id="darkModeIcon">🌙</span> 
+  <i id="darkModeIcon" class="fas fa-moon"></i>
   <span id="darkModeText">Dark Mode</span>
 </button>
 </div>
@@ -392,17 +392,36 @@ function loadCall(index){
 function applyDarkFromStorage(){ 
   const isDark = localStorage.getItem('darkMode') === 'true';
   document.body.classList.toggle('dark', isDark);
-  document.getElementById("darkModeIcon").textContent = isDark ? "☀️" : "🌙";
-  document.getElementById("darkModeText").textContent = isDark ? "Light Mode" : "Dark Mode";
+
+  const icon = document.getElementById("darkModeIcon");
+  const text = document.getElementById("darkModeText");
+
+  if(isDark){
+    icon.className = "fas fa-sun";
+    text.textContent = "Light Mode";
+  } else {
+    icon.className = "fas fa-moon";
+    text.textContent = "Dark Mode";
+  }
 }
 
 document.getElementById("darkModeBtn").addEventListener("click",()=>{
   const isDark = !document.body.classList.contains('dark');
   document.body.classList.toggle("dark", isDark);
   localStorage.setItem('darkMode', isDark);
-  document.getElementById("darkModeIcon").textContent = isDark ? "☀️" : "🌙";
-  document.getElementById("darkModeText").textContent = isDark ? "Light Mode" : "Dark Mode";
+
+  const icon = document.getElementById("darkModeIcon");
+  const text = document.getElementById("darkModeText");
+
+  if(isDark){
+    icon.className = "fas fa-sun";
+    text.textContent = "Light Mode";
+  } else {
+    icon.className = "fas fa-moon";
+    text.textContent = "Dark Mode";
+  }
 });
+
 
 // Clear History
 function clearHistory(){
