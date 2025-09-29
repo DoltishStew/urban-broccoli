@@ -319,25 +319,38 @@ function updateContactLabel(){
 }
 
 
+// CEX selection
+function selectCEX(value){
+    let select=document.getElementById("cexReason");
+    select.innerHTML="";
+    cexReasons[value].forEach((opt,index)=>{
+        let o=document.createElement("option");
+        o.value = o.innerText = opt;
+        select.appendChild(o);
+    });
+    // Selecciona el primer valor de la lista por defecto
+    select.selectedIndex = 0;
+    updateNotes();
+}
+
 // Notes generation
 function updateNotes(){
-    let brand = document.getElementById("brand").value || "N/A";
-    let contactType = document.getElementById("contactType").value || "N/A";
-    let contactForm = document.getElementById("contactForm").value || "N/A";
-    let name = document.getElementById("name").value || "N/A";
-    let orderNumber = document.getElementById("orderNumber").value || "N/A";
-    let inquiry = document.getElementById("inquiry").value || "N/A";
-    let actionTaken = document.getElementById("actionTaken").value || "N/A";
-    let extra = document.getElementById("extraDetails")?.value.trim() || "";
-    
-    let cexFull = document.getElementById("cexReason").value || "N/A";
-    let cexType = cexFull.split(" ")[0] || "N/A"; // Good / Neutral / Bad
-    let reason = cexFull || "N/A";
+    let brand=document.getElementById("brand").value || "N/A";
+    let contactType=document.getElementById("contactType").value || "N/A";
+    let contactForm=document.getElementById("contactForm").value || "N/A";
+    let name=document.getElementById("name").value || "N/A";
+    let orderNumber=document.getElementById("orderNumber").value || "N/A";
+    let inquiry=document.getElementById("inquiry").value || "N/A";
+    let actionTaken=document.getElementById("actionTaken").value || "N/A";
+    let cex=document.getElementById("cexReason").selectedIndex >=0 ? 
+            document.getElementById("cexReason").options[document.getElementById("cexReason").selectedIndex].text : "N/A";
+    let cexType=document.querySelector(".cex-buttons button.active")?.innerText.trim() || "N/A";
+    let extra=document.getElementById("extraDetails")?.value.trim() || "";
 
-    isTyping = inquiry !== "N/A" || actionTaken !== "N/A" || name !== "N/A" || orderNumber !== "N/A" || contactForm !== "N/A" || extra !== "";
+    isTyping = inquiry.trim()!=="" || actionTaken.trim()!=="" || name.trim()!=="" || orderNumber.trim()!=="" || contactForm.trim()!=="" || extra!=="";
 
-    document.getElementById("notes").value =
-        `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cexType} | REASON: ${reason}` +
+    document.getElementById("notes").value=
+        `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cexType} | REASON: ${cex}` +
         (extra ? ` | EXTRA DETAILS: ${extra}` : "");
 }
 
