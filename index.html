@@ -46,7 +46,14 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .quick-btn:hover, .sub-btn:hover { background:#0056d6; }
 
 /* Manage quick notes */
-.manage-quick { margin-top:12px; border-top:1px solid #eee; padding-top:10px; }
+.manage-quick {
+  display: none;          /* inicialmente oculto */
+  flex-direction: column; /* organiza hijos verticalmente */
+  gap: 6px;               /* espacio entre elementos */
+  margin-top: 12px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
 .manage-quick input, .manage-quick textarea { padding:6px; margin-bottom:6px; }
 .manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
 .manage-quick .button-row {
@@ -598,11 +605,11 @@ toggleBtn.addEventListener('click', ()=>{
 
 // Manage Quick Notes toggle (+)
 manageToggle.addEventListener('click', ()=>{
-    if(managePanel.style.display === 'flex'){
+    if(managePanel.style.display === 'block'){
         managePanel.style.display = 'none';
         manageToggle.innerHTML = '+';
     } else {
-        managePanel.style.display = 'flex';
+        managePanel.style.display = 'block'; // <<-- aquí
         manageToggle.innerHTML = '-';
         // Cerrar categorías si estaban abiertas
         isQuickOpen = false;
@@ -611,6 +618,7 @@ manageToggle.addEventListener('click', ()=>{
         toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
     }
 });
+
 
 // Manage Quick Notes Actions (Add/Edit/Delete) -- sin cambios, se mantienen intactos
 document.getElementById('addQuickBtn').addEventListener('click', ()=>{
