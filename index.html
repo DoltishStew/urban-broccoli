@@ -1,4 +1,4 @@
-MACROSv2.117-Beta
+MACROSv2.119-Beta
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -120,7 +120,7 @@ body.dark .quick-toggle-btn, body.dark .quick-btn, body.dark .sub-btn, body.dark
 }
 body.dark .quick-toggle-btn:hover, body.dark .quick-btn:hover, body.dark .sub-btn:hover, body.dark .cex-buttons button:hover {
     background-color: #444 !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.35);
+    box-shadow: none;
 }
 
 </style>
@@ -214,8 +214,7 @@ body.dark .quick-toggle-btn:hover, body.dark .quick-btn:hover, body.dark .sub-bt
         <button id="undoBtn" onclick="undoClear()">Undo</button>
       </div>
     </div>
-  </div>
-  <div class="quick-card" id="returnInfoCard">
+      <div class="quick-card" id="returnInfoCard">
   <div class="quick-card-header">
     <h3>Return Info</h3>
     <button id="toggleReturnInfo" class="quick-toggle-btn"><i class="fas fa-chevron-down"></i></button>
@@ -223,6 +222,8 @@ body.dark .quick-toggle-btn:hover, body.dark .quick-btn:hover, body.dark .sub-bt
   <div class="return-buttons" id="returnPrimary" style="display:none; flex-direction: column; gap:6px; margin-top:10px;"></div>
   <div class="return-details" id="returnDetails" style="margin-top:10px; font-size:0.95rem; display:none;"></div>
 </div>
+  </div>
+
 </main>
 
 <div id="historyBackdrop"></div>
