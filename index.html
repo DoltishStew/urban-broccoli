@@ -395,7 +395,6 @@ function saveCurrentCall(){
         inquiry:document.getElementById("inquiry").value,
         actionTaken:document.getElementById("actionTaken").value,
         cex:document.getElementById("cexReason").value,
-        extra:document.getElementById("extraDetails")?.value.trim() || "",
         date:new Date().toLocaleString()
     });
     localStorage.setItem("callHistory",JSON.stringify(callHistory));
@@ -501,7 +500,7 @@ function clearHistory(){
 function clearForm(){
     let inquiry=document.getElementById("inquiry").value.trim();
     let action=document.getElementById("actionTaken").value.trim();
-    let extra=document.getElementById("extraDetails")?.value.trim() || "";
+
 
     if((inquiry || action || extra)){
         lastCleared = {
@@ -684,6 +683,13 @@ selectCEX('Good');
 renderQuickCategories();
 renderHistory();
 applyDarkFromStorage();
+  // Fix de altura de inputs y textarea en Quick Notes
+document.querySelectorAll('.manage-quick input, .manage-quick textarea').forEach(el=>{
+    el.style.height = 'auto';
+    el.style.minHeight = '30px';
+    el.style.maxHeight = '100px';
+    el.style.resize = 'vertical';
+});
 </script>
 </body>
 </html>
