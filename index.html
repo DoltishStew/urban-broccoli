@@ -403,7 +403,6 @@ function clearForm(){
     let action=document.getElementById("actionTaken").value.trim();
     let extra=document.getElementById("extraDetails")?.value.trim() || "";
 
-    // Solo guardar lastCleared si hay algo escrito
     if((inquiry || action || extra)){
         lastCleared = {
             brand: document.getElementById('brand').value,
@@ -423,13 +422,18 @@ function clearForm(){
         document.getElementById('undoBtn').style.display='none';
     }
 
+    let contactTypeValue = document.getElementById('contactType').value; // guarda el valor actual
+
     document.getElementById('macroForm').reset();
-    document.getElementById('cexReason').innerHTML='';
+
+    document.getElementById('contactType').value = contactTypeValue; // restaurar el valor guardado
+    updateContactLabel();
+
     if(document.getElementById('extraDetails')) document.getElementById('extraDetails').value='';
     document.getElementById('notes').value='';
     isTyping=false;
-    updateContactLabel();
 }
+
 
 // New Call
 function newCall(){
