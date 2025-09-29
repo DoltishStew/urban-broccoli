@@ -590,7 +590,7 @@ function renderQuickCategories(){
 
 // Quick notes toggles (categorías)
 let isQuickOpen = false;
-toggleBtn.addEventListener('click', ()=>{ ... });
+toggleBtn.addEventListener('click', ()=>{
     isQuickOpen = !isQuickOpen; 
     quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; 
     subOptions.style.display = 'none'; 
@@ -598,7 +598,7 @@ toggleBtn.addEventListener('click', ()=>{ ... });
 });
 
 // Manage Quick Notes toggle (+)
-manageToggle.addEventListener('click', ()=>{ ... });
+manageToggle.addEventListener('click', ()=>{
     if(managePanel.style.display === 'flex'){
         managePanel.style.display = 'none';
         manageToggle.innerHTML = '+';
