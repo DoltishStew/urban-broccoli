@@ -386,22 +386,24 @@ function loadCall(index){
 }
 
 // Dark Mode
-let darkBtn=document.getElementById("darkModeBtn");
-function applyDarkFromStorage(){
-    if(localStorage.getItem("darkMode")==="true"){ 
-        document.body.classList.add("dark"); 
-        darkBtn.querySelector('i').className='fas fa-sun'; 
-    } else { 
-        document.body.classList.remove("dark"); 
-        darkBtn.querySelector('i').className='fas fa-moon'; 
-    }
+function applyDarkFromStorage(){ 
+  const btn = document.getElementById("darkModeBtn");
+  if(localStorage.getItem('darkMode')==='true'){
+    document.body.classList.add('dark');
+    btn.innerText = "Light Mode";
+  } else {
+    btn.innerText = "Dark Mode";
+  }
 }
-darkBtn.addEventListener("click", ()=>{
-    document.body.classList.toggle("dark");
-    let icon=document.querySelector("#darkModeBtn i");
-    if(document.body.classList.contains("dark")){icon.className="fas fa-sun"; localStorage.setItem("darkMode","true");}
-    else{icon.className="fas fa-moon"; localStorage.setItem("darkMode","false");}
+
+document.getElementById("darkModeBtn").addEventListener("click",()=>{
+  const btn = document.getElementById("darkModeBtn");
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('darkMode', isDark);
+  btn.innerText = isDark ? "Light Mode" : "Dark Mode";
 });
+
 
 // History panel toggle
 let backdrop=document.getElementById('historyBackdrop');
