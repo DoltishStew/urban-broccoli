@@ -1,4 +1,4 @@
-MACROSv2.116-Beta
+MACROSv2.117-Beta
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,6 +7,7 @@ MACROSv2.116-Beta
 <title>MacrOS</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
+/* Base */
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; color: #000; margin: 20px; transition: all 0.3s; }
 header { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: #000; }
 .top-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
@@ -19,26 +20,25 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 .right-column { flex: 1; min-width: 350px; }
 
 /* Quick Notes Card */
-  .quick-card {
-  background: #fff;                  /* fondo blanco */
-  border-radius: 8px;                /* esquinas redondeadas */
-  padding: 10px;                     /* espacio interno */
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* sombra suave */
+.quick-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
-  display: flex;                     /* organiza contenido verticalmente */
+  display: flex;
   flex-direction: column;
 }
 .quick-card-header {
   display: flex;
-  align-items: center;       /* centra verticalmente */
-  justify-content: flex-start; /* botones al lado del título */
-  gap: 8px;                  /* espacio entre título y botones */
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
 }
 .quick-card-header h3 {
   margin: 0;
-  margin-right: 10px;        /* separa del primer botón */
+  margin-right: 10px;
 }
-
 .quick-toggle-btn { background:#f39c12; color:#000; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; }
 .quick-toggle-btn:hover { background:#e08b00; }
 .quick-buttons, .sub-buttons { display:flex; flex-wrap: wrap; gap:5px; margin-top:8px; justify-content: center; }
@@ -47,36 +47,28 @@ main { display: flex; gap: 20px; flex-wrap: wrap; }
 
 /* Manage quick notes */
 .manage-quick {
-  display: none;          /* inicialmente oculto */
-  flex-direction: column; /* organiza hijos verticalmente */
-  gap: 6px;               /* espacio entre elementos */
+  display: none;
+  flex-direction: column;
+  gap: 6px;
   margin-top: 12px;
   border-top: 1px solid #eee;
   padding-top: 10px;
 }
 .manage-quick input, .manage-quick textarea { padding:6px; margin-bottom:6px; }
 .manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
-.manage-quick .button-row {
-  display: flex;
-  gap: 8px;      /* espacio entre botones */
-  align-items: center; /* alineación vertical */
-}
+.manage-quick .button-row { display: flex; gap: 8px; align-items: center; }
 
 /* Form Card */
 .card { background:#fff; padding:20px; border-radius:8px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
-label { font-weight:600; margin:10px 0 7px; text-transform: uppercase; } /* de 5px a 7px */
+label { font-weight:600; margin:10px 0 7px; text-transform: uppercase; }
 input, select, textarea { width:100%; box-sizing:border-box; padding:8px 12px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; background:#f2f2f7; font-size:0.95rem; color: #000; }
 textarea { resize: vertical; }
 
 /* CEX buttons */
-.cex-buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin: 10px 0 12px; /* arriba 10px, lados 0, abajo 12px */
-}
+.cex-buttons { display: flex; gap: 8px; justify-content: center; margin: 10px 0 12px; }
 .cex-buttons button { flex:1; color:#fff; border:none; padding:6px; border-radius:6px; font-weight:bold; cursor:pointer; max-width: 120px; }
 .cex-good { background:#34c759; } .cex-neutral { background:#ff9500; } .cex-bad { background:#ff3b30; }
+.cex-buttons button.active { box-shadow: 0 0 0 2px #000 inset; }
 
 /* Output */
 .output { display:flex; flex-direction:column; }
@@ -84,71 +76,6 @@ textarea { resize: vertical; }
 .copy-container { display:flex; justify-content:flex-end; gap:5px; }
 .copy-container button { background:#f39c12; color:black; border:none; padding:6px 12px; cursor:pointer; display:flex; align-items:center; gap:5px; border-radius:6px; }
 .copy-container button:hover { background:#e08b00; }
-
-/* Dark mode - full patch */
-/* Botones en Dark Mode */
-body.dark .quick-toggle-btn,
-body.dark .quick-btn,
-body.dark .sub-btn,
-body.dark .cex-buttons button {
-    background-color: #333 !important; /* fondo oscuro */
-    color: #fff !important;            /* texto blanco */
-    box-shadow: none !important;       /* elimina sombra negra */
-    border: 1px solid #555 !important; /* borde sutil */
-}
-
-/* Hover opcional */
-body.dark .quick-toggle-btn:hover,
-body.dark .quick-btn:hover,
-body.dark .sub-btn:hover,
-body.dark .cex-buttons button:hover {
-    background-color: #444 !important;
-}
-
-
-body.dark header,
-body.dark .quick-card-header h3,
-body.dark label,
-body.dark h1, 
-body.dark h2, 
-body.dark h3,
-body.dark h4, 
-body.dark h5, 
-body.dark h6 { 
-  color:#fff !important; 
-}
-
-body.dark .card, 
-body.dark .quick-card,
-body.dark .copy-container,
-body.dark .top-buttons,
-body.dark .cex-buttons,
-body.dark .note,
-body.dark .overlay-content { 
-  background:#1e1e1e !important; 
-  border:1px solid #444 !important; 
-  color:#fff !important;
-}
-
-body.dark input, 
-body.dark select, 
-body.dark textarea { 
-  background:#2a2a2a !important; 
-  color:#fff !important; 
-  border:1px solid #555 !important; 
-}
-
-body.dark #historyPanel { 
-  background:#1a1a1a !important; 
-  color:#fff !important; 
-}
-
-body.dark #historyPanel input,
-body.dark #historyPanel textarea {
-  background:#2a2a2a !important;
-  color:#fff !important;
-  border:1px solid #555 !important;
-}
 
 /* History Panel + Backdrop */
 #historyBackdrop { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; opacity:0; transition:opacity 0.3s; }
@@ -159,61 +86,43 @@ body.dark #historyPanel textarea {
 #historyPanel ul { list-style:none; padding:0; margin:0; }
 #historyPanel li { padding:8px 10px; margin-bottom:6px; background:#f5f5f5; border-radius:4px; cursor:pointer; transition: background 0.2s; }
 #historyPanel li:hover { background:#ccc; }
-#clearHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#ff3b30; color:white; }
-#closeHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#007bff; color:white; }
+#clearHistoryBtn, #closeHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; color:white; }
+#clearHistoryBtn { background:#ff3b30; } #closeHistoryBtn { background:#007bff; }
 
 /* Undo */
 #undoBtn { background:#34c759; color:white; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; display:none; }
 
-/* responsive tweaks */
+/* Responsive */
 @media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;}}
-  #inquiry, #actionTaken {
-  resize: vertical;   /* solo expandir verticalmente */
-  min-height: 30px;   /* altura mínima */
-  max-height: 100px;  /* altura máxima opcional */
+#inquiry, #actionTaken { resize: vertical; min-height: 30px; max-height: 100px; }
+
+/* Botones principales */
+#newCallBtn, #historyBtn, #darkModeBtn { background-color: #007bff; color: #fff; border: none; }
+#newCallBtn:hover, #historyBtn:hover, #darkModeBtn:hover { background-color: #0056d6; }
+
+/* Quick Notes niveles */
+.quick-btn { background-color: #007bff; color: #fff; border: none; }
+.quick-btn:hover { background-color: #0056d6; }
+.sub-btn { background-color: transparent; color: #007bff; border: 2px solid #007bff; text-decoration: none; }
+.sub-btn:hover { background-color: #007bff; color: #fff; }
+
+/* Dark Mode */
+body.dark { background:#121212; color:#fff; transition: all 0.3s; }
+body.dark header, body.dark .quick-card-header h3, body.dark label, body.dark h1, body.dark h2, body.dark h3, body.dark h4, body.dark h5, body.dark h6 { color:#fff !important; }
+body.dark .card, body.dark .quick-card, body.dark .copy-container, body.dark .top-buttons, body.dark .cex-buttons, body.dark .note, body.dark .overlay-content { background:#1e1e1e !important; border:1px solid #444 !important; color:#fff !important; }
+body.dark input, body.dark select, body.dark textarea, body.dark #historyPanel input, body.dark #historyPanel textarea { background:#2a2a2a !important; color:#fff !important; border:1px solid #555 !important; }
+body.dark #historyPanel { background:#1a1a1a !important; color:#fff !important; border:1px solid #444 !important; }
+body.dark .quick-toggle-btn, body.dark .quick-btn, body.dark .sub-btn, body.dark .cex-buttons button {
+    background-color: #333 !important;
+    color: #fff !important;
+    border: 1px solid #555 !important;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
 }
-  /* Botones principales */
-#newCallBtn,
-#historyBtn,
-#darkModeBtn {
-  background-color: #007bff; /* azul bootstrap */
-  color: #fff;
-  border: none;
-}
-#newCallBtn:hover,
-#historyBtn:hover,
-#darkModeBtn:hover {
-  background-color: #0056d6; /* azul más oscuro al hover */
+body.dark .quick-toggle-btn:hover, body.dark .quick-btn:hover, body.dark .sub-btn:hover, body.dark .cex-buttons button:hover {
+    background-color: #444 !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.35);
 }
 
-
-/* Botones dentro de Quicky Notes */
-/* Primer nivel: categorías - azul sólido */
-.quick-btn {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-}
-.quick-btn:hover {
-  background-color: #0056d6;
-}
-
-/* Segundo nivel: subopciones - outline azul con texto azul */
-.sub-btn {
-  background-color: transparent;
-  color: #007bff;
-  border: 2px solid #007bff;
-  text-decoration: none; /* si quieres subrayado */
-}
-.sub-btn:hover {
-  background-color: #007bff;
-  color: #fff;
-}
-.cex-buttons button.active {
-    box-shadow: 0 0 0 2px #000 inset;
-}
-#returnInfoCard { margin-top: 15px; }
-  
 </style>
 </head>
 <body>
