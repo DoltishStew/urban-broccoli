@@ -126,14 +126,25 @@ body.dark #historyPanel { background:#2c2c2c; color:white; }
 
 
 /* Botones dentro de Quicky Notes */
-.quick-btn, .sub-btn {
-  background-color: transparent; /* sin relleno */
-  color: #2E7D32; /* verde */
-  border: 2px solid #2E7D32;
+/* Primer nivel: categorías - azul sólido */
+.quick-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+}
+.quick-btn:hover {
+  background-color: #0056d6;
 }
 
-.quick-btn:hover, .sub-btn:hover {
-  background-color: #2E7D32; /* relleno verde al hover */
+/* Segundo nivel: subopciones - outline azul con texto azul */
+.sub-btn {
+  background-color: transparent;
+  color: #007bff;
+  border: 2px solid #007bff;
+  text-decoration: underline; /* si quieres subrayado */
+}
+.sub-btn:hover {
+  background-color: #007bff;
   color: #fff;
 }
 
