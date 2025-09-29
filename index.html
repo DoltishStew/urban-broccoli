@@ -422,7 +422,30 @@ document.getElementById("darkModeBtn").addEventListener("click",()=>{
   }
 });
 
+// Toggle History Panel
+function toggleHistoryPanel(forceClose=false){
+    const backdrop = document.getElementById('historyBackdrop');
+    const panel = document.getElementById('historyPanel');
+    const isActive = panel.classList.contains('active');
 
+    if(forceClose){
+        panel.classList.remove('active');
+        backdrop.classList.remove('active');
+        return;
+    }
+
+    if(isActive){
+        panel.classList.remove('active');
+        backdrop.classList.remove('active');
+    } else {
+        renderHistory(); // actualizar la lista antes de mostrar
+        panel.classList.add('active');
+        backdrop.classList.add('active');
+    }
+}
+
+// Cerrar al hacer clic en el backdrop
+document.getElementById('historyBackdrop').addEventListener('click', ()=> toggleHistoryPanel(true));
 // Clear History
 function clearHistory(){
     if(!confirm('¿Borrar todo el historial?')) return;
