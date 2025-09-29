@@ -346,15 +346,15 @@ function updateNotes(){
     let orderNumber=document.getElementById("orderNumber").value || "N/A";
     let inquiry=document.getElementById("inquiry").value || "N/A";
     let actionTaken=document.getElementById("actionTaken").value || "N/A";
-  let cexType = document.querySelector(".cex-buttons button.active")?.innerText.trim() || "N/A";
-let reason = document.getElementById("cexReason").selectedIndex >=0 ? 
-             document.getElementById("cexReason").options[document.getElementById("cexReason").selectedIndex].text : "N/A";
+    let cexType = document.querySelector(".cex-buttons button.active")?.innerText.trim() || "N/A";
+    let reason = document.getElementById("cexReason").selectedIndex >=0 ? 
+                 document.getElementById("cexReason").options[document.getElementById("cexReason").selectedIndex].text : "N/A";
+    let extra = document.getElementById("extraDetails")?.value?.trim() || "";
 
-document.getElementById("notes").value=
-    `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cexType} | REASON: ${reason}` +
-    (extra ? ` | EXTRA DETAILS: ${extra}` : "");
-
-
+    document.getElementById("notes").value=
+        `BRAND: ${brand} | CONTACT VIA: ${contactType} ${contactForm} | NAME: ${name} | Order#: ${orderNumber} | INQUIRY: ${inquiry} | ACTION TAKEN: ${actionTaken} | CEX: ${cexType} | REASON: ${reason}` +
+        (extra ? ` | EXTRA DETAILS: ${extra}` : "");
+}
 
 // CEX selection
 function selectCEXType(type){
@@ -590,7 +590,7 @@ function renderQuickCategories(){
 
 // Quick notes toggles (categorías)
 let isQuickOpen = false;
-toggleBtn.addEventListener('click', ()=>{
+toggleBtn.addEventListener('click', ()=>{ ... });
     isQuickOpen = !isQuickOpen; 
     quickCategories.style.display = isQuickOpen ? 'flex' : 'none'; 
     subOptions.style.display = 'none'; 
@@ -598,13 +598,18 @@ toggleBtn.addEventListener('click', ()=>{
 });
 
 // Manage Quick Notes toggle (+)
-manageToggle.addEventListener('click', ()=>{
+manageToggle.addEventListener('click', ()=>{ ... });
     if(managePanel.style.display === 'flex'){
         managePanel.style.display = 'none';
         manageToggle.innerHTML = '+';
     } else {
         managePanel.style.display = 'flex';
         manageToggle.innerHTML = '-';
+        // Cerrar categorías si estaban abiertas
+        isQuickOpen = false;
+        quickCategories.style.display = 'none';
+        subOptions.style.display = 'none';
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
     }
 });
 
