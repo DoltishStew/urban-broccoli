@@ -527,6 +527,23 @@ document.querySelectorAll('#macroForm input, #macroForm textarea, #macroForm sel
     });
 });
 
+  // Contact Type persistence
+let contactTypeSelect = document.getElementById("contactType");
+
+// Inicializa con valor guardado si existe
+let savedContactType = localStorage.getItem("contactType");
+if(savedContactType){
+    contactTypeSelect.value = savedContactType;
+    updateContactLabel();
+}
+
+// Cuando el usuario cambia, actualizar localStorage y label
+contactTypeSelect.addEventListener("change", ()=>{
+    localStorage.setItem("contactType", contactTypeSelect.value);
+    updateContactLabel();
+    updateNotes();
+});
+
 // Extra Details input binding
 document.getElementById("extraDetails")?.addEventListener("input", updateNotes);
 
