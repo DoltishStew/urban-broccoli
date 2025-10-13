@@ -1,194 +1,381 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Asistente de Ventas — MacrOs</title>
-  <style>
-    body{font-family:Inter, system-ui, Arial; max-width:980px;margin:18px auto;padding:12px}
-    h1{font-size:20px;margin-bottom:6px}
-    .row{display:flex;gap:8px;align-items:center}
-    .col{flex:1}
-    label{font-size:12px;color:#333}
-    input,select,textarea,button{padding:8px;border-radius:8px;border:1px solid #ddd;width:100%}
-    .panel{border:1px solid #eee;padding:10px;border-radius:8px;margin-top:8px;background:#fafafa}
-    table{width:100%;border-collapse:collapse;margin-top:8px}
-    th,td{border:1px solid #eee;padding:6px;text-align:left}
-    .chip{display:inline-block;padding:6px 8px;border-radius:999px;background:#fff;border:1px solid #ddd;margin-right:6px}
-    .actions{display:flex;gap:6px}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Veronica Sale Mag - By MarcOS corp.</title>
+<style>
+  :root{
+    --bg-rice:#FDF83;
+    --card-hazelnut:#F3EBDF;
+    --card-gray:#f2f2f4;
+    --accent:#148D8D; /* botones */
+    --text:#111;
+    --muted:#666;
+    --chip-border:#148D8D;
+    --shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:var(--bg-rice);color:var(--text)}
+  header{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px}
+  header h1{font-family:'Fortune Works', Georgia, serif;font-weight:700;margin:0;font-size:20px;color:#000}
+  .nav{display:flex;gap:16px;align-items:center}
+  .nav button{background:transparent;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+  .nav button.primary{background:var(--accent);color:#fff}
+
+  /* layout */
+  .wrap{display:flex;gap:18px;padding:12px;max-width:1200px;margin:0 auto}
+  .left,.right{flex:1;display:flex;flex-direction:column;gap:12px}
+
+  .card{background:var(--card-hazelnut);border-radius:12px;padding:12px;box-shadow:var(--shadow);}
+  .card.gray{background:var(--card-gray)}
+  .card .title{font-family:'Fortune Works', Georgia, serif;font-weight:700;margin-bottom:8px}
+
+  /* Brands buttons */
+  .brands{display:flex;flex-wrap:wrap;gap:8px}
+  .brand-btn{background:var(--accent);color:#fff;border-radius:10px;padding:8px 12px;border:2px solid var(--accent);cursor:pointer;transition:all .18s ease}
+  .brand-btn:hover{transform:translateY(-3px);box-shadow:0 6px 12px rgba(20,141,141,0.12)}
+
+  /* Panel de llamada */
+  .call-panel{min-height:260px}
+  textarea{width:100%;min-height:90px;border-radius:10px;padding:8px;border:1px solid #ddd;outline:none;transition:box-shadow .12s}
+  textarea:focus{box-shadow:0 0 0 3px rgba(0,0,0,0.08);}
+  .controls{display:flex;gap:8px;margin-top:8px}
+  .btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;transition:transform .12s}
+  .btn:active{transform:scale(.98)}
+  .btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+
+  .suggestions{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{background:#fff;padding:6px 10px;border-radius:999px;border:1px solid #eee}
+
+  /* Registro de ventas */
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:13px}
+  .right .card.small{padding:8px}
+
+  /* Dashboard */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .big{font-size:20px;font-weight:700}
+  .muted{color:var(--muted);font-size:13px}
+
+  /* currency toggle */
+  .toggle{display:flex;gap:6px}
+  .toggle button{padding:6px 10px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+  .toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  /* animations focus */
+  .focus-outline{transition:box-shadow .18s ease}
+  .focus-outline.focus{box-shadow:0 0 0 3px rgba(0,0,0,0.12)}
+
+  /* New order check animation */
+  .btn.checking{position:relative}
+  .btn.checking .check{position:absolute;right:10px;top:8px;opacity:0;transform:translateY(-6px);transition:all .2s}
+  .btn.checked .check{opacity:1;transform:translateY(0)}
+
+  /* hover outline for panel buttons */
+  .panel-actions .btn:hover{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+
+  /* Darkmode simple */
+  .dark{background:#0b1220;color:#fff}
+  .dark .card{background:#11151a}
+  .footer{margin-top:12px;text-align:center;color:var(--muted);font-size:13px;padding:8px}
+
+  @media(max-width:900px){.wrap{flex-direction:column}}
+</style>
 </head>
 <body>
-  <h1>Asistente de Ventas (Mini)</h1>
-  <div class="panel">
-    <div class="row">
-      <div class="col">
-        <label>Cliente (nombre)</label>
-        <input id="clientName" placeholder="Ej: Ana" />
+  <header>
+    <h1>Veronica Sale Mag - By MarcOS corp.</h1>
+    <div class="nav">
+      <button class="primary">Dashboard</button>
+      <button id="darkToggle">Darkmode</button>
+      <button id="exportBtn">Exportar</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="left">
+      <div class="card gray call-panel">
+        <div class="title">📞 Panel de llamada</div>
+        <div style="margin-bottom:8px" class="brands" id="brands"></div>
+        <div style="margin-top:8px">
+          <label class="muted">Estado de la llamada</label>
+          <select id="callState" style="width:100%;padding:8px;border-radius:8px;margin-top:6px;border:1px solid #ddd">
+            <option value="cold">Fría</option>
+            <option value="warm">Caliente</option>
+            <option value="hot">Hot / Interesado</option>
+          </select>
+        </div>
+        <div style="margin-top:8px">
+          <label class="muted">Notas (escribe sobre la llamada)</label>
+          <textarea id="callNotes" placeholder="Ej: Cliente interesado en AirDoctor pero dice que está caro"></textarea>
+        </div>
+        <div class="controls">
+          <button class="btn" id="analyzeBtn">Analizar llamada → sugerir</button>
+          <button class="btn ghost" id="clearBtn">Limpiar</button>
+        </div>
+
+        <div id="suggestionsBox" class="suggestions" style="display:none">
+          <div><strong>Sugerencias de upsell</strong><div class="chips" id="upsellChips"></div></div>
+          <div><strong>Frases para cerrar</strong><div id="closingPhrases"></div></div>
+          <div><strong>Objeciones detectadas</strong><div id="objectionsList"></div></div>
+          <div style="margin-top:8px" class="panel-actions">
+            <button class="btn" id="markNewOrder">New Order ✓<span class="check">✔</span></button>
+          </div>
+        </div>
       </div>
-      <div class="col">
-        <label>Estado de la llamada</label>
-        <select id="callState">
-          <option value="cold">Fría</option>
-          <option value="warm">Caliente</option>
-          <option value="hot">Hot / Interesado</option>
-        </select>
+
+      <!-- space for extras if needed -->
+      <div class="card small" style="min-height:80px">
+        <div class="title">Quick actions</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="brand-btn">Reservar talla</button>
+          <button class="brand-btn">Enviar link pago</button>
+          <button class="brand-btn">Enviar promo</button>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div style="margin-top:8px" class="row">
-      <div class="col">
-        <label>Producto de interés</label>
-        <select id="productSelect"></select>
+    <aside class="right">
+      <div class="card" id="dashboard">
+        <div class="title">📊 Dashboard — Sales by MacrOS</div>
+        <div class="grid">
+          <div>
+            <div class="muted">Total vendido</div>
+            <div class="big" id="totalSoldUSD">$0.00</div>
+            <div class="muted">USD</div>
+          </div>
+          <div>
+            <div class="muted">Total comisiones</div>
+            <div class="big" id="totalCommission">$0.00</div>
+            <div class="muted">USD</div>
+          </div>
+          <div>
+            <div class="muted">Ventas (hoy)</div>
+            <div class="big" id="salesToday">0</div>
+            <div class="muted">Unidades</div>
+          </div>
+          <div>
+            <div class="muted">Tier actual</div>
+            <div class="big" id="currentTier">-</div>
+            <div class="muted">Nivel</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+          <div class="toggle">
+            <button id="usdBtn" class="active">USD</button>
+            <button id="copBtn">COP</button>
+          </div>
+          <div>
+            <label class="muted">TRM (USD → COP)</label>
+            <input id="trmInput" type="number" value="4000" style="padding:6px;border-radius:8px;border:1px solid #ddd;width:120px" />
+          </div>
+        </div>
       </div>
-      <div style="width:160px">
-        <label>Qty</label>
-        <input id="qty" type="number" value="1" min="1" />
+
+      <div class="card small" style="margin-top:12px">
+        <div class="title">💵 Registro de ventas cerradas (New Order)</div>
+        <table id="salesTable"><thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Precio USD</th><th>Comisión</th><th>Precio COP</th></tr></thead><tbody></tbody></table>
       </div>
-    </div>
 
-    <div style="margin-top:8px">
-      <label>Notas rápidas (resume la llamada)</label>
-      <textarea id="callNotes" rows="3" placeholder="El cliente dice que..."></textarea>
-    </div>
+      <div class="card small" style="margin-top:12px">
+        <div class="title">Ventas por Tier</div>
+        <div id="tiersList" class="muted">No hay ventas aún.</div>
+      </div>
+    </aside>
+  </main>
 
-    <div style="margin-top:8px" class="actions">
-      <button id="analyzeBtn">Analizar llamada → sugerir</button>
-      <button id="registerSaleBtn">Registrar venta (si cerró)</button>
-    </div>
-  </div>
+  <footer class="footer card small">
+    <div>Random filler: © MarcOS corp. Made with love and coffee. Version 0.9</div>
+  </footer>
 
-  <div id="suggestions" class="panel" style="display:none">
-    <h3>Sugerencias en tiempo real</h3>
-    <div id="upsellChips"></div>
-    <div style="margin-top:6px">
-      <strong>Frases para cerrar (pick 1)</strong>
-      <div id="closingPhrases"></div>
-    </div>
-    <div style="margin-top:6px">
-      <strong>Respuestas a objeciones</strong>
-      <div id="objectionsList"></div>
-    </div>
-    <div style="margin-top:6px">
-      <strong>Linea rápida de cierre</strong>
-      <div id="quickClose"></div>
-    </div>
-  </div>
+<script>
+  // ========== Datos iniciales (placeholder) ========
+  const BRANDS = ['AirDoctor','AquaTru','Prosvent','IdealProstate+','BetterBladder','Walkfit','RotoRazer','Superthotics','MiracleBlade'];
+  const PRODUCTS = [
+    {sku:'P001',name:'AirDoctor Mini',price:199,upsell:['P002'],category:'AirDoctor',desc:'Purificador portátil'},
+    {sku:'P002',name:'AirDoctor Pro',price:349,upsell:[],category:'AirDoctor',desc:'Purificador profesional'},
+    {sku:'A100',name:'AquaTru Model X',price:499,upsell:['A110'],category:'AquaTru',desc:'Filtro de agua'},
+    {sku:'A110',name:'AquaTru Filter Pack',price:49,upsell:[],category:'AquaTru',desc:'Filtros de reemplazo'}
+  ];
 
-  <div id="logPanel" class="panel">
-    <h3>Registro de ventas (hoja rápida)</h3>
-    <table id="logTable">
-      <thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Qty</th><th>Revenue USD</th><th>Comisión USD</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  // Commission tiers
+  const TIERS = [
+    {min:1,max:399,commission:1.65},
+    {min:400,max:599,commission:3.30},
+    {min:600,max:899,commission:5.00},
+    {min:900,max:Infinity,commission:8.30}
+  ];
 
-  <script>
-    // === Datos de ejemplo (edítalos / reemplaza por tu Excel exportado) ===
-    const PRODUCTS = [
-      {id:'P001', name:'Camiseta Negra', price:20, tags:['bestseller'], upsell:['P002'], features:'Algodón, diseño propio', objections:['precio','talla']},
-      {id:'P002', name:'Gorra Negra', price:12, tags:['accesorio'], upsell:['P001'], features:'Ajustable', objections:['no necesito']},
-      {id:'P003', name:'Combo Buso+Gorra', price:30, tags:['bundle','ahorro'], upsell:[], features:'Descuento por combo', objections:['solo quiero una']}
-    ];
+  // localStorage key
+  const STORAGE_KEY = 'veronica_sales_v1';
 
-    // Commission tiers (user-provided)
-    const COMMISSION_TIERS = [
-      {min:0, max:399, commission:1.65},
-      {min:400, max:599, commission:3.30},
-      {min:600, max:899, commission:5.00},
-      {min:899, max:Infinity, commission:8.30}
-    ];
+  // populate brands buttons
+  const brandsEl = document.getElementById('brands');
+  BRANDS.forEach(b=>{
+    const btn = document.createElement('button'); btn.className='brand-btn'; btn.textContent=b; btn.dataset.brand=b;
+    btn.addEventListener('click',()=>selectBrand(b)); brandsEl.appendChild(btn);
+  })
 
-    // Upsell rules (simple mapping)
-    const UPSELL_RULES = {
-      'P001':['P002'],
-      'P002':['P001'],
-      'P003':[]
-    };
+  function selectBrand(b){
+    // simple filter: prefill notes area
+    document.getElementById('callNotes').value = `Interesado en ${b} — `;
+    // subtle focus VFX
+    document.getElementById('callNotes').classList.add('focus'); setTimeout(()=>document.getElementById('callNotes').classList.remove('focus'),400);
+  }
 
-    // Helper: populate product select
-    const ps = document.getElementById('productSelect');
-    PRODUCTS.forEach(p=>{
-      const o = document.createElement('option'); o.value = p.id; o.textContent = `${p.name} — $${p.price}`; ps.appendChild(o)
-    });
+  // Analyze call
+  document.getElementById('analyzeBtn').addEventListener('click',()=>{
+    const notes = document.getElementById('callNotes').value.toLowerCase();
+    const state = document.getElementById('callState').value;
+    const suggestionsBox = document.getElementById('suggestionsBox');
+    suggestionsBox.style.display='block';
 
-    function findProduct(id){return PRODUCTS.find(p=>p.id===id)}
+    // detect product mentions by name/brand
+    const found = PRODUCTS.filter(p=>notes.includes(p.name.toLowerCase()) || notes.includes(p.category.toLowerCase()));
+    const upsellChips = document.getElementById('upsellChips'); upsellChips.innerHTML='';
+    let ups = [];
+    if(found.length>0){
+      found.forEach(f=>{f.upsell.forEach(u=>{const prod = PRODUCTS.find(x=>x.sku===u); if(prod) ups.push(prod)})});
+    }
+    // fallback: suggest top products in same category
+    if(ups.length===0 && found.length>0){
+      const cat = found[0].category; ups = PRODUCTS.filter(p=>p.category===cat && p.sku!==found[0].sku).slice(0,3);
+    }
+    if(ups.length===0) ups = PRODUCTS.slice(0,3);
+    ups.forEach(u=>{const s = document.createElement('span'); s.className='chip'; s.textContent = `${u.name} — $${u.price}`; upsellChips.appendChild(s)});
 
-    function analyzeCall(){
-      const prodId = ps.value;
-      const qty = Number(document.getElementById('qty').value)||1;
-      const notes = document.getElementById('callNotes').value.toLowerCase();
-      const prod = findProduct(prodId);
+    // Closing phrases depending on callState
+    const closing = document.getElementById('closingPhrases'); closing.innerHTML='';
+    const basePrice = (found[0] && found[0].price) ? found[0].price : ups[0].price;
+    const closings = generateClosings(state, basePrice);
+    closings.forEach(c=>{const d=document.createElement('div');d.textContent=c;closing.appendChild(d)});
 
-      // Upsells (from rules + complementary logic)
-      const ups = UPSELL_RULES[prodId] || [];
-      const upsEls = document.getElementById('upsellChips'); upsEls.innerHTML='';
-      ups.forEach(uid=>{const p=findProduct(uid); if(p){const span=document.createElement('span');span.className='chip';span.textContent=`${p.name} — $${p.price}`;upsEls.appendChild(span)}})
+    // objections detection
+    const obsList = document.getElementById('objectionsList'); obsList.innerHTML='';
+    const knownObjs = ['caro','precio','no necesito','luego','pensarlo','talla'];
+    const detected = knownObjs.filter(k=>notes.includes(k));
+    if(detected.length===0) detected.push('precio'); // suggest price strategies
+    detected.forEach(o=>{const div=document.createElement('div');div.textContent = `${o}: ${objectionResponse(o)}`;obsList.appendChild(div)});
+  });
 
-      // Closing phrases (3 variations)
-      const closings = [
-        `Si quieres, te lo aseguro ahora por $${prod.price*qty} y lo dejo listo para envio en 48h. ¿Procedo?`,
-        `Este diseño se agota rápido — te reservo la talla si confirmas ahora. Te lo dejo en $${prod.price*qty}.`,
-        `Llevando el combo hoy te ahorras $${(prod.price*qty) - (prodId==='P003'?prod.price: (prod.price*qty + 5))} — ¿lo dejo así?`
+  function generateClosings(state,price){
+    if(state==='cold'){
+      return [
+        `Puedo reservarte una unidad por $${price} y darte 48h para pensarlo. ¿Te lo reservo?`,
+        `Si te interesa puedo enviarte fotos reales y asegurar tu talla hoy.`
       ];
-      const cp = document.getElementById('closingPhrases'); cp.innerHTML=''; closings.forEach(t=>{const d=document.createElement('div');d.textContent=t;cp.appendChild(d)})
-
-      // Objeciones: detect keywords
-      const knownObjs = prod.objections || [];
-      const detected = knownObjs.filter(o=>notes.includes(o));
-      const obList = document.getElementById('objectionsList'); obList.innerHTML='';
-      if(detected.length>0){
-        detected.forEach(o=>{
-          const resp = objectionResponse(o, prod);
-          const div = document.createElement('div'); div.textContent = `${o}: ${resp}`; obList.appendChild(div);
-        });
-      } else {
-        knownObjs.forEach(o=>{const div=document.createElement('div');div.textContent = `${o}: ${objectionResponse(o, prod)}`;obList.appendChild(div)})
-      }
-
-      // Quick close line
-      document.getElementById('quickClose').textContent = `Te lo dejo en $${prod.price*qty} y lo despachamos hoy si confirmas.`;
-
-      document.getElementById('suggestions').style.display='block';
     }
-
-    function objectionResponse(obj,prod){
-      const mapping = {
-        'precio': `Entiendo, podemos ver un combo o promoción para que te quede más barato; ¿prefieres ahorro inmediato o una prenda suelta?`,
-        'talla': `No hay problema: te confirmo existencias ahora y te bloqueo la talla mientras decides. ¿Qué talla usas?`,
-        'no necesito': `Comprendo. Muchas personas lo usan con X para un look completo; ¿qué estilo buscas?`,
-        'solo quiero una': `Perfecto, puedo dejarte solo la prenda y ofrecer envio gratis si confirmas ahora.`
-      };
-      return mapping[obj] || `Gracias por decirlo — puedo ofrecerte alternativas o reservar mientras decides.`
+    if(state==='warm'){
+      return [
+        `Confirmando ahora te lo dejo en $${price} y lo despacho en 24–48h. ¿Procedo?`,
+        `Si lo llevas con el filtro extra ahorras $5. ¿Lo agrego al pedido?`
+      ];
     }
+    return [
+      `Lo dejo listo por $${price} y te bloqueo la unidad ahora mismo. ¿Confirmas?`,
+      `Si confirmas ahora te incluyo envío priorizado sin costo extra.`
+    ];
+  }
 
-    function computeCommission(totalRevenue){
-      // Tiers are based on user-provided tiers: commission per sale
-      const amount = totalRevenue;
-      for(const t of COMMISSION_TIERS){
-        if(amount >= t.min && amount <= t.max){
-          return t.commission;
-        }
-      }
-      return 0;
+  function objectionResponse(o){
+    const map = {
+      'caro':'Entiendo. Podemos ver un combo o promoción para que te quede más barato; prefieres ahorro o solo la prenda?',
+      'precio':'Te puedo ofrecer un plan de pago o un combo con descuento.',
+      'no necesito':'Comprendo, ¿qué problema buscas resolver para recomendarte la mejor opción?',
+      'luego':'Puedo reservar la unidad 24h para que no pierdas la promo.',
+      'pensarlo':'Perfecto, te bloqueo la unidad mientras decides por 2 horas.',
+      'talla':'Confirmo existencia y la reservo mientras decides.'
+    };
+    return map[o] || 'Puedo ofrecer alternativas o un descuento por tiempo limitado.'
+  }
+
+  // Mark new order (only then save)
+  document.getElementById('markNewOrder').addEventListener('click',()=>{
+    const notes = document.getElementById('callNotes').value;
+    // naive parse: try find product in notes
+    const found = PRODUCTS.find(p=>notes.toLowerCase().includes(p.name.toLowerCase()) || notes.toLowerCase().includes(p.category.toLowerCase()));
+    const client = notes.split('—')[0].trim() || 'Cliente';
+    const date = new Date().toISOString();
+    const prod = found || PRODUCTS[0];
+    const revenue = prod.price;
+    const commission = computeCommission(revenue);
+    const trm = Number(document.getElementById('trmInput').value)||4000;
+    const revenueCOP = revenue * trm;
+
+    const sale = {date,client,sku:prod.sku,product:prod.name,price:revenue,commission,priceCOP:revenueCOP};
+    saveSale(sale);
+
+    // ui feedback
+    const btn = document.getElementById('markNewOrder'); btn.classList.add('checking'); setTimeout(()=>{btn.classList.remove('checking');btn.classList.add('checked');},220);
+    setTimeout(()=>btn.classList.remove('checked'),1800);
+  });
+
+  // storage helpers
+  function loadSales(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw?JSON.parse(raw):[];
+  }
+  function saveSale(sale){
+    const arr = loadSales(); arr.unshift(sale); localStorage.setItem(STORAGE_KEY,JSON.stringify(arr)); renderSales(); renderDashboard();
+  }
+
+  function renderSales(){
+    const rows = loadSales(); const tbody = document.querySelector('#salesTable tbody'); tbody.innerHTML='';
+    rows.forEach(r=>{
+      const tr = document.createElement('tr'); tr.innerHTML = `<td>${new Date(r.date).toLocaleString()}</td><td>${r.client}</td><td>${r.product}</td><td>$${r.price.toFixed(2)}</td><td>$${r.commission.toFixed(2)}</td><td>${r.priceCOP.toFixed(0)}</td>`; tbody.appendChild(tr);
+    });
+    if(rows.length===0) tbody.innerHTML='<tr><td colspan="6" class="muted">No hay ventas registradas</td></tr>';
+  }
+
+  function computeCommission(amount){
+    for(const t of TIERS){
+      if(amount>=t.min && amount<=t.max) return t.commission;
     }
+    return 0;
+  }
 
-    // Register sale: add to table and compute commission
-    function registerSale(){
-      const prodId = ps.value; const prod = findProduct(prodId);
-      const qty = Number(document.getElementById('qty').value)||1;
-      const revenue = prod.price * qty;
-      const commission = computeCommission(revenue);
-      const tbody = document.querySelector('#logTable tbody');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${new Date().toLocaleString()}</td><td>${document.getElementById('clientName').value||'-'}</td><td>${prod.name}</td><td>${qty}</td><td>${revenue.toFixed(2)}</td><td>${commission.toFixed(2)}</td>`;
-      tbody.prepend(tr);
-      alert('Venta registrada. Comisión: $' + commission.toFixed(2));
-    }
+  function renderDashboard(){
+    const rows = loadSales();
+    const total = rows.reduce((s,r)=>s + Number(r.price),0);
+    const totalCommission = rows.reduce((s,r)=>s + Number(r.commission),0);
+    document.getElementById('totalSoldUSD').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('totalCommission').textContent = `$${totalCommission.toFixed(2)}`;
+    document.getElementById('salesToday').textContent = rows.filter(r=>new Date(r.date).toDateString()===new Date().toDateString()).length;
+    // determine tier by total
+    let tierName='Ninguno';
+    for(let i=TIERS.length-1;i>=0;i--){const t=TIERS[i]; if(total>=t.min){tierName=`Tier ${i+1}`;break}}
+    document.getElementById('currentTier').textContent = tierName;
 
-    document.getElementById('analyzeBtn').addEventListener('click', analyzeCall);
-    document.getElementById('registerSaleBtn').addEventListener('click', registerSale);
+    // tiers list
+    const tiersEl = document.getElementById('tiersList');
+    const counts = TIERS.map(t=>({t, count: rows.filter(r=>r.price>=t.min && r.price<=t.max).length}));
+    tiersEl.innerHTML = counts.map((c,i)=>`Tier ${i+1}: ${c.count} ventas`).join('<br>');
+  }
 
-  </script>
+  // export CSV of monthly sales
+  document.getElementById('exportBtn').addEventListener('click',()=>{
+    const rows = loadSales();
+    if(rows.length===0){alert('No hay ventas para exportar');return}
+    const csv = [['Fecha','Cliente','SKU','Producto','Precio_USD','Comision_USD','Precio_COP']]
+      .concat(rows.map(r=>[r.date,r.client,r.sku,r.product,r.price,r.commission,r.priceCOP]));
+    const csvStr = csv.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csvStr],{type:'text/csv'}); const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download = `sales_export_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
+  });
+
+  // currency toggle simple UI (just visual swap for labels; values stay underlying USD/COP shown in dashboard)
+  document.getElementById('usdBtn').addEventListener('click',()=>{document.getElementById('usdBtn').classList.add('active');document.getElementById('copBtn').classList.remove('active');renderDashboard();});
+  document.getElementById('copBtn').addEventListener('click',()=>{document.getElementById('copBtn').classList.add('active');document.getElementById('usdBtn').classList.remove('active');renderDashboard();});
+
+  // clear notes
+  document.getElementById('clearBtn').addEventListener('click',()=>{document.getElementById('callNotes').value='';document.getElementById('suggestionsBox').style.display='none'});
+
+  // darkmode toggle (simple)
+  document.getElementById('darkToggle').addEventListener('click',()=>{document.body.classList.toggle('dark');});
+
+  // init
+  renderSales(); renderDashboard();
+</script>
 </body>
 </html>
