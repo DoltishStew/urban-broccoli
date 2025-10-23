@@ -1,4 +1,3 @@
-# urban-broccoli
 # Agent hub
 
 Local dev:
