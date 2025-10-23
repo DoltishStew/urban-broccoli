@@ -1,151 +1,127 @@
-
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; color: #000; margin: 20px; transition: all 0.3s; }
-header { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: #000; }
-.top-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
-.top-buttons button { background: #f39c12; color: black; border: none; padding: 8px 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; border-radius: 8px; transition: 0.2s; }
-.top-buttons button:hover { background: #e08b00; }
-
-/* Layout dos columnas */
-main { display: flex; gap: 20px; flex-wrap: wrap; }
-.left-column { flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: 15px; }
-.right-column { flex: 1; min-width: 350px; }
-
-/* Quick Notes Card */
-  .quick-card {
-  background: #fff;                  /* fondo blanco */
-  border-radius: 8px;                /* esquinas redondeadas */
-  padding: 10px;                     /* espacio interno */
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* sombra suave */
-  transition: all 0.3s ease;
-  display: flex;                     /* organiza contenido verticalmente */
-  flex-direction: column;
-}
-.quick-card-header {
-  display: flex;
-  align-items: center;       /* centra verticalmente */
-  justify-content: flex-start; /* botones al lado del título */
-  gap: 8px;                  /* espacio entre título y botones */
-}
-.quick-card-header h3 {
+/* ====== Global ====== */
+* {
+  box-sizing: border-box;
   margin: 0;
-  margin-right: 10px;        /* separa del primer botón */
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+body {
+  background: linear-gradient(45deg, #f5f5f5, #dcdcdc);
+  color: #222;
+  transition: background 0.5s, color 0.5s;
+}
+.dark {
+  background: linear-gradient(45deg, #1c1c1c, #2e2e2e);
+  color: #eee;
 }
 
-.quick-toggle-btn { background:#f39c12; color:#000; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; }
-.quick-toggle-btn:hover { background:#e08b00; }
-.quick-buttons, .sub-buttons { display:flex; flex-wrap: wrap; gap:5px; margin-top:8px; justify-content: center; }
-.quick-btn, .sub-btn { background:#007bff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-weight:bold; }
-.quick-btn:hover, .sub-btn:hover { background:#0056d6; }
-
-/* Manage quick notes */
-.manage-quick {
-  display: none;          /* inicialmente oculto */
-  flex-direction: column; /* organiza hijos verticalmente */
-  gap: 6px;               /* espacio entre elementos */
-  margin-top: 12px;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
-}
-.manage-quick input, .manage-quick textarea { padding:6px; margin-bottom:6px; }
-.manage-quick button { background:#007bff; color:#fff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; }
-.manage-quick .button-row {
+/* ====== Navbar ====== */
+.navbar {
   display: flex;
-  gap: 8px;      /* espacio entre botones */
-  align-items: center; /* alineación vertical */
+  justify-content: space-between;
+  align-items: center;
+  background: #e0e0e0;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  margin: 1rem auto;
+  width: 90%;
+}
+.dark .navbar {
+  background: #333;
+}
+.navbar nav button {
+  margin-left: 0.5rem;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 600;
+}
+.navbar nav button:hover {
+  text-decoration: underline;
 }
 
-/* Form Card */
-.card { background:#fff; padding:20px; border-radius:8px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
-label { font-weight:600; margin:10px 0 7px; text-transform: uppercase; } /* de 5px a 7px */
-input, select, textarea { width:100%; box-sizing:border-box; padding:8px 12px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; background:#f2f2f7; font-size:0.95rem; color: #000; }
-textarea { resize: vertical; }
-
-/* CEX buttons */
-.cex-buttons {
+/* ====== Containers ====== */
+.container {
+  width: 90%;
+  margin: 2rem auto;
   display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin: 10px 0 12px; /* arriba 10px, lados 0, abajo 12px */
+  flex-direction: column;
+  gap: 1.5rem;
 }
-.cex-buttons button { flex:1; color:#fff; border:none; padding:6px; border-radius:6px; font-weight:bold; cursor:pointer; max-width: 120px; }
-.cex-good { background:#34c759; } .cex-neutral { background:#ff9500; } .cex-bad { background:#ff3b30; }
 
-/* Output */
-.output { display:flex; flex-direction:column; }
-.output textarea { width:100%; min-height:150px; border-radius:6px; padding:12px; margin-bottom:5px; background:#f2f2f7; font-family:monospace; font-size:0.95rem; color: #000; }
-.copy-container { display:flex; justify-content:flex-end; gap:5px; }
-.copy-container button { background:#f39c12; color:black; border:none; padding:6px 12px; cursor:pointer; display:flex; align-items:center; gap:5px; border-radius:6px; }
-.copy-container button:hover { background:#e08b00; }
-
-/* Dark mode */
-body.dark { background:#121212; color:white; }
-body.dark header { color:#fff; }
-body.dark .card, body.dark .quick-card { background:#1e1e1e; border:1px solid #444; box-shadow:none; color:#fff; }
-body.dark input, body.dark select, body.dark textarea { background:#2a2a2a; color:white; border:1px solid #555; }
-body.dark .copy-container button, body.dark .top-buttons button { border:1px solid #fff; background:none; color:white; }
-body.dark .cex-buttons button { color:#fff; }
-body.dark .quick-card-header h3 { color:#fff; }
-body.dark #historyPanel { background:#2c2c2c; color:white; }
-
-/* History Panel + Backdrop */
-#historyBackdrop { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; opacity:0; transition:opacity 0.3s; }
-#historyBackdrop.active { display:block; opacity:1; }
-#historyPanel { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.9); width:420px; max-height:75%; overflow-y:auto; z-index:1000; background:#e0e0e0; border-radius:6px; box-shadow:0 0 20px rgba(0,0,0,0.4); padding:20px; opacity:0; transition:all 0.25s ease; }
-#historyPanel.active { display:block; opacity:1; transform:translate(-50%,-50%) scale(1); }
-#historyPanel h3 { margin-top:0; text-align:center; }
-#historyPanel ul { list-style:none; padding:0; margin:0; }
-#historyPanel li { padding:8px 10px; margin-bottom:6px; background:#f5f5f5; border-radius:4px; cursor:pointer; transition: background 0.2s; }
-#historyPanel li:hover { background:#ccc; }
-#clearHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#ff3b30; color:white; }
-#closeHistoryBtn { width:100%; padding:6px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px; background:#007bff; color:white; }
-
-/* Undo */
-#undoBtn { background:#34c759; color:white; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; display:none; }
-
-/* responsive tweaks */
-@media (max-width:900px){ main{flex-direction:column;} #historyPanel{width:90%;}}
-  #inquiry, #actionTaken {
-  resize: vertical;   /* solo expandir verticalmente */
-  min-height: 30px;   /* altura mínima */
-  max-height: 100px;  /* altura máxima opcional */
+/* ====== Cards ====== */
+.card {
+  background: #fafafa;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-  /* Botones principales */
-#newCallBtn,
-#historyBtn,
-#darkModeBtn {
-  background-color: #007bff; /* azul bootstrap */
+.dark .card {
+  background: #2a2a2a;
+}
+
+/* ====== Grid ====== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+/* ====== Tracker Layout ====== */
+.tracker-layout {
+  width: 90%;
+  margin: 2rem auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+.input-panel label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+.input-panel input, .input-panel select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+.input-panel button {
+  margin-top: 1rem;
+  background: #444;
   color: #fff;
+  padding: 0.7rem;
+  border-radius: 8px;
   border: none;
+  cursor: pointer;
 }
-#newCallBtn:hover,
-#historyBtn:hover,
-#darkModeBtn:hover {
-  background-color: #0056d6; /* azul más oscuro al hover */
-}
-
-
-/* Botones dentro de Quicky Notes */
-/* Primer nivel: categorías - azul sólido */
-.quick-btn {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-}
-.quick-btn:hover {
-  background-color: #0056d6;
+.input-panel button:hover {
+  background: #555;
 }
 
-/* Segundo nivel: subopciones - outline azul con texto azul */
-.sub-btn {
-  background-color: transparent;
-  color: #007bff;
-  border: 2px solid #007bff;
-  text-decoration: none; /* si quieres subrayado */
+/* ====== Tables ====== */
+.sales-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
 }
-.sub-btn:hover {
-  background-color: #007bff;
-  color: #fff;
+.sales-list th, .sales-list td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #ccc;
 }
-.cex-buttons button.active {
-    box-shadow: 0 0 0 2px #000 inset;
+.dark .sales-list th, .dark .sales-list td {
+  border-color: #555;
+}
+
+/* ====== Chart Card ====== */
+.chart-card {
+  background: #fafafa;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.dark .chart-card {
+  background: #2a2a2a;
 }
