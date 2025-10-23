@@ -1,127 +1,117 @@
-/* ====== Global ====== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', sans-serif;
+:root{
+  --bg:#f4f4f4;
+  --card:#ffffff;
+  --muted:#6b6b6b;
+  --accent:#666;
+  --text:#111;
+  --dark-bg:#0f0f11;
+  --dark-card:#1b1b1d;
 }
+
+/* theme classes controlled by SalesContext dark boolean */
+html.dark { --bg:#0b0b0b; --card: #121212; --muted:#a0a0a0; --text:#eef; --dark-card:#121212; }
+
 body {
-  background: linear-gradient(45deg, #f5f5f5, #dcdcdc);
-  color: #222;
-  transition: background 0.5s, color 0.5s;
-}
-.dark {
-  background: linear-gradient(45deg, #1c1c1c, #2e2e2e);
-  color: #eee;
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: var(--text);
 }
 
-/* ====== Navbar ====== */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #e0e0e0;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  margin: 1rem auto;
-  width: 90%;
-}
-.dark .navbar {
-  background: #333;
-}
-.navbar nav button {
-  margin-left: 0.5rem;
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  font-weight: 600;
-}
-.navbar nav button:hover {
-  text-decoration: underline;
+/* layout */
+.layout {
+  display:flex;
+  gap:20px;
+  max-width:1200px;
+  margin: 18px auto;
+  padding: 12px;
+  align-items:flex-start;
 }
 
-/* ====== Containers ====== */
-.container {
-  width: 90%;
-  margin: 2rem auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+/* sidebar */
+.sidebar {
+  width:72px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:center;
 }
+.side-top {
+  width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+  background:var(--card); border-radius:10px; box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  font-weight:800;
+}
+.side-nav { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+.side-item {
+  width:56px; height:56px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  background:var(--card); color:var(--muted); text-decoration:none;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+.side-item.active { background:var(--accent); color:#fff }
 
-/* ====== Cards ====== */
-.card {
-  background: #fafafa;
-  border-radius: 15px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.dark .card {
-  background: #2a2a2a;
-}
+/* main area */
+.main-area { flex:1; }
+.app-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+.title{ font-size:18px; font-weight:800 }
+.sub{ color:var(--muted); font-size:13px }
 
-/* ====== Grid ====== */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+/* buttons */
+.btn {
+  background:var(--card); border:1px solid rgba(0,0,0,0.06); padding:8px 12px; border-radius:8px; cursor:pointer;
 }
+.btn.primary { background:var(--accent); color:#fff; border:none; }
+.header-actions { display:flex; gap:10px; align-items:center; }
 
-/* ====== Tracker Layout ====== */
-.tracker-layout {
-  width: 90%;
-  margin: 2rem auto;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 2rem;
-}
-.input-panel label {
-  display: block;
-  margin-top: 1rem;
-  font-weight: 500;
-}
-.input-panel input, .input-panel select {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.3rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-.input-panel button {
-  margin-top: 1rem;
-  background: #444;
-  color: #fff;
-  padding: 0.7rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-.input-panel button:hover {
-  background: #555;
-}
+/* content */
+.content { padding:6px; }
 
-/* ====== Tables ====== */
-.sales-list table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-.sales-list th, .sales-list td {
-  padding: 0.6rem;
-  border-bottom: 1px solid #ccc;
-}
-.dark .sales-list th, .dark .sales-list td {
-  border-color: #555;
-}
+/* two-column structure for landing left area */
+.grid-two { display:flex; gap:18px; }
+.grid-two > div { flex:1 }
+.grid-two aside { width:320px }
 
-/* ====== Chart Card ====== */
-.chart-card {
-  background: #fafafa;
-  padding: 1.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.dark .chart-card {
-  background: #2a2a2a;
+/* stat cards */
+.stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:12px; }
+.stat-card { background:var(--card); padding:14px; border-radius:10px; box-shadow: 0 8px 30px rgba(0,0,0,0.04); }
+.stat-title { color:var(--muted); font-size:13px }
+.stat-value { font-size:20px; font-weight:800; margin-top:6px }
+
+/* black card */
+.black-card { background:#000; color:#fff; padding:12px; border-radius:10px }
+
+/* chart-card */
+.chart-card { background:var(--card); padding:12px; border-radius:10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05) }
+
+/* sale-tracker layout in right column */
+.sale-tracker-card { display:flex; gap:12px; }
+.sale-list { flex:1; }
+.sale-controls { width:320px }
+
+/* selectors */
+.selector button { padding:8px 10px; border-radius:8px; border:none; background:#efefef; cursor:pointer; }
+.selector button.active { background:var(--accent); color:#fff }
+
+/* sales register */
+.sale-list-row { display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--card); border-radius:8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom:8px }
+
+/* two column page for tracker */
+.two-col { display:flex; gap:18px }
+.left-col { width:420px }
+.right-col { flex:1 }
+
+/* inputs */
+.input { padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); width:100% }
+
+/* sale list row button */
+.sale-row button { padding:6px 8px; border-radius:6px }
+
+/* responsive */
+@media (max-width: 980px) {
+  .layout { flex-direction:column; padding: 12px; }
+  .sidebar { flex-direction:row; justify-content:flex-start; width:100%; gap:8px; }
+  .side-nav { flex-direction:row; }
+  .grid-two { flex-direction:column; }
+  .two-col { flex-direction:column; }
+  .left-col { width:100% }
+  .sale-controls { width:100% }
 }
