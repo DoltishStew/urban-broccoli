@@ -1,42 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Hub - Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="navbar">
-    <h1>Agent Hub</h1>
-    <nav>
-      <button onclick="location.href='index.html'">Home</button>
-      <button onclick="location.href='sales-tracker.html'">Sales Tracker</button>
-      <button onclick="location.href='qa.html'">QA Progress</button>
-      <button id="darkToggle">🌗</button>
-    </nav>
-  </header>
-
-  <main class="container">
-    <section class="welcome-card">
-      <h2>Welcome In, Agent</h2>
-      <p>Your summary at a glance</p>
-    </section>
-
-    <section class="stats-grid">
-      <div class="card"><h3>Sales</h3><p id="salesCount">25</p></div>
-      <div class="card"><h3>Commissions (USD)</h3><p id="commCount">$1,250</p></div>
-      <div class="card"><h3>Agent Schedule</h3><p>Mon - Fri / 9:00 - 17:00</p></div>
-      <div class="card"><h3>Top Brand</h3><p>AirDoctor</p></div>
-    </section>
-
-    <section class="chart-card">
-      <h3>Commissions by Month</h3>
-      <canvas id="commChart"></canvas>
-    </section>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="app.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Agent hub</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
