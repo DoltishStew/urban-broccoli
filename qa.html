@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Progress - Agent Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <h1>QA Progress</h1>
+    <nav>
+      <button onclick="location.href='index.html'">Home</button>
+      <button onclick="location.href='sales-tracker.html'">Sales Tracker</button>
+      <button id="darkToggle">🌗</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="qa-card card">
+      <h3>Quality Assurance Score</h3>
+      <canvas id="qaChart"></canvas>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
